@@ -1,0 +1,20 @@
+include(FetchContent)
+
+FetchContent_Declare(
+  SDL3
+  GIT_REPOSITORY https://github.com/libsdl-org/SDL.git
+  GIT_TAG        release-3.4.2
+  GIT_SHALLOW    TRUE
+)
+FetchContent_MakeAvailable(SDL3)
+
+add_executable(
+  ${PROJECT_NAME} 
+  main.cpp
+)
+
+set_target_properties(${PROJECT_NAME} PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}"
+)
+
+target_link_libraries(${PROJECT_NAME} PRIVATE SDL3::SDL3)
