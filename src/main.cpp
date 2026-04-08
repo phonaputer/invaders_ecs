@@ -3,6 +3,9 @@
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_main.h>
 
+// TODO
+// * Think about this thing starting from the goal of being able to get all entities with a set of components and work backwards
+
 SDL_AppResult SDL_AppInit([[maybe_unused]] void **appstate, [[maybe_unused]] int argc, [[maybe_unused]] char *argv[]) {
   SDL_Log("Setup complete...");
 
