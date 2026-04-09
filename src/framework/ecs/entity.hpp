@@ -2,6 +2,6 @@
 
 namespace ecs {
 
-using EntityID = unsigned long;
+using Entity = unsigned long;
 
 }

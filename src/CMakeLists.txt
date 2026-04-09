@@ -17,5 +17,7 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}"
 )
 
+add_subdirectory(framework)
+
 target_link_libraries(${PROJECT_NAME} PRIVATE SDL3::SDL3)
 target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
