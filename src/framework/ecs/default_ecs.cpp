@@ -68,13 +68,13 @@ void DefaultECS::delete_from_systems(Entity entity) {
 
 void DefaultECS::update() {
   for (auto &system : update_systems) {
-    system->execute();
+    system->execute(*component_manager);
   }
 }
 
 void DefaultECS::draw() {
   for (auto &system : draw_systems) {
-    system->execute();
+    system->execute(*component_manager);
   }
 }
 

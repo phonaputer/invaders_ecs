@@ -7,6 +7,7 @@
 #include "framework/game/scene_initialization_context.hpp"
 #include "framework/game/sdl_asset_manager.hpp"
 #include "framework/game/sdl_renderer.hpp"
+#include "framework/systems/rendering.hpp"
 #include <SDL3/SDL.h>
 #include <format>
 #include <memory>
@@ -45,12 +46,16 @@ Game::Game() {
 
   player_input_manager = std::make_unique<PlayerInputManager>();
   asset_manager = std::make_shared<SDLAssetManager>(renderer);
+  auto sdl_renderer_wrapper = std::make_shared<SDLRenderer>(renderer, asset_manager);
 
-  // FIXME - actually get these systems from somewhere
+  // TODO create some update systems
   std::vector<std::unique_ptr<ecs::System>> update_systems;
+
   std::vector<std::unique_ptr<ecs::System>> draw_systems;
+  draw_systems.push_back(std::make_unique<systems::Rendering>(sdl_renderer_wrapper));
+
   ecs = std::make_unique<ecs::DefaultECS>(
-      std::move(draw_systems), std::move(update_systems), std::make_unique<ecs::ComponentManager>()
+      std::move(update_systems), std::move(draw_systems), std::make_unique<ecs::ComponentManager>()
   );
 }
 

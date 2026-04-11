@@ -9,7 +9,7 @@
 namespace ecs {
 
 template <typename T> void ComponentManager::set(ecs::Entity entity, T component) {
-  components.at(std::type_index(typeid(T))).insert({entity, component});
+  components[std::type_index(typeid(T))].insert({entity, component});
 }
 
 template <typename T> T ComponentManager::get(ecs::Entity entity) const {

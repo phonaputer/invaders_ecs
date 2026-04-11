@@ -6,6 +6,8 @@ namespace components {
 
 struct SpriteStatic {
     std::string src_id;
+    float src_x;
+    float src_y;
     float src_width;
     float src_height;
     float dst_width;
