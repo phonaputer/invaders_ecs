@@ -14,6 +14,8 @@ class ECS {
     virtual void register_to_systems(Entity entity) = 0;
     virtual void reregister_to_systems(Entity entity) = 0;
     virtual void delete_from_systems(Entity entity) = 0;
+    virtual void update() = 0;
+    virtual void draw() = 0;
 };
 
 } // namespace ecs

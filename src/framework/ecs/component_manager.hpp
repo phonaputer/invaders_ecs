@@ -17,6 +17,7 @@ class ComponentManager {
     template <typename T> bool has(ecs::Entity entity);
     template <typename T> void delete_component(ecs::Entity entity);
     void delete_entity(ecs::Entity entity);
+    void clear();
 };
 
 } // namespace ecs

@@ -7,9 +7,12 @@
 namespace ecs {
 
 DefaultECS::DefaultECS(
-    std::vector<std::unique_ptr<ecs::System>> systems, std::unique_ptr<ComponentManager> component_manager
+    std::vector<std::unique_ptr<ecs::System>> update_systems,
+    std::vector<std::unique_ptr<ecs::System>> draw_systems,
+    std::unique_ptr<ComponentManager> component_manager
 )
-    : systems{std::move(systems)},
+    : update_systems{std::move(update_systems)},
+      draw_systems{std::move(draw_systems)},
       component_manager{std::move(component_manager)} {
 }
 
@@ -22,7 +25,13 @@ ComponentManager &DefaultECS::components() {
 }
 
 void DefaultECS::register_to_systems(Entity entity) {
-  for (auto &system : systems) {
+  for (auto &system : update_systems) {
+    if (system->matches_entity(entity, *component_manager)) {
+      system->add_entity(entity);
+    }
+  }
+
+  for (auto &system : draw_systems) {
     if (system->matches_entity(entity, *component_manager)) {
       system->add_entity(entity);
     }
@@ -30,7 +39,15 @@ void DefaultECS::register_to_systems(Entity entity) {
 }
 
 void DefaultECS::reregister_to_systems(Entity entity) {
-  for (auto &system : systems) {
+  for (auto &system : update_systems) {
+    system->remove_entity(entity);
+
+    if (system->matches_entity(entity, *component_manager)) {
+      system->add_entity(entity);
+    }
+  }
+
+  for (auto &system : draw_systems) {
     system->remove_entity(entity);
 
     if (system->matches_entity(entity, *component_manager)) {
@@ -40,8 +57,24 @@ void DefaultECS::reregister_to_systems(Entity entity) {
 }
 
 void DefaultECS::delete_from_systems(Entity entity) {
-  for (auto &system : systems) {
+  for (auto &system : update_systems) {
     system->remove_entity(entity);
+  }
+
+  for (auto &system : draw_systems) {
+    system->remove_entity(entity);
+  }
+}
+
+void DefaultECS::update() {
+  for (auto &system : update_systems) {
+    system->execute();
+  }
+}
+
+void DefaultECS::draw() {
+  for (auto &system : draw_systems) {
+    system->execute();
   }
 }
 

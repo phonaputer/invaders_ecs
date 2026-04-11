@@ -36,4 +36,8 @@ inline void ComponentManager::delete_entity(ecs::Entity entity) {
   }
 }
 
+inline void ComponentManager::clear() {
+  components.clear();
+}
+
 } // namespace ecs

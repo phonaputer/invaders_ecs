@@ -9,19 +9,26 @@
 
 namespace ecs {
 
-class DefaultECS : ECS {
+class DefaultECS : public ECS {
   private:
     unsigned long cur_entity_id = 0; // note: this is not thread-safe
-    std::vector<std::unique_ptr<ecs::System>> systems;
+    std::vector<std::unique_ptr<ecs::System>> update_systems;
+    std::vector<std::unique_ptr<ecs::System>> draw_systems;
     std::unique_ptr<ComponentManager> component_manager;
 
   public:
-    DefaultECS(std::vector<std::unique_ptr<ecs::System>> systems, std::unique_ptr<ComponentManager> component_manager);
+    DefaultECS(
+        std::vector<std::unique_ptr<ecs::System>> update_systems,
+        std::vector<std::unique_ptr<ecs::System>> draw_systems,
+        std::unique_ptr<ComponentManager> component_manager
+    );
     Entity new_entity() override;
     ComponentManager &components() override;
     void register_to_systems(Entity entity) override;
     void reregister_to_systems(Entity entity) override;
     void delete_from_systems(Entity entity) override;
+    void update() override;
+    void draw() override;
 };
 
 } // namespace ecs

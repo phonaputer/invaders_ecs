@@ -11,7 +11,7 @@ class System {
     virtual void remove_entity(Entity entity) = 0;
     virtual bool matches_entity(Entity entity, ComponentManager &components) = 0;
     virtual void add_entity(Entity) = 0;
-    virtual void update() = 0;
+    virtual void execute() = 0;
 };
 
 } // namespace ecs
