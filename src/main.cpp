@@ -2,8 +2,10 @@
 
 #include "framework/game/game.hpp"
 #include "framework/game/player_input.hpp"
+#include "gallia/test_scene.hpp"
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_main.h>
+#include <memory>
 
 // TODO
 // * Test ECS and see if it works.
@@ -20,7 +22,8 @@ SDL_AppResult SDL_AppInit(void **appstate, [[maybe_unused]] int argc, [[maybe_un
     return SDL_APP_FAILURE;
   }
 
-  // TODO add a scene
+  auto test_scene = std::make_unique<gallia::TestScene>();
+  game->set_scene(std::move(test_scene));
 
   SDL_Log("Setup complete...");
 

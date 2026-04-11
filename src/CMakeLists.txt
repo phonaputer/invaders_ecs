@@ -18,6 +18,7 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
 )
 
 add_subdirectory(framework)
+add_subdirectory(gallia)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE SDL3::SDL3)
 target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
