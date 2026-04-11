@@ -1,5 +1,6 @@
 #pragma once
 
+#include "framework/game/asset_loader.hpp"
 #include <SDL3/SDL.h>
 #include <memory>
 #include <string>
@@ -7,17 +8,15 @@
 
 namespace game {
 
-// TODO would be nice to have a way to create a version of this independent from SDL
-class AssetManager {
+class SDLAssetManager : public AssetLoader {
   private:
     // Renderer is cleaned up automatically by SDL, so it doesn't need to be a smart pointer.
     SDL_Renderer *renderer;
     std::unordered_map<std::string, std::shared_ptr<SDL_Texture>> textures;
 
   public:
-    AssetManager(SDL_Renderer *renderer);
-
-    void load_png_texture(std::string src_id, std::string path);
+    SDLAssetManager(SDL_Renderer *renderer);
+    void load_image_png(std::string src_id, std::string path) override;
     std::shared_ptr<SDL_Texture> get_texture(std::string src_id) const;
 };
 

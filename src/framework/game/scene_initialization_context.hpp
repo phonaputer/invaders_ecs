@@ -1,12 +1,12 @@
 #pragma once
 
 #include "framework/ecs/ecs.hpp"
-#include "framework/game/asset_manager.hpp"
+#include "framework/game/asset_loader.hpp"
 
 namespace game {
 
 struct SceneInitializationContext {
-    AssetManager &assets;
+    AssetLoader &assets;
     ecs::ECS &ecs;
 };
 

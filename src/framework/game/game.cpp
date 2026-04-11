@@ -1,11 +1,12 @@
 #include "framework/game/game.hpp"
 #include "framework/ecs/component_manager.hpp"
 #include "framework/ecs/default_ecs.hpp"
-#include "framework/game/asset_manager.hpp"
 #include "framework/game/constants.hpp"
 #include "framework/game/player_input_manager.hpp"
 #include "framework/game/scene.hpp"
 #include "framework/game/scene_initialization_context.hpp"
+#include "framework/game/sdl_asset_manager.hpp"
+#include "framework/game/sdl_renderer.hpp"
 #include <SDL3/SDL.h>
 #include <format>
 #include <memory>
@@ -43,7 +44,7 @@ Game::Game() {
   unprocessed_ms = 0;
 
   player_input_manager = std::make_unique<PlayerInputManager>();
-  asset_manager = std::make_unique<AssetManager>(renderer);
+  asset_manager = std::make_shared<SDLAssetManager>(renderer);
 
   // FIXME - actually get these systems from somewhere
   std::vector<std::unique_ptr<ecs::System>> update_systems;

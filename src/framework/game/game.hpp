@@ -1,9 +1,10 @@
 #pragma once
 
 #include "framework/ecs/ecs.hpp"
-#include "framework/game/asset_manager.hpp"
 #include "framework/game/player_input_manager.hpp"
 #include "framework/game/scene.hpp"
+#include "framework/game/sdl_asset_manager.hpp"
+#include "framework/game/sdl_renderer.hpp"
 #include <SDL3/SDL.h>
 #include <memory>
 #include <optional>
@@ -12,12 +13,12 @@ namespace game {
 
 class Game {
   private:
-    // Window and Renderer aren't unique ptrs since SDL cleans them up automatically on aplication exit.
+    // Window and Renderer are owned and cleaned up by SDL.
     SDL_Window *window;
     SDL_Renderer *renderer;
 
     std::unique_ptr<PlayerInputManager> player_input_manager;
-    std::unique_ptr<AssetManager> asset_manager;
+    std::shared_ptr<SDLAssetManager> asset_manager;
     std::unique_ptr<ecs::ECS> ecs;
 
     bool have_active_scene = false;
