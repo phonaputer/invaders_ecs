@@ -28,33 +28,13 @@ void DefaultECS::add_draw_system(std::unique_ptr<System> system) {
 
 void DefaultECS::register_to_systems(Entity entity) {
   for (auto &system : update_systems) {
-    if (system->matches_entity(entity, *component_manager)) {
-      system->add_entity(entity);
-    }
-  }
-
-  for (auto &system : draw_systems) {
-    if (system->matches_entity(entity, *component_manager)) {
-      system->add_entity(entity);
-    }
-  }
-}
-
-void DefaultECS::reregister_to_systems(Entity entity) {
-  for (auto &system : update_systems) {
     system->remove_entity(entity);
-
-    if (system->matches_entity(entity, *component_manager)) {
-      system->add_entity(entity);
-    }
+    system->add_entity_if_matches(entity, *component_manager);
   }
 
   for (auto &system : draw_systems) {
     system->remove_entity(entity);
-
-    if (system->matches_entity(entity, *component_manager)) {
-      system->add_entity(entity);
-    }
+    system->add_entity_if_matches(entity, *component_manager);
   }
 }
 

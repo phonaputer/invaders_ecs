@@ -15,7 +15,6 @@ class ECS {
     virtual void add_update_system(std::unique_ptr<System> system) = 0;
     virtual void add_draw_system(std::unique_ptr<System> system) = 0;
     virtual void register_to_systems(Entity entity) = 0;
-    virtual void reregister_to_systems(Entity entity) = 0;
     virtual void delete_from_systems(Entity entity) = 0;
     virtual void update() = 0;
     virtual void draw() = 0;

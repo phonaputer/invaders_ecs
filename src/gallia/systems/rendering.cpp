@@ -16,20 +16,14 @@ void Rendering::remove_entity(ecs::Entity entity) {
   entities.erase(entity);
 }
 
-bool Rendering::matches_entity(ecs::Entity entity, ecs::ComponentManager &entity_components) {
+void Rendering::add_entity_if_matches(ecs::Entity entity, ecs::ComponentManager &entity_components) {
   if (!entity_components.has<components::Position>(entity)) {
-    return false;
+    return;
   }
 
   if (entity_components.has<components::SpriteStatic>(entity)) {
-    return true;
+    entities.insert(entity);
   }
-
-  return false;
-}
-
-void Rendering::add_entity(ecs::Entity entity) {
-  entities.insert(entity);
 }
 
 // TODO:

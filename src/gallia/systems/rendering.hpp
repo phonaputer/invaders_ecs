@@ -16,8 +16,7 @@ class Rendering : public ecs::System {
   public:
     Rendering(game::Renderer &renderer);
     void remove_entity(ecs::Entity entity) override;
-    bool matches_entity(ecs::Entity entity, ecs::ComponentManager &components) override;
-    void add_entity(ecs::Entity entity) override;
+    void add_entity_if_matches(ecs::Entity entity, ecs::ComponentManager &components) override;
     void execute(ecs::ComponentManager &components) override;
 };
 

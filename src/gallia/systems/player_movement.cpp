@@ -19,12 +19,10 @@ void PlayerMovement::remove_entity(ecs::Entity entity) {
   entities.erase(entity);
 }
 
-bool PlayerMovement::matches_entity(ecs::Entity entity, ecs::ComponentManager &components) {
-  return (components.has<components::PlayerMovement>(entity) && components.has<components::Position>(entity));
-}
-
-void PlayerMovement::add_entity(ecs::Entity entity) {
-  entities.insert(entity);
+void PlayerMovement::add_entity_if_matches(ecs::Entity entity, ecs::ComponentManager &components) {
+  if (components.has<components::PlayerMovement>(entity) && components.has<components::Position>(entity)) {
+    entities.insert(entity);
+  }
 }
 
 void PlayerMovement::execute(ecs::ComponentManager &components) {
