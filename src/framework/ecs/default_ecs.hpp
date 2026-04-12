@@ -17,13 +17,11 @@ class DefaultECS : public ECS {
     std::unique_ptr<ComponentManager> component_manager;
 
   public:
-    DefaultECS(
-        std::vector<std::unique_ptr<ecs::System>> update_systems,
-        std::vector<std::unique_ptr<ecs::System>> draw_systems,
-        std::unique_ptr<ComponentManager> component_manager
-    );
+    DefaultECS(std::unique_ptr<ComponentManager> component_manager);
     Entity new_entity() override;
     ComponentManager &components() override;
+    void add_update_system(std::unique_ptr<System> system) override;
+    void add_draw_system(std::unique_ptr<System> system) override;
     void register_to_systems(Entity entity) override;
     void reregister_to_systems(Entity entity) override;
     void delete_from_systems(Entity entity) override;

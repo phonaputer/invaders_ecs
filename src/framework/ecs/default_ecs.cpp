@@ -6,14 +6,8 @@
 
 namespace ecs {
 
-DefaultECS::DefaultECS(
-    std::vector<std::unique_ptr<ecs::System>> update_systems,
-    std::vector<std::unique_ptr<ecs::System>> draw_systems,
-    std::unique_ptr<ComponentManager> component_manager
-)
-    : update_systems{std::move(update_systems)},
-      draw_systems{std::move(draw_systems)},
-      component_manager{std::move(component_manager)} {
+DefaultECS::DefaultECS(std::unique_ptr<ComponentManager> component_manager)
+    : component_manager{std::move(component_manager)} {
 }
 
 Entity DefaultECS::new_entity() {
@@ -22,6 +16,14 @@ Entity DefaultECS::new_entity() {
 
 ComponentManager &DefaultECS::components() {
   return *component_manager;
+}
+
+void DefaultECS::add_update_system(std::unique_ptr<System> system) {
+  update_systems.push_back(std::move(system));
+}
+
+void DefaultECS::add_draw_system(std::unique_ptr<System> system) {
+  draw_systems.push_back(std::move(system));
 }
 
 void DefaultECS::register_to_systems(Entity entity) {

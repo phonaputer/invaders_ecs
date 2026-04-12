@@ -4,3 +4,5 @@ target_sources(
   player.cpp
   test_scene.cpp
 )
+
+add_subdirectory(systems)

@@ -7,7 +7,6 @@
 #include "framework/game/scene_initialization_context.hpp"
 #include "framework/game/sdl_asset_manager.hpp"
 #include "framework/game/sdl_renderer.hpp"
-#include "framework/systems/rendering.hpp"
 #include <SDL3/SDL.h>
 #include <format>
 #include <memory>
@@ -19,8 +18,9 @@ namespace game {
 // Roughly 60 updates per second. 1000 / 60 = 16.66 (repeating, of course).
 const Uint64 MS_PER_UPDATE = 17;
 
-const int ACTUAL_WINDOW_WIDTH = 640;
-const int ACTUAL_WINDOW_HEIGHT = 360;
+// FIXME - tweak this for web output
+const int ACTUAL_WINDOW_WIDTH = 720;
+const int ACTUAL_WINDOW_HEIGHT = 960;
 
 Game::Game() {
   if (!SDL_Init(SDL_INIT_VIDEO)) {
@@ -46,17 +46,7 @@ Game::Game() {
 
   player_input_manager = std::make_unique<PlayerInputManager>();
   asset_manager = std::make_shared<SDLAssetManager>(renderer);
-  auto sdl_renderer_wrapper = std::make_shared<SDLRenderer>(renderer, asset_manager);
-
-  // TODO create some update systems
-  std::vector<std::unique_ptr<ecs::System>> update_systems;
-
-  std::vector<std::unique_ptr<ecs::System>> draw_systems;
-  draw_systems.push_back(std::make_unique<systems::Rendering>(sdl_renderer_wrapper));
-
-  ecs = std::make_unique<ecs::DefaultECS>(
-      std::move(update_systems), std::move(draw_systems), std::make_unique<ecs::ComponentManager>()
-  );
+  renderer_wrapper = std::make_unique<SDLRenderer>(renderer, asset_manager);
 }
 
 void Game::update() {
@@ -91,12 +81,14 @@ void Game::draw() {
 }
 
 void Game::set_scene(std::unique_ptr<Scene> scene) {
-  ecs->components().clear();
+  ecs = std::make_unique<ecs::DefaultECS>(std::make_unique<ecs::ComponentManager>());
 
   scene->initialize(
       SceneInitializationContext{
           .assets = *asset_manager,
           .ecs = *ecs,
+          .renderer = *renderer_wrapper,
+          .player_input_manager = *player_input_manager,
       }
   );
 

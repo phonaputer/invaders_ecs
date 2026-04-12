@@ -1,7 +1,8 @@
 #include "gallia/player.hpp"
-#include "framework/components/position.hpp"
-#include "framework/components/sprite_static.hpp"
 #include "framework/ecs/ecs.hpp"
+#include "gallia/components/player_movement.hpp"
+#include "gallia/components/position.hpp"
+#include "gallia/components/sprite_static.hpp"
 
 namespace gallia {
 
@@ -26,6 +27,12 @@ void add_player_entity(ecs::ECS &ecs) {
           .src_height = 16,
           .dst_width = 50,
           .dst_height = 50,
+      }
+  );
+  ecs.components().set(
+      entity,
+      components::PlayerMovement{
+          .x_speed = 5,
       }
   );
 

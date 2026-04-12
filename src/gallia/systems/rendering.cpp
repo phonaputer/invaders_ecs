@@ -1,14 +1,14 @@
-#include "framework/systems/rendering.hpp"
-#include "framework/components/position.hpp"
-#include "framework/components/sprite_static.hpp"
+#include "gallia/systems/rendering.hpp"
 #include "framework/ecs/component_manager.hpp"
 #include "framework/ecs/entity.hpp"
 #include "framework/ecs/system.hpp"
 #include "framework/game/renderer.hpp"
+#include "gallia/components/position.hpp"
+#include "gallia/components/sprite_static.hpp"
 
 namespace systems {
 
-Rendering::Rendering(std::shared_ptr<game::Renderer> renderer)
+Rendering::Rendering(game::Renderer &renderer)
     : renderer{renderer} {
 }
 
@@ -41,7 +41,7 @@ void Rendering::execute(ecs::ComponentManager &entity_components) {
     auto position = entity_components.get<components::Position>(entity);
     auto sprite_static = entity_components.get<components::SpriteStatic>(entity);
 
-    renderer->draw_image(
+    renderer.draw_image(
         game::DrawImageParams{
             .src_id = sprite_static.src_id,
             .src_x = sprite_static.src_x,

@@ -2,6 +2,7 @@
 
 #include "framework/ecs/ecs.hpp"
 #include "framework/game/player_input_manager.hpp"
+#include "framework/game/renderer.hpp"
 #include "framework/game/scene.hpp"
 #include "framework/game/sdl_asset_manager.hpp"
 #include "framework/game/sdl_renderer.hpp"
@@ -17,6 +18,7 @@ class Game {
     SDL_Window *window;
     SDL_Renderer *renderer;
 
+    std::unique_ptr<Renderer> renderer_wrapper;
     std::unique_ptr<PlayerInputManager> player_input_manager;
     std::shared_ptr<SDLAssetManager> asset_manager;
     std::unique_ptr<ecs::ECS> ecs;

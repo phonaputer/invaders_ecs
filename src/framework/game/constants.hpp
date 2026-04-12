@@ -2,7 +2,7 @@
 
 namespace game {
 
-const int WINDOW_WIDTH = 640;
-const int WINDOW_HEIGHT = 360;
+const int WINDOW_WIDTH = 240;
+const int WINDOW_HEIGHT = 320;
 
 } // namespace game
