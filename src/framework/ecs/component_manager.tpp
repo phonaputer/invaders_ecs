@@ -27,6 +27,10 @@ template <typename T> bool ComponentManager::has(ecs::Entity entity) {
 }
 
 template <typename T> void ComponentManager::delete_component(ecs::Entity entity) {
+  if (!components.contains(std::type_index(typeid(T)))) {
+    return;
+  }
+
   components.at(std::type_index(typeid(T))).erase(entity);
 }
 
@@ -34,10 +38,6 @@ inline void ComponentManager::delete_entity(ecs::Entity entity) {
   for (auto &[_, component] : components) {
     component.erase(entity);
   }
-}
-
-inline void ComponentManager::clear() {
-  components.clear();
 }
 
 } // namespace ecs

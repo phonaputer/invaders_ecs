@@ -12,8 +12,10 @@ include_directories(${GTEST_INCLUDE_DIRS} ${CMAKE_SOURCE_DIR}/src)
 
 add_executable(
   ${PROJECT_NAME}_tests
-  hello_world_test.cpp
 )
+
+add_subdirectory(framework)
+
 target_link_libraries(
   ${PROJECT_NAME}_tests
   ${PROJECT_NAME}_lib
