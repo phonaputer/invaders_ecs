@@ -1,5 +1,5 @@
 target_sources(
-  ${PROJECT_NAME}
+  ${PROJECT_NAME}_lib
   PRIVATE
   player.cpp
   test_scene.cpp
