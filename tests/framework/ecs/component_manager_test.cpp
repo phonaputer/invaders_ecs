@@ -12,7 +12,7 @@ struct TestComponentTwo {
     bool operator==(const TestComponentTwo &) const = default;
 };
 
-TEST(ComponentManager, GetWhenEntityComponentExistShouldReturnTheComponent) {
+TEST(ComponentManager, GetWhenEntityComponentExistsShouldReturnTheComponent) {
   auto cm = std::make_unique<ecs::ComponentManager>();
   ecs::Entity entity = 123;
   auto component = TestComponent{
@@ -25,21 +25,7 @@ TEST(ComponentManager, GetWhenEntityComponentExistShouldReturnTheComponent) {
   EXPECT_EQ(component, result);
 }
 
-TEST(ComponentManager, GetWhenEntityComponentDoesNotExistShouldThrowOutOfRangeError) {
-  auto cm = std::make_unique<ecs::ComponentManager>();
-  ecs::Entity entity = 123;
-
-  try {
-    cm->get<TestComponent>(entity);
-  } catch (const std::out_of_range &err) {
-    EXPECT_STREQ("unordered_map::at", err.what());
-    return;
-  }
-
-  FAIL() << "Expected an error";
-}
-
-TEST(ComponentManager, HasWhenNonSetEntityComponentShouldReturnFalse) {
+TEST(ComponentManager, HasWhenEntityComponentDoesNotExistShouldReturnFalse) {
   auto cm = std::make_unique<ecs::ComponentManager>();
   ecs::Entity entity = 123;
 
@@ -55,6 +41,29 @@ TEST(ComponentManager, HasWhenEntityHasAComponentButNotTheRequestedOneShouldRetu
   cm->set(entity, component);
 
   EXPECT_FALSE(cm->has<TestComponentTwo>(entity));
+}
+
+TEST(ComponentManager, HasWhenAnEntityHasTheComponentButNotTheRequestedEntityShouldReturnFalse) {
+  auto cm = std::make_unique<ecs::ComponentManager>();
+  ecs::Entity entityOne = 1;
+  auto component = TestComponent{
+      .id = 456,
+  };
+  cm->set(entityOne, component);
+  ecs::Entity entityTwo = 2;
+
+  EXPECT_FALSE(cm->has<TestComponent>(entityTwo));
+}
+
+TEST(ComponentManager, HasWhenEntityComponentDoesExistShouldReturnTrue) {
+  auto cm = std::make_unique<ecs::ComponentManager>();
+  ecs::Entity entity = 123;
+  auto component = TestComponent{
+      .id = 456,
+  };
+  cm->set(entity, component);
+
+  EXPECT_TRUE(cm->has<TestComponent>(entity));
 }
 
 TEST(ComponentManager, SetWhenEntityComponentDoesNotExistShouldInsertEntityComponent) {

@@ -3,6 +3,7 @@
 #include "framework/ecs/component_manager.hpp"
 #include "framework/ecs/entity.hpp"
 #include <any>
+#include <cassert>
 #include <typeindex>
 #include <unordered_map>
 
@@ -13,6 +14,9 @@ template <typename T> void ComponentManager::set(ecs::Entity entity, T component
 }
 
 template <typename T> T ComponentManager::get(ecs::Entity entity) const {
+  assert(components.contains(std::type_index(typeid(T))));
+  assert(components.at(std::type_index(typeid(T))).contains(entity));
+
   auto any_value = components.at(std::type_index(typeid(T))).at(entity);
 
   return std::any_cast<T>(any_value);
