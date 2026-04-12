@@ -2,6 +2,7 @@
 #include "framework/ecs/component_manager.hpp"
 #include "framework/ecs/entity.hpp"
 #include "framework/ecs/system.hpp"
+#include "framework/game/constants.hpp"
 #include "framework/game/player_input.hpp"
 #include "framework/game/player_input_manager.hpp"
 #include "framework/game/renderer.hpp"
@@ -31,11 +32,30 @@ void PlayerMovement::execute(ecs::ComponentManager &components) {
     auto position = components.get<components::Position>(entity);
     auto movement = components.get<components::PlayerMovement>(entity);
 
+    if (player_input_manager.is_engaged(game::PlayerInput::LEFT) &&
+        player_input_manager.is_engaged(game::PlayerInput::RIGHT)) {
+      return;
+    }
+
     if (player_input_manager.is_engaged(game::PlayerInput::LEFT)) {
-      position.x -= movement.x_speed;
+      auto new_x = position.x - movement.x_speed;
+      if (new_x < 0) {
+        new_x = 0;
+      }
+
+      position.x = new_x;
+
       components.set<components::Position>(entity, position);
-    } else if (player_input_manager.is_engaged(game::PlayerInput::RIGHT)) {
-      position.x += movement.x_speed;
+    }
+
+    if (player_input_manager.is_engaged(game::PlayerInput::RIGHT)) {
+      auto new_x = position.x + movement.x_speed;
+      if (new_x + movement.width > game::WINDOW_WIDTH) {
+        new_x = game::WINDOW_WIDTH - movement.width;
+      }
+
+      position.x = new_x;
+
       components.set<components::Position>(entity, position);
     }
   }

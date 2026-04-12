@@ -25,14 +25,15 @@ void add_player_entity(ecs::ECS &ecs) {
           .src_y = 0,
           .src_width = 16,
           .src_height = 16,
-          .dst_width = 50,
-          .dst_height = 50,
+          .dst_width = 16,
+          .dst_height = 16,
       }
   );
   ecs.components().set(
       entity,
       components::PlayerMovement{
-          .x_speed = 5,
+          .x_speed = 2,
+          .width = 16,
       }
   );
 

@@ -19,8 +19,8 @@ namespace game {
 const Uint64 MS_PER_UPDATE = 17;
 
 // FIXME - tweak this for web output
-const int ACTUAL_WINDOW_WIDTH = 720;
-const int ACTUAL_WINDOW_HEIGHT = 960;
+const int ACTUAL_WINDOW_WIDTH = 672;
+const int ACTUAL_WINDOW_HEIGHT = 864;
 
 Game::Game() {
   if (!SDL_Init(SDL_INIT_VIDEO)) {
