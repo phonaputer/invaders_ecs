@@ -1,5 +1,6 @@
 #include "gallia/systems/rendering.hpp"
 #include "framework/ecs/component_manager.hpp"
+#include "framework/ecs/ecs.hpp"
 #include "framework/ecs/entity.hpp"
 #include "framework/ecs/system.hpp"
 #include "framework/game/renderer.hpp"
@@ -30,10 +31,10 @@ void Rendering::add_entity_if_matches(ecs::Entity entity, ecs::ComponentManager 
 // * Handle non-static sprites
 // * Handle z index
 // * Unit tests
-void Rendering::execute(ecs::ComponentManager &entity_components) {
+void Rendering::execute(ecs::ECS &ecs) {
   for (const auto &entity : entities) {
-    auto position = entity_components.get<components::Position>(entity);
-    auto sprite_static = entity_components.get<components::SpriteStatic>(entity);
+    auto position = ecs.components().get<components::Position>(entity);
+    auto sprite_static = ecs.components().get<components::SpriteStatic>(entity);
 
     renderer.draw_image(
         game::DrawImageParams{

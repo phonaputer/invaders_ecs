@@ -2,6 +2,7 @@
 #include "framework/ecs/component_manager.hpp"
 #include "framework/ecs/ecs.hpp"
 #include "framework/ecs/entity.hpp"
+#include "framework/ecs/system.hpp"
 #include <memory>
 
 namespace ecs {
@@ -38,7 +39,7 @@ void DefaultECS::register_to_systems(Entity entity) {
   }
 }
 
-void DefaultECS::delete_from_systems(Entity entity) {
+void DefaultECS::delete_entity(Entity entity) {
   for (auto &system : update_systems) {
     system->remove_entity(entity);
   }
@@ -46,17 +47,19 @@ void DefaultECS::delete_from_systems(Entity entity) {
   for (auto &system : draw_systems) {
     system->remove_entity(entity);
   }
+
+  component_manager->delete_entity(entity);
 }
 
 void DefaultECS::update() {
   for (auto &system : update_systems) {
-    system->execute(*component_manager);
+    system->execute(*this);
   }
 }
 
 void DefaultECS::draw() {
   for (auto &system : draw_systems) {
-    system->execute(*component_manager);
+    system->execute(*this);
   }
 }
 

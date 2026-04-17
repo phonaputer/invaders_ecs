@@ -23,7 +23,7 @@ class DefaultECS : public ECS {
     void add_update_system(std::unique_ptr<System> system) override;
     void add_draw_system(std::unique_ptr<System> system) override;
     void register_to_systems(Entity entity) override;
-    void delete_from_systems(Entity entity) override;
+    void delete_entity(Entity entity) override;
     void update() override;
     void draw() override;
 };

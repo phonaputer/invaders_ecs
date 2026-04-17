@@ -7,3 +7,4 @@ AllowShortFunctionsOnASingleLine: None
 IndentAccessModifiers: true
 IndentCaseLabels: true
 PackConstructorInitializers: Never
+BreakBeforeBinaryOperators: All

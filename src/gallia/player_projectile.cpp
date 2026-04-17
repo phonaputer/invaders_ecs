@@ -1,32 +1,33 @@
-#include "gallia/player.hpp"
+#include "gallia/player_projectile.hpp"
+#include "core/point.hpp"
 #include "framework/ecs/ecs.hpp"
-#include "framework/game/constants.hpp"
-#include "gallia/components/player_movement.hpp"
+#include "framework/ecs/entity.hpp"
+#include "gallia/components/deletable.hpp"
 #include "gallia/components/position.hpp"
 #include "gallia/components/sprite_static.hpp"
+#include "gallia/components/velocity.hpp"
 
 namespace gallia {
 
-// TODO animations for driving & muzzle flash
-void add_player_entity(ecs::ECS &ecs) {
+ecs::Entity add_player_projectile_entity(ecs::ECS &ecs, core::Point starting_point) {
   auto entity = ecs.new_entity();
 
   ecs.components().set(
       entity,
       components::Position{
-          .x = game::WINDOW_WIDTH / 2 - 8,
-          .y = game::WINDOW_HEIGHT - 35,
+          .x = starting_point.x,
+          .y = starting_point.y,
           .w = 16,
           .h = 16,
-          .z = 100,
+          .z = 101,
       }
   );
   ecs.components().set(
       entity,
       components::SpriteStatic{
           .src_id = "invaders_spritesheet",
-          .src_x = 0,
-          .src_y = 32,
+          .src_x = 112,
+          .src_y = 16,
           .src_width = 16,
           .src_height = 16,
           .dst_width = 16,
@@ -35,17 +36,21 @@ void add_player_entity(ecs::ECS &ecs) {
   );
   ecs.components().set(
       entity,
-      components::PlayerMovement{
-          .x_speed = 2,
-          .ticks_per_shot = 7,
-          .shot_clock = 0,
-          .shot_offset_x = -2,
-          .shot_offset_y = -2,
-          .max_simultaneous_shots = 2,
+      components::Velocity{
+          .x = 0,
+          .y = -4,
+      }
+  );
+  ecs.components().set(
+      entity,
+      components::Deleteable{
+          .is_deleted = false,
       }
   );
 
   ecs.register_to_systems(entity);
+
+  return entity;
 }
 
 } // namespace gallia
