@@ -4,7 +4,7 @@
 #include "framework/ecs/entity.hpp"
 #include "gallia/components/deletable.hpp"
 #include "gallia/components/position.hpp"
-#include "gallia/components/sprite_static.hpp"
+#include "gallia/components/sprite.hpp"
 #include "gallia/components/velocity.hpp"
 
 namespace gallia {
@@ -24,7 +24,7 @@ ecs::Entity add_player_projectile_entity(ecs::ECS &ecs, core::Point starting_poi
   );
   ecs.components().set(
       entity,
-      components::SpriteStatic{
+      components::Sprite{
           .src_id = "invaders_spritesheet",
           .src_x = 112,
           .src_y = 16,

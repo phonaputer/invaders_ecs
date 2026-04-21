@@ -4,7 +4,7 @@
 
 namespace components {
 
-struct SpriteStatic {
+struct Sprite {
     std::string src_id;
     float src_x;
     float src_y;

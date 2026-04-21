@@ -1,9 +1,11 @@
 #include "gallia/player.hpp"
 #include "framework/ecs/ecs.hpp"
 #include "framework/game/constants.hpp"
+#include "gallia/components/animation.hpp"
 #include "gallia/components/player_movement.hpp"
 #include "gallia/components/position.hpp"
-#include "gallia/components/sprite_static.hpp"
+#include "gallia/components/sprite.hpp"
+#include <vector>
 
 namespace gallia {
 
@@ -23,7 +25,7 @@ void add_player_entity(ecs::ECS &ecs) {
   );
   ecs.components().set(
       entity,
-      components::SpriteStatic{
+      components::Sprite{
           .src_id = "invaders_spritesheet",
           .src_x = 0,
           .src_y = 32,
@@ -33,10 +35,22 @@ void add_player_entity(ecs::ECS &ecs) {
           .dst_height = 16,
       }
   );
+  std::vector<components::AnimationFrame> frames = {{0, 2}, {1, 2}, {2, 2}};
+  ecs.components().set(
+      entity,
+      components::Animation{
+          .playing = false,
+          .play_reversed = false,
+          .frames = std::move(frames),
+          .cur_frame = 0,
+          .ticks_per_frame = 6,
+          .tick_counter = 0,
+      }
+  );
   ecs.components().set(
       entity,
       components::PlayerMovement{
-          .x_speed = 2,
+          .x_speed = 1.5,
           .ticks_per_shot = 7,
           .shot_clock = 0,
           .shot_offset_x = -2,

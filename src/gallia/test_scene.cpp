@@ -3,6 +3,7 @@
 #include "framework/game/scene_initialization_context.hpp"
 #include "gallia/player.hpp"
 #include "gallia/player_projectile.hpp"
+#include "gallia/systems/animation.hpp"
 #include "gallia/systems/deletion.hpp"
 #include "gallia/systems/player_movement.hpp"
 #include "gallia/systems/rendering.hpp"
@@ -19,6 +20,7 @@ void TestScene::initialize(game::SceneInitializationContext ctx) {
   );
   ctx.ecs.add_update_system(std::make_unique<systems::Velocity>());
   ctx.ecs.add_update_system(std::make_unique<systems::Deletion>());
+  ctx.ecs.add_update_system(std::make_unique<systems::Animation>());
 
   add_player_entity(ctx.ecs);
 }

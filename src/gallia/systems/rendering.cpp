@@ -5,7 +5,7 @@
 #include "framework/ecs/system.hpp"
 #include "framework/game/renderer.hpp"
 #include "gallia/components/position.hpp"
-#include "gallia/components/sprite_static.hpp"
+#include "gallia/components/sprite.hpp"
 
 namespace systems {
 
@@ -22,7 +22,7 @@ void Rendering::add_entity_if_matches(ecs::Entity entity, ecs::ComponentManager 
     return;
   }
 
-  if (entity_components.has<components::SpriteStatic>(entity)) {
+  if (entity_components.has<components::Sprite>(entity)) {
     entities.insert(entity);
   }
 }
@@ -34,19 +34,19 @@ void Rendering::add_entity_if_matches(ecs::Entity entity, ecs::ComponentManager 
 void Rendering::execute(ecs::ECS &ecs) {
   for (const auto &entity : entities) {
     auto position = ecs.components().get<components::Position>(entity);
-    auto sprite_static = ecs.components().get<components::SpriteStatic>(entity);
+    auto sprite = ecs.components().get<components::Sprite>(entity);
 
     renderer.draw_image(
         game::DrawImageParams{
-            .src_id = sprite_static.src_id,
-            .src_x = sprite_static.src_x,
-            .src_y = sprite_static.src_y,
-            .src_width = sprite_static.src_width,
-            .src_height = sprite_static.src_height,
+            .src_id = sprite.src_id,
+            .src_x = sprite.src_x,
+            .src_y = sprite.src_y,
+            .src_width = sprite.src_width,
+            .src_height = sprite.src_height,
             .dst_x = position.x,
             .dst_y = position.y,
-            .dst_width = sprite_static.dst_width,
-            .dst_height = sprite_static.dst_height,
+            .dst_width = sprite.dst_width,
+            .dst_height = sprite.dst_height,
         }
     );
   }
