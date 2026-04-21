@@ -49,8 +49,10 @@ void PlayerMovement::execute(ecs::ECS &ecs) {
       if (new_x != position.x) {
         animation.playing = true;
         animation.play_reversed = true;
-        ecs.components().set(entity, animation);
+      } else {
+        animation.playing = false;
       }
+      ecs.components().set(entity, animation);
 
       position.x = new_x;
 
@@ -66,8 +68,10 @@ void PlayerMovement::execute(ecs::ECS &ecs) {
       if (new_x != position.x) {
         animation.playing = true;
         animation.play_reversed = false;
-        ecs.components().set(entity, animation);
+      } else {
+        animation.playing = false;
       }
+      ecs.components().set(entity, animation);
 
       position.x = new_x;
 

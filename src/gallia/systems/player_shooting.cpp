@@ -4,9 +4,9 @@
 #include "framework/ecs/ecs.hpp"
 #include "framework/ecs/entity.hpp"
 #include "framework/ecs/system.hpp"
-#include "framework/game/constants.hpp"
 #include "framework/game/player_input.hpp"
 #include "framework/game/player_input_manager.hpp"
+#include "gallia/components/deletable.hpp"
 #include "gallia/components/position.hpp"
 #include "gallia/systems/player_shooting.hpp"
 
@@ -14,10 +14,12 @@ namespace systems {
 
 PlayerShooting::PlayerShooting(
     game::PlayerInputManager &player_input_manager,
-    std::function<ecs::Entity(ecs::ECS &ecs, core::Point)> add_projectile
+    std::function<ecs::Entity(ecs::ECS &ecs, core::Point)> add_projectile,
+    std::function<void(ecs::ECS &, ecs::Entity)> add_muzzle_flash
 )
     : player_input_manager{player_input_manager},
-      add_projectile{add_projectile} {
+      add_projectile{add_projectile},
+      add_muzzle_flash{add_muzzle_flash} {
 }
 
 void PlayerShooting::remove_entity(ecs::Entity entity) {
@@ -39,9 +41,20 @@ void PlayerShooting::execute(ecs::ECS &ecs) {
       return !ecs.components().has<components::Position>(projectile);
     });
 
+    bool fire = false;
+
     if (player_input_manager.is_engaged(game::PlayerInput::FIRE)
         && active_projectiles.size() < shooting.max_simultaneous_shots
         && shooting.shot_clock >= shooting.ticks_per_shot) {
+      fire = true;
+      shooting.shot_clock = 0;
+    } else {
+      shooting.shot_clock++;
+    }
+
+    ecs.components().set(entity, shooting);
+
+    if (fire) {
       active_projectiles.insert(add_projectile(
           ecs,
           core::Point{
@@ -49,12 +62,7 @@ void PlayerShooting::execute(ecs::ECS &ecs) {
               .y = position.y - shooting.shot_offset_y,
           }
       ));
-
-      shooting.shot_clock = 0;
-      ecs.components().set(entity, shooting);
-    } else {
-      shooting.shot_clock++;
-      ecs.components().set(entity, shooting);
+      add_muzzle_flash(ecs, entity);
     }
   }
 }
