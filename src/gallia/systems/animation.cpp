@@ -34,9 +34,17 @@ void Animation::execute(ecs::ECS &ecs) {
       animation.tick_counter = 0;
       should_update_frame = true;
 
-      animation.cur_frame++;
-      if (animation.cur_frame >= animation.frames.size()) {
-        animation.cur_frame = 0;
+      if (animation.play_reversed) {
+        if (animation.cur_frame == 0) {
+          animation.cur_frame = animation.frames.size() - 1;
+        } else {
+          animation.cur_frame--;
+        }
+      } else {
+        animation.cur_frame++;
+        if (animation.cur_frame >= animation.frames.size()) {
+          animation.cur_frame = 0;
+        }
       }
     }
 

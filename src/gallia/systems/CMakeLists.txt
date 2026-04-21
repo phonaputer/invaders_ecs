@@ -4,6 +4,7 @@ target_sources(
   animation.cpp
   deletion.cpp
   player_movement.cpp
+  player_shooting.cpp
   rendering.cpp
   velocity.cpp
 )

@@ -3,6 +3,7 @@
 #include "framework/game/constants.hpp"
 #include "gallia/components/animation.hpp"
 #include "gallia/components/player_movement.hpp"
+#include "gallia/components/player_shooting.hpp"
 #include "gallia/components/position.hpp"
 #include "gallia/components/sprite.hpp"
 #include <vector>
@@ -43,14 +44,19 @@ void add_player_entity(ecs::ECS &ecs) {
           .play_reversed = false,
           .frames = std::move(frames),
           .cur_frame = 0,
-          .ticks_per_frame = 6,
+          .ticks_per_frame = 5,
           .tick_counter = 0,
       }
   );
   ecs.components().set(
       entity,
       components::PlayerMovement{
-          .x_speed = 1.5,
+          .x_speed = 1,
+      }
+  );
+  ecs.components().set(
+      entity,
+      components::PlayerShooting{
           .ticks_per_shot = 7,
           .shot_clock = 0,
           .shot_offset_x = -2,
