@@ -2,8 +2,8 @@
 #include "framework/ecs/ecs.hpp"
 #include "framework/game/constants.hpp"
 #include "gallia/components/animation.hpp"
-#include "gallia/components/player_movement.hpp"
-#include "gallia/components/player_shooting.hpp"
+#include "gallia/components/player/movement.hpp"
+#include "gallia/components/player/shooting.hpp"
 #include "gallia/components/position.hpp"
 #include "gallia/components/sprite.hpp"
 #include <vector>
@@ -50,13 +50,13 @@ void add_player_entity(ecs::ECS &ecs) {
   );
   ecs.components().set(
       entity,
-      components::PlayerMovement{
+      components::player::Movement{
           .x_speed = 1,
       }
   );
   ecs.components().set(
       entity,
-      components::PlayerShooting{
+      components::player::Shooting{
           .ticks_per_shot = 7,
           .shot_clock = 0,
           .shot_offset_x = -2,

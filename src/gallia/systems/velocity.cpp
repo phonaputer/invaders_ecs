@@ -32,8 +32,8 @@ void Velocity::execute(ecs::ECS &ecs) {
     ecs.components().set<components::Position>(entity, position);
 
     if (ecs.components().has<components::Deleteable>(entity)) {
-      if (position.x + position.w < 0 || position.x > game::WINDOW_WIDTH || position.y + position.h < 0 ||
-          position.y > game::WINDOW_HEIGHT) {
+      if (position.x + position.w < 0 || position.x > game::WINDOW_WIDTH || position.y + position.h < 0
+          || position.y > game::WINDOW_HEIGHT) {
         ecs.components().set(entity, components::Deleteable{.is_deleted = true});
       }
     }

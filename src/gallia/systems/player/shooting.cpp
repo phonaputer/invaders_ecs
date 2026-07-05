@@ -1,4 +1,4 @@
-#include "gallia/components/player_shooting.hpp"
+#include "gallia/systems/player/shooting.hpp"
 #include "core/point.hpp"
 #include "framework/ecs/component_manager.hpp"
 #include "framework/ecs/ecs.hpp"
@@ -7,12 +7,14 @@
 #include "framework/game/player_input.hpp"
 #include "framework/game/player_input_manager.hpp"
 #include "gallia/components/deletable.hpp"
+#include "gallia/components/player/shooting.hpp"
 #include "gallia/components/position.hpp"
-#include "gallia/systems/player_shooting.hpp"
+#include <functional>
+#include <set>
 
-namespace systems {
+namespace systems::player {
 
-PlayerShooting::PlayerShooting(
+Shooting::Shooting(
     game::PlayerInputManager &player_input_manager,
     std::function<ecs::Entity(ecs::ECS &ecs, core::Point)> add_projectile,
     std::function<void(ecs::ECS &, ecs::Entity)> add_muzzle_flash
@@ -22,20 +24,20 @@ PlayerShooting::PlayerShooting(
       add_muzzle_flash{add_muzzle_flash} {
 }
 
-void PlayerShooting::remove_entity(ecs::Entity entity) {
+void Shooting::remove_entity(ecs::Entity entity) {
   entities.erase(entity);
 }
 
-void PlayerShooting::add_entity_if_matches(ecs::Entity entity, ecs::ComponentManager &components) {
-  if (components.has<components::PlayerShooting>(entity) && components.has<components::Position>(entity)) {
+void Shooting::add_entity_if_matches(ecs::Entity entity, ecs::ComponentManager &components) {
+  if (components.has<components::player::Shooting>(entity) && components.has<components::Position>(entity)) {
     entities.insert(entity);
   }
 }
 
-void PlayerShooting::execute(ecs::ECS &ecs) {
+void Shooting::execute(ecs::ECS &ecs) {
   for (const auto &entity : entities) {
     auto position = ecs.components().get<components::Position>(entity);
-    auto shooting = ecs.components().get<components::PlayerShooting>(entity);
+    auto shooting = ecs.components().get<components::player::Shooting>(entity);
 
     std::erase_if(active_projectiles, [&ecs](ecs::Entity projectile) {
       return !ecs.components().has<components::Position>(projectile);
@@ -67,4 +69,4 @@ void PlayerShooting::execute(ecs::ECS &ecs) {
   }
 }
 
-} // namespace systems
+} // namespace systems::player

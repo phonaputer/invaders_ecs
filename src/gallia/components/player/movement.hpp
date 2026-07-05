@@ -1,8 +1,8 @@
 #pragma once
 
-namespace components {
+namespace components::player {
 
-struct PlayerMovement {
+struct Movement {
     float x_speed;
 };
 

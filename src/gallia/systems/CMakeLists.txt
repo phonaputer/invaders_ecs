@@ -4,9 +4,9 @@ target_sources(
   animation.cpp
   deletion.cpp
   lifetime.cpp
-  player_movement.cpp
-  player_shooting.cpp
   position_following.cpp
   rendering.cpp
   velocity.cpp
 )
+
+add_subdirectory(player)

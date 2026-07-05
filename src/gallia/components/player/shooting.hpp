@@ -1,8 +1,8 @@
 #pragma once
 
-namespace components {
+namespace components::player {
 
-struct PlayerShooting {
+struct Shooting {
     int ticks_per_shot;
     int shot_clock;
     float shot_offset_x;
