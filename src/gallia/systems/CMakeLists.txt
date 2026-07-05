@@ -9,4 +9,5 @@ target_sources(
   velocity.cpp
 )
 
+add_subdirectory(invaders)
 add_subdirectory(player)

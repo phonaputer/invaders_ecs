@@ -10,7 +10,6 @@
 
 namespace gallia {
 
-// TODO animations for driving & muzzle flash
 void add_player_entity(ecs::ECS &ecs) {
   auto entity = ecs.new_entity();
 
