@@ -12,10 +12,10 @@ namespace systems::invaders {
 class Orchestration : public ecs::System {
   private:
     static constexpr int BASE_TICKS_PER_MOVE = 58;
-    static constexpr float X_SPEED = 8;
-    static constexpr float Y_SPEED = 8;
-    static constexpr float LEFT_MOVEMENT_BOUNDARY = 16;
-    static constexpr float RIGHT_MOVEMENT_BOUNDARY = game::WINDOW_WIDTH - 16;
+    static constexpr float X_SPEED = 5;
+    static constexpr float Y_SPEED = 5;
+    static constexpr float LEFT_MOVEMENT_BOUNDARY = 0;
+    static constexpr float RIGHT_MOVEMENT_BOUNDARY = game::WINDOW_WIDTH;
 
     bool move_right = true;
     int tick_counter = 0;

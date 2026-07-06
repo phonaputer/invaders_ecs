@@ -47,6 +47,10 @@ void Orchestration::execute(ecs::ECS &ecs) {
     return; // TODO rerack
   }
 
+  if (should_move_down) {
+    move_right = !move_right;
+  }
+
   for (const auto &entity : active_entities_this_tick) {
     move(ecs, entity, should_move_down);
     animate(ecs, entity);
@@ -65,7 +69,15 @@ bool Orchestration::should_move_this_tick() {
 
 bool Orchestration::did_hit_wall(ecs::ECS &ecs, ecs::Entity entity) {
   auto position = ecs.components().get<components::Position>(entity);
-  if (position.x + position.w >= RIGHT_MOVEMENT_BOUNDARY || position.x < LEFT_MOVEMENT_BOUNDARY) {
+
+  auto delta_x = X_SPEED;
+  if (!move_right) {
+    delta_x = -delta_x;
+  }
+
+  auto new_x = position.x + delta_x;
+
+  if (new_x + position.w >= RIGHT_MOVEMENT_BOUNDARY || new_x < LEFT_MOVEMENT_BOUNDARY) {
     return true;
   }
 
@@ -75,18 +87,17 @@ bool Orchestration::did_hit_wall(ecs::ECS &ecs, ecs::Entity entity) {
 void Orchestration::move(ecs::ECS &ecs, ecs::Entity entity, bool move_down) {
   auto position = ecs.components().get<components::Position>(entity);
 
+  auto delta_x = X_SPEED;
+  if (!move_right) {
+    delta_x = -delta_x;
+  }
+
   if (move_down) {
-    move_right = !move_right;
     position.y += Y_SPEED;
     // TODO hit floor check
   }
 
-  auto x_diff = X_SPEED;
-  if (!move_right) {
-    x_diff = -x_diff;
-  }
-
-  position.x += x_diff;
+  position.x += delta_x;
 
   ecs.components().set(entity, position);
 }
