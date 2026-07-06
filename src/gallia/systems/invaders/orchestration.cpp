@@ -3,7 +3,6 @@
 #include "framework/ecs/ecs.hpp"
 #include "framework/ecs/entity.hpp"
 #include "framework/ecs/system.hpp"
-#include "framework/game/constants.hpp"
 #include "framework/game/player_input_manager.hpp"
 #include "gallia/components/invaders/enabled.hpp"
 #include "gallia/components/invaders/step_animation.hpp"
@@ -27,19 +26,12 @@ void Orchestration::add_entity_if_matches(ecs::Entity entity, ecs::ComponentMana
 }
 
 void Orchestration::execute(ecs::ECS &ecs) {
-  bool should_move = false;
-  tick_counter++;
-  if (tick_counter > BASE_TICKS_PER_MOVE) {
-    should_move = true;
-    tick_counter = 0;
-  }
-
-  if (!should_move) {
+  if (!should_move_this_tick()) {
     return;
   }
 
-  bool hit_wall = false;
-  std::set<ecs::Entity> active_entities;
+  bool should_move_down = false;
+  active_entities_this_tick.clear();
 
   for (const auto &entity : entities) {
     auto enabled = ecs.components().get<components::invaders::Enabled>(entity);
@@ -47,57 +39,76 @@ void Orchestration::execute(ecs::ECS &ecs) {
       continue;
     }
 
-    active_entities.insert(entity);
-
-    auto position = ecs.components().get<components::Position>(entity);
-    if (position.x + position.w >= game::WINDOW_WIDTH - 16 || position.x < 16) {
-      hit_wall = true;
-    }
+    active_entities_this_tick.insert(entity);
+    should_move_down = should_move_down || did_hit_wall(ecs, entity);
   }
 
-  if (active_entities.size() < 1) {
+  if (active_entities_this_tick.size() < 1) {
     return; // TODO rerack
   }
 
-  if (hit_wall) {
+  for (const auto &entity : active_entities_this_tick) {
+    move(ecs, entity, should_move_down);
+    animate(ecs, entity);
+  }
+}
+
+bool Orchestration::should_move_this_tick() {
+  tick_counter++;
+  if (tick_counter > BASE_TICKS_PER_MOVE) {
+    tick_counter = 0;
+    return true;
+  }
+
+  return false;
+}
+
+bool Orchestration::did_hit_wall(ecs::ECS &ecs, ecs::Entity entity) {
+  auto position = ecs.components().get<components::Position>(entity);
+  if (position.x + position.w >= RIGHT_MOVEMENT_BOUNDARY || position.x < LEFT_MOVEMENT_BOUNDARY) {
+    return true;
+  }
+
+  return false;
+}
+
+void Orchestration::move(ecs::ECS &ecs, ecs::Entity entity, bool move_down) {
+  auto position = ecs.components().get<components::Position>(entity);
+
+  if (move_down) {
     move_right = !move_right;
+    position.y += Y_SPEED;
+    // TODO hit floor check
   }
 
-  for (const auto &entity : active_entities) {
-    auto position = ecs.components().get<components::Position>(entity);
-
-    if (hit_wall) {
-      position.y += Y_SPEED;
-      // TODO hit floor check
-    }
-
-    auto x_diff = X_SPEED;
-    if (!move_right) {
-      x_diff = -x_diff;
-    }
-
-    position.x += x_diff;
-
-    ecs.components().set(entity, position);
-
-    auto animation = ecs.components().get<components::invaders::StepAnimation>(entity);
-
-    animation.cur_frame++;
-    if (animation.cur_frame >= animation.frames.size()) {
-      animation.cur_frame = 0;
-    }
-
-    ecs.components().set(entity, animation);
-
-    auto sprite = ecs.components().get<components::Sprite>(entity);
-
-    auto frame = animation.frames.at(animation.cur_frame);
-
-    sprite.src_x = frame.x * sprite.src_width;
-    sprite.src_y = frame.y * sprite.src_height;
-
-    ecs.components().set(entity, sprite);
+  auto x_diff = X_SPEED;
+  if (!move_right) {
+    x_diff = -x_diff;
   }
+
+  position.x += x_diff;
+
+  ecs.components().set(entity, position);
+}
+
+void Orchestration::animate(ecs::ECS &ecs, ecs::Entity entity) {
+  auto animation = ecs.components().get<components::invaders::StepAnimation>(entity);
+
+  animation.cur_frame++;
+  if (animation.cur_frame >= animation.frames.size()) {
+    animation.cur_frame = 0;
+  }
+
+  ecs.components().set(entity, animation);
+
+  auto sprite = ecs.components().get<components::Sprite>(entity);
+
+  auto frame = animation.frames.at(animation.cur_frame);
+
+  sprite.src_x = frame.x * sprite.src_width;
+  sprite.src_y = frame.y * sprite.src_height;
+
+  ecs.components().set(entity, sprite);
 }
 
 } // namespace systems::invaders
