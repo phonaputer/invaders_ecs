@@ -28,6 +28,13 @@ void CollisionDetection::execute(ecs::ECS &ecs) {
     }
   }
 
+  for (const auto &entity : active_entities_this_tick) {
+    auto col = ecs.components().get<components::Collision>(entity);
+    col.hit_something_this_tick = false;
+    col.type_of_what_i_hit = "";
+    ecs.components().set(entity, col);
+  }
+
   for (size_t l = 0; l < active_entities_this_tick.size(); l++) {
     auto left_entity = active_entities_this_tick.at(l);
 
@@ -45,7 +52,7 @@ void CollisionDetection::execute(ecs::ECS &ecs) {
     };
 
     for (size_t r = l + 1; r < active_entities_this_tick.size(); r++) {
-      auto right_entity = active_entities_this_tick.at(l);
+      auto right_entity = active_entities_this_tick.at(r);
       auto right_collision = ecs.components().get<components::Collision>(right_entity);
       if (right_collision.hit_something_this_tick) {
         continue;
@@ -67,6 +74,7 @@ void CollisionDetection::execute(ecs::ECS &ecs) {
         right_collision.hit_something_this_tick = true;
         right_collision.type_of_what_i_hit = left_collision.type;
         ecs.components().set(right_entity, right_collision);
+        break;
       }
     }
   }
