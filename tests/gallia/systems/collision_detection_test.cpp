@@ -22,7 +22,8 @@ TestSetup setupTest() {
   };
 }
 
-ecs::Entity createEntityWithHitbox(ecs::ECS &ecs, float x, float y, float w, float h, std::string type) {
+ecs::Entity
+createEntityWithHitbox(ecs::ECS &ecs, float x, float y, float w, float h, components::collision::Type type) {
   auto e = ecs.new_entity();
   ecs.components().set(e, components::Position{.x = x, .y = y, .w = 1, .h = 1, .z = 100});
   ecs.components().set(
@@ -35,18 +36,25 @@ ecs::Entity createEntityWithHitbox(ecs::ECS &ecs, float x, float y, float w, flo
           .hitbox_w = w,
           .hitbox_h = h,
           .hit_something_this_tick = false,
-          .type_of_what_i_hit = "",
+          .who_i_hit = 0,
+          .type_of_who_i_hit = components::collision::Type::Unspecified,
       }
   );
 
   return e;
 }
 
-void assertHit(ecs::ECS &ecs, ecs::Entity entity, std::string what_i_hit) {
-  auto collision = ecs.components().get<components::Collision>(entity);
+void assertHitEachOther(ecs::ECS &ecs, ecs::Entity left, ecs::Entity right) {
+  auto left_collision = ecs.components().get<components::Collision>(left);
+  auto right_collision = ecs.components().get<components::Collision>(right);
 
-  EXPECT_TRUE(collision.hit_something_this_tick);
-  EXPECT_EQ(what_i_hit, collision.type_of_what_i_hit);
+  EXPECT_TRUE(left_collision.hit_something_this_tick);
+  EXPECT_EQ(right, left_collision.who_i_hit);
+  EXPECT_EQ(right_collision.type, left_collision.type_of_who_i_hit);
+
+  EXPECT_TRUE(right_collision.hit_something_this_tick);
+  EXPECT_EQ(left, right_collision.who_i_hit);
+  EXPECT_EQ(left_collision.type, right_collision.type_of_who_i_hit);
 }
 
 void assertHitNothing(ecs::ECS &ecs, ecs::Entity entity) {
@@ -57,100 +65,93 @@ void assertHitNothing(ecs::ECS &ecs, ecs::Entity entity) {
 
 TEST(ComponentManager, ExecuteEntitiesExactlyOnTopOfEachOtherShouldMarkThemAsHavingCollided) {
   TestSetup setup = setupTest();
-  auto entity_one = createEntityWithHitbox(*setup.ecs, 1, 1, 1, 1, "thing1");
+  auto entity_one = createEntityWithHitbox(*setup.ecs, 1, 1, 1, 1, components::collision::Type::Player);
   setup.system.add_entity_if_matches(entity_one, setup.ecs->components());
-  auto entity_two = createEntityWithHitbox(*setup.ecs, 1, 1, 1, 1, "thing2");
+  auto entity_two = createEntityWithHitbox(*setup.ecs, 1, 1, 1, 1, components::collision::Type::Alien);
   setup.system.add_entity_if_matches(entity_two, setup.ecs->components());
 
   setup.system.execute(*setup.ecs);
 
-  assertHit(*setup.ecs, entity_one, "thing2");
-  assertHit(*setup.ecs, entity_two, "thing1");
+  assertHitEachOther(*setup.ecs, entity_one, entity_two);
 }
 
 TEST(ComponentManager, ExecuteWhenOneEntityWithinAnotherShouldMarkThemAsHavingCollided) {
   TestSetup setup = setupTest();
-  auto entity_one = createEntityWithHitbox(*setup.ecs, 1, 1, 1, 1, "thing1");
+  auto entity_one = createEntityWithHitbox(*setup.ecs, 1, 1, 1, 1, components::collision::Type::Player);
   setup.system.add_entity_if_matches(entity_one, setup.ecs->components());
-  auto entity_two = createEntityWithHitbox(*setup.ecs, 0, 0, 3, 3, "thing2");
+  auto entity_two = createEntityWithHitbox(*setup.ecs, 0, 0, 3, 3, components::collision::Type::Alien);
   setup.system.add_entity_if_matches(entity_two, setup.ecs->components());
 
   setup.system.execute(*setup.ecs);
 
-  assertHit(*setup.ecs, entity_one, "thing2");
-  assertHit(*setup.ecs, entity_two, "thing1");
+  assertHitEachOther(*setup.ecs, entity_one, entity_two);
 }
 
 TEST(ComponentManager, ExecuteWhenOneEntityThroughBottomOfAnotherShouldMarkThemAsHavingCollided) {
   TestSetup setup = setupTest();
-  auto entity_one = createEntityWithHitbox(*setup.ecs, 1, 1, 1, 3, "thing1");
+  auto entity_one = createEntityWithHitbox(*setup.ecs, 1, 1, 1, 3, components::collision::Type::Player);
   setup.system.add_entity_if_matches(entity_one, setup.ecs->components());
-  auto entity_two = createEntityWithHitbox(*setup.ecs, 2, 2, 3, 3, "thing2");
+  auto entity_two = createEntityWithHitbox(*setup.ecs, 2, 2, 3, 3, components::collision::Type::Alien);
   setup.system.add_entity_if_matches(entity_two, setup.ecs->components());
 
   setup.system.execute(*setup.ecs);
 
-  assertHit(*setup.ecs, entity_one, "thing2");
-  assertHit(*setup.ecs, entity_two, "thing1");
+  assertHitEachOther(*setup.ecs, entity_one, entity_two);
 }
 
 TEST(ComponentManager, ExecuteWhenOneEntityThroughTopOfAnotherShouldMarkThemAsHavingCollided) {
   TestSetup setup = setupTest();
-  auto entity_one = createEntityWithHitbox(*setup.ecs, 1, 3, 1, 2, "thing1");
+  auto entity_one = createEntityWithHitbox(*setup.ecs, 1, 3, 1, 2, components::collision::Type::Player);
   setup.system.add_entity_if_matches(entity_one, setup.ecs->components());
-  auto entity_two = createEntityWithHitbox(*setup.ecs, 1, 1, 3, 3, "thing2");
+  auto entity_two = createEntityWithHitbox(*setup.ecs, 1, 1, 3, 3, components::collision::Type::Alien);
   setup.system.add_entity_if_matches(entity_two, setup.ecs->components());
 
   setup.system.execute(*setup.ecs);
 
-  assertHit(*setup.ecs, entity_one, "thing2");
-  assertHit(*setup.ecs, entity_two, "thing1");
+  assertHitEachOther(*setup.ecs, entity_one, entity_two);
 }
 
 TEST(ComponentManager, ExecuteWhenOneEntityThroughLeftOfAnotherShouldMarkThemAsHavingCollided) {
   TestSetup setup = setupTest();
-  auto entity_one = createEntityWithHitbox(*setup.ecs, 0, 2, 2, 1, "thing1");
+  auto entity_one = createEntityWithHitbox(*setup.ecs, 0, 2, 2, 1, components::collision::Type::Player);
   setup.system.add_entity_if_matches(entity_one, setup.ecs->components());
-  auto entity_two = createEntityWithHitbox(*setup.ecs, 1, 1, 3, 3, "thing2");
+  auto entity_two = createEntityWithHitbox(*setup.ecs, 1, 1, 3, 3, components::collision::Type::Alien);
   setup.system.add_entity_if_matches(entity_two, setup.ecs->components());
 
   setup.system.execute(*setup.ecs);
 
-  assertHit(*setup.ecs, entity_one, "thing2");
-  assertHit(*setup.ecs, entity_two, "thing1");
+  assertHitEachOther(*setup.ecs, entity_one, entity_two);
 }
 
 TEST(ComponentManager, ExecuteWhenOneEntityThroughRightOfAnotherShouldMarkThemAsHavingCollided) {
   TestSetup setup = setupTest();
-  auto entity_one = createEntityWithHitbox(*setup.ecs, 3, 2, 2, 1, "thing1");
+  auto entity_one = createEntityWithHitbox(*setup.ecs, 3, 2, 2, 1, components::collision::Type::Player);
   setup.system.add_entity_if_matches(entity_one, setup.ecs->components());
-  auto entity_two = createEntityWithHitbox(*setup.ecs, 1, 1, 3, 3, "thing2");
+  auto entity_two = createEntityWithHitbox(*setup.ecs, 1, 1, 3, 3, components::collision::Type::Alien);
   setup.system.add_entity_if_matches(entity_two, setup.ecs->components());
 
   setup.system.execute(*setup.ecs);
 
-  assertHit(*setup.ecs, entity_one, "thing2");
-  assertHit(*setup.ecs, entity_two, "thing1");
+  assertHitEachOther(*setup.ecs, entity_one, entity_two);
 }
 
 TEST(ComponentManager, ExecuteWhenEntitiesBarelyTouchingShouldMarkThemAsHavingCollided) {
   TestSetup setup = setupTest();
-  auto entity_one = createEntityWithHitbox(*setup.ecs, 0, 0, 1, 1, "thing1");
+  auto entity_one = createEntityWithHitbox(*setup.ecs, 0, 0, 1, 1, components::collision::Type::Player);
   setup.system.add_entity_if_matches(entity_one, setup.ecs->components());
-  auto entity_two = createEntityWithHitbox(*setup.ecs, 1, 1, 3, 3, "thing2");
+  auto entity_two = createEntityWithHitbox(*setup.ecs, 1, 1, 3, 3, components::collision::Type::Alien);
   setup.system.add_entity_if_matches(entity_two, setup.ecs->components());
 
   setup.system.execute(*setup.ecs);
 
-  assertHit(*setup.ecs, entity_one, "thing2");
-  assertHit(*setup.ecs, entity_two, "thing1");
+  assertHitEachOther(*setup.ecs, entity_one, entity_two);
 }
 
 TEST(ComponentManager, ExecuteWhenEntityAboveOtherShouldNOTMarkThemAsHavingCollided) {
   TestSetup setup = setupTest();
-  auto entity_one = createEntityWithHitbox(*setup.ecs, 2, 5, 1, 1, "thing1");
+  auto entity_one = createEntityWithHitbox(*setup.ecs, 2, 5, 1, 1, components::collision::Type::Player);
   setup.system.add_entity_if_matches(entity_one, setup.ecs->components());
-  auto entity_two = createEntityWithHitbox(*setup.ecs, 1, 1, 3, 3, "thing2");
+  auto entity_two = createEntityWithHitbox(*setup.ecs, 1, 1, 3, 3, components::collision::Type::Alien);
   setup.system.add_entity_if_matches(entity_two, setup.ecs->components());
 
   setup.system.execute(*setup.ecs);
@@ -161,9 +162,9 @@ TEST(ComponentManager, ExecuteWhenEntityAboveOtherShouldNOTMarkThemAsHavingColli
 
 TEST(ComponentManager, ExecuteWhenEntityBelowOtherShouldNOTMarkThemAsHavingCollided) {
   TestSetup setup = setupTest();
-  auto entity_one = createEntityWithHitbox(*setup.ecs, 2, -1, 1, 1, "thing1");
+  auto entity_one = createEntityWithHitbox(*setup.ecs, 2, -1, 1, 1, components::collision::Type::Player);
   setup.system.add_entity_if_matches(entity_one, setup.ecs->components());
-  auto entity_two = createEntityWithHitbox(*setup.ecs, 1, 1, 3, 3, "thing2");
+  auto entity_two = createEntityWithHitbox(*setup.ecs, 1, 1, 3, 3, components::collision::Type::Alien);
   setup.system.add_entity_if_matches(entity_two, setup.ecs->components());
 
   setup.system.execute(*setup.ecs);
@@ -174,9 +175,9 @@ TEST(ComponentManager, ExecuteWhenEntityBelowOtherShouldNOTMarkThemAsHavingColli
 
 TEST(ComponentManager, ExecuteWhenEntityRightOfOtherShouldNOTMarkThemAsHavingCollided) {
   TestSetup setup = setupTest();
-  auto entity_one = createEntityWithHitbox(*setup.ecs, 5, 2, 1, 1, "thing1");
+  auto entity_one = createEntityWithHitbox(*setup.ecs, 5, 2, 1, 1, components::collision::Type::Player);
   setup.system.add_entity_if_matches(entity_one, setup.ecs->components());
-  auto entity_two = createEntityWithHitbox(*setup.ecs, 1, 1, 3, 3, "thing2");
+  auto entity_two = createEntityWithHitbox(*setup.ecs, 1, 1, 3, 3, components::collision::Type::Alien);
   setup.system.add_entity_if_matches(entity_two, setup.ecs->components());
 
   setup.system.execute(*setup.ecs);
@@ -187,9 +188,9 @@ TEST(ComponentManager, ExecuteWhenEntityRightOfOtherShouldNOTMarkThemAsHavingCol
 
 TEST(ComponentManager, ExecuteWhenEntityLeftOfOtherShouldNOTMarkThemAsHavingCollided) {
   TestSetup setup = setupTest();
-  auto entity_one = createEntityWithHitbox(*setup.ecs, -1, 2, 1, 1, "thing1");
+  auto entity_one = createEntityWithHitbox(*setup.ecs, -1, 2, 1, 1, components::collision::Type::Player);
   setup.system.add_entity_if_matches(entity_one, setup.ecs->components());
-  auto entity_two = createEntityWithHitbox(*setup.ecs, 1, 1, 3, 3, "thing2");
+  auto entity_two = createEntityWithHitbox(*setup.ecs, 1, 1, 3, 3, components::collision::Type::Alien);
   setup.system.add_entity_if_matches(entity_two, setup.ecs->components());
 
   setup.system.execute(*setup.ecs);
@@ -200,59 +201,57 @@ TEST(ComponentManager, ExecuteWhenEntityLeftOfOtherShouldNOTMarkThemAsHavingColl
 
 TEST(ComponentManager, ExecuteMultipleEntitiesTouchingOneEntityShouldMarkOnlyOneOfThemAsHavingHitIt) {
   TestSetup setup = setupTest();
-  auto entity_one = createEntityWithHitbox(*setup.ecs, 1, 1, 3, 3, "thing1");
+  auto entity_one = createEntityWithHitbox(*setup.ecs, 1, 1, 3, 3, components::collision::Type::Player);
   setup.system.add_entity_if_matches(entity_one, setup.ecs->components());
-  auto entity_two = createEntityWithHitbox(*setup.ecs, 3, 3, 1, 1, "thing2");
+  auto entity_two = createEntityWithHitbox(*setup.ecs, 3, 3, 1, 1, components::collision::Type::Alien);
   setup.system.add_entity_if_matches(entity_two, setup.ecs->components());
-  auto entity_three = createEntityWithHitbox(*setup.ecs, 1, 1, 1, 1, "thing3");
+  auto entity_three = createEntityWithHitbox(*setup.ecs, 1, 1, 1, 1, components::collision::Type::PlayerProjectile);
   setup.system.add_entity_if_matches(entity_two, setup.ecs->components());
-  auto entity_four = createEntityWithHitbox(*setup.ecs, 1, 3, 1, 1, "thing4");
+  auto entity_four = createEntityWithHitbox(*setup.ecs, 1, 3, 1, 1, components::collision::Type::AlienProjectile);
   setup.system.add_entity_if_matches(entity_two, setup.ecs->components());
 
   setup.system.execute(*setup.ecs);
 
-  assertHit(*setup.ecs, entity_one, "thing2");
-  assertHit(*setup.ecs, entity_two, "thing1");
+  assertHitEachOther(*setup.ecs, entity_one, entity_two);
   assertHitNothing(*setup.ecs, entity_three);
   assertHitNothing(*setup.ecs, entity_four);
 }
 
 TEST(ComponentManager, ExecuteMultipleHitsInOneFrameShouldMarkAllOfThem) {
   TestSetup setup = setupTest();
-  auto entity_one = createEntityWithHitbox(*setup.ecs, 1, 1, 1, 1, "thing1");
+  auto entity_one = createEntityWithHitbox(*setup.ecs, 1, 1, 1, 1, components::collision::Type::Player);
   setup.system.add_entity_if_matches(entity_one, setup.ecs->components());
-  auto entity_two = createEntityWithHitbox(*setup.ecs, 1, 1, 1, 1, "thing2");
+  auto entity_two = createEntityWithHitbox(*setup.ecs, 1, 1, 1, 1, components::collision::Type::Alien);
   setup.system.add_entity_if_matches(entity_two, setup.ecs->components());
-  auto entity_three = createEntityWithHitbox(*setup.ecs, 1, 1, 1, 1, "thing3");
+  auto entity_three = createEntityWithHitbox(*setup.ecs, 1, 1, 1, 1, components::collision::Type::PlayerProjectile);
   setup.system.add_entity_if_matches(entity_three, setup.ecs->components());
-  auto entity_threehalf = createEntityWithHitbox(*setup.ecs, 100, 100, 1, 1, "thing3.5");
+  auto entity_threehalf
+      = createEntityWithHitbox(*setup.ecs, 100, 100, 1, 1, components::collision::Type::AlienProjectile);
   setup.system.add_entity_if_matches(entity_threehalf, setup.ecs->components());
-  auto entity_four = createEntityWithHitbox(*setup.ecs, 1, 1, 1, 1, "thing4");
+  auto entity_four = createEntityWithHitbox(*setup.ecs, 1, 1, 1, 1, components::collision::Type::Fortress);
   setup.system.add_entity_if_matches(entity_four, setup.ecs->components());
-  auto entity_five = createEntityWithHitbox(*setup.ecs, 3, 3, 3, 3, "thing5");
+  auto entity_five = createEntityWithHitbox(*setup.ecs, 3, 3, 3, 3, components::collision::Type::Fortress);
   setup.system.add_entity_if_matches(entity_five, setup.ecs->components());
-  auto entity_six = createEntityWithHitbox(*setup.ecs, 4, 4, 1, 1, "thing6");
+  auto entity_six = createEntityWithHitbox(*setup.ecs, 4, 4, 1, 1, components::collision::Type::Fortress);
   setup.system.add_entity_if_matches(entity_six, setup.ecs->components());
 
   setup.system.execute(*setup.ecs);
 
-  assertHit(*setup.ecs, entity_one, "thing2");
-  assertHit(*setup.ecs, entity_two, "thing1");
-  assertHit(*setup.ecs, entity_three, "thing4");
+  assertHitEachOther(*setup.ecs, entity_one, entity_two);
+  assertHitEachOther(*setup.ecs, entity_three, entity_four);
+  assertHitEachOther(*setup.ecs, entity_five, entity_six);
   assertHitNothing(*setup.ecs, entity_threehalf);
-  assertHit(*setup.ecs, entity_four, "thing3");
-  assertHit(*setup.ecs, entity_five, "thing6");
-  assertHit(*setup.ecs, entity_six, "thing5");
 }
 
 TEST(ComponentManager, ExecuteEntityHitSomethingOnPreviousTickButNotThisTickShouldNOTBeMarkedAsHittingAnything) {
   TestSetup setup = setupTest();
 
-  auto entity_one = createEntityWithHitbox(*setup.ecs, 1, 1, 1, 1, "thing1");
+  auto entity_one = createEntityWithHitbox(*setup.ecs, 1, 1, 1, 1, components::collision::Type::Player);
   setup.system.add_entity_if_matches(entity_one, setup.ecs->components());
   auto e1_col = setup.ecs->components().get<components::Collision>(entity_one);
   e1_col.hit_something_this_tick = true;
-  e1_col.type_of_what_i_hit = "test123";
+  e1_col.type_of_who_i_hit = components::collision::Type::PlayerProjectile;
+  e1_col.who_i_hit = 100;
   setup.ecs->components().set(entity_one, e1_col);
 
   setup.system.execute(*setup.ecs);
@@ -263,13 +262,13 @@ TEST(ComponentManager, ExecuteEntityHitSomethingOnPreviousTickButNotThisTickShou
 TEST(ComponentManager, ExecuteWhenEntityNotActiveShouldNOTBeIncludedInCollisionChecks) {
   TestSetup setup = setupTest();
 
-  auto entity_one = createEntityWithHitbox(*setup.ecs, 1, 1, 1, 1, "thing1");
+  auto entity_one = createEntityWithHitbox(*setup.ecs, 1, 1, 1, 1, components::collision::Type::Player);
   setup.system.add_entity_if_matches(entity_one, setup.ecs->components());
   auto e1_col = setup.ecs->components().get<components::Collision>(entity_one);
   e1_col.active = false;
   setup.ecs->components().set(entity_one, e1_col);
 
-  auto entity_two = createEntityWithHitbox(*setup.ecs, 1, 1, 1, 1, "thing2");
+  auto entity_two = createEntityWithHitbox(*setup.ecs, 1, 1, 1, 1, components::collision::Type::Alien);
   setup.system.add_entity_if_matches(entity_two, setup.ecs->components());
 
   setup.system.execute(*setup.ecs);
@@ -281,12 +280,11 @@ TEST(ComponentManager, ExecuteWhenEntityNotActiveShouldNOTBeIncludedInCollisionC
 TEST(ComponentManager, RemoveEntityWhenEntityRemovedShouldNOTBeIncludedInCollisionChecks) {
   TestSetup setup = setupTest();
 
-  auto entity_one = createEntityWithHitbox(*setup.ecs, 1, 1, 1, 1, "thing1");
+  auto entity_one = createEntityWithHitbox(*setup.ecs, 1, 1, 1, 1, components::collision::Type::Player);
   setup.system.add_entity_if_matches(entity_one, setup.ecs->components());
-  auto e1_col = setup.ecs->components().get<components::Collision>(entity_one);
   setup.system.remove_entity(entity_one);
 
-  auto entity_two = createEntityWithHitbox(*setup.ecs, 1, 1, 1, 1, "thing2");
+  auto entity_two = createEntityWithHitbox(*setup.ecs, 1, 1, 1, 1, components::collision::Type::Alien);
   setup.system.add_entity_if_matches(entity_two, setup.ecs->components());
 
   setup.system.execute(*setup.ecs);

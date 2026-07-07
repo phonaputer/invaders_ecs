@@ -31,7 +31,8 @@ void CollisionDetection::execute(ecs::ECS &ecs) {
   for (const auto &entity : active_entities_this_tick) {
     auto col = ecs.components().get<components::Collision>(entity);
     col.hit_something_this_tick = false;
-    col.type_of_what_i_hit = "";
+    col.type_of_who_i_hit = components::collision::Type::Unspecified;
+    col.who_i_hit = 0;
     ecs.components().set(entity, col);
   }
 
@@ -68,11 +69,13 @@ void CollisionDetection::execute(ecs::ECS &ecs) {
 
       if (are_touching(left_hitbox, right_hitbox)) {
         left_collision.hit_something_this_tick = true;
-        left_collision.type_of_what_i_hit = right_collision.type;
+        left_collision.type_of_who_i_hit = right_collision.type;
+        left_collision.who_i_hit = right_entity;
         ecs.components().set(left_entity, left_collision);
 
         right_collision.hit_something_this_tick = true;
-        right_collision.type_of_what_i_hit = left_collision.type;
+        right_collision.type_of_who_i_hit = left_collision.type;
+        right_collision.who_i_hit = left_entity;
         ecs.components().set(right_entity, right_collision);
         break;
       }
