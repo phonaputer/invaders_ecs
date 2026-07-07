@@ -6,6 +6,7 @@
 #include "gallia/components/collision.hpp"
 #include "gallia/components/deletable.hpp"
 #include "gallia/components/lifetime.hpp"
+#include "gallia/components/player/is_projectile.hpp"
 #include "gallia/components/position.hpp"
 #include "gallia/components/position_following.hpp"
 #include "gallia/components/sprite.hpp"
@@ -16,6 +17,7 @@ namespace gallia {
 ecs::Entity add_player_projectile_entity(ecs::ECS &ecs, core::Point starting_point) {
   auto entity = ecs.new_entity();
 
+  ecs.components().set(entity, components::player::IsProjectile{});
   ecs.components().set(
       entity,
       components::Position{
@@ -29,8 +31,6 @@ ecs::Entity add_player_projectile_entity(ecs::ECS &ecs, core::Point starting_poi
   ecs.components().set(
       entity,
       components::Collision{
-          .active = true,
-          .type = components::collision::Type::PlayerProjectile,
           .hitbox_offset_x = 7,
           .hitbox_offset_y = 6,
           .hitbox_w = 1,

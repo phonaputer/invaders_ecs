@@ -3,7 +3,7 @@
 #include "framework/game/constants.hpp"
 #include "gallia/components/collision.hpp"
 #include "gallia/components/deletable.hpp"
-#include "gallia/components/invaders/enabled.hpp"
+#include "gallia/components/invaders/is_invader.hpp"
 #include "gallia/components/invaders/step_animation.hpp"
 #include "gallia/components/position.hpp"
 #include "gallia/components/sprite.hpp"
@@ -24,6 +24,8 @@ struct AddInvaderArgs {
 void add_invader_entity(ecs::ECS &ecs, AddInvaderArgs args) {
   auto entity = ecs.new_entity();
 
+  ecs.components().set(entity, components::invaders::IsInvader{});
+
   ecs.components().set(
       entity,
       components::Position{
@@ -38,8 +40,6 @@ void add_invader_entity(ecs::ECS &ecs, AddInvaderArgs args) {
   ecs.components().set(
       entity,
       components::Collision{
-          .active = true,
-          .type = components::collision::Type::Alien,
           .hitbox_offset_x = args.hitbox_offset_x,
           .hitbox_offset_y = args.hitfox_offset_y,
           .hitbox_w = args.hitbox_w,
@@ -75,13 +75,6 @@ void add_invader_entity(ecs::ECS &ecs, AddInvaderArgs args) {
       components::invaders::StepAnimation{
           .frames = std::move(args.frames),
           .cur_frame = 0,
-      }
-  );
-
-  ecs.components().set(
-      entity,
-      components::invaders::Enabled{
-          .is_enabled = true,
       }
   );
 

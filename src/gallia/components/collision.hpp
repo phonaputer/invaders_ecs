@@ -5,14 +5,7 @@
 
 namespace components {
 
-namespace collision {
-enum class Type { Unspecified, Player, Alien, PlayerProjectile, AlienProjectile, Fortress };
-};
-
 struct Collision {
-    bool active; // TODO is this needed?
-
-    collision::Type type;
     float hitbox_offset_x;
     float hitbox_offset_y;
     float hitbox_w;
@@ -23,7 +16,6 @@ struct Collision {
     // registered here in the ECS
     bool hit_something_this_tick = false;
     ecs::Entity who_i_hit = 0;
-    collision::Type type_of_who_i_hit = collision::Type::Unspecified;
 };
 
 } // namespace components

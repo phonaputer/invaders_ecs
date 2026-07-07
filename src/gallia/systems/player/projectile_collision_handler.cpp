@@ -1,4 +1,4 @@
-#include "gallia/systems/invaders/collision_handler.hpp"
+#include "gallia/systems/player/projectile_collision_handler.hpp"
 #include "framework/ecs/component_manager.hpp"
 #include "framework/ecs/ecs.hpp"
 #include "framework/ecs/entity.hpp"
@@ -9,20 +9,20 @@
 #include "gallia/components/player/is_projectile.hpp"
 #include <set>
 
-namespace systems::invaders {
+namespace systems::player {
 
-void CollisionHandler::remove_entity(ecs::Entity entity) {
+void ProjectileCollisionHandler::remove_entity(ecs::Entity entity) {
   entities.erase(entity);
 }
 
-void CollisionHandler::add_entity_if_matches(ecs::Entity entity, ecs::ComponentManager &components) {
+void ProjectileCollisionHandler::add_entity_if_matches(ecs::Entity entity, ecs::ComponentManager &components) {
   if (components.has<components::Deleteable>(entity) && components.has<components::Collision>(entity)
-      && components.has<components::invaders::IsInvader>(entity)) {
+      && components.has<components::player::IsProjectile>(entity)) {
     entities.insert(entity);
   }
 }
 
-void CollisionHandler::execute(ecs::ECS &ecs) {
+void ProjectileCollisionHandler::execute(ecs::ECS &ecs) {
   for (const auto &entity : entities) {
     auto collision = ecs.components().get<components::Collision>(entity);
 
@@ -30,7 +30,7 @@ void CollisionHandler::execute(ecs::ECS &ecs) {
       continue;
     }
 
-    if (ecs.components().has<components::player::IsProjectile>(collision.who_i_hit)) {
+    if (ecs.components().has<components::invaders::IsInvader>(collision.who_i_hit)) {
       auto deletion = ecs.components().get<components::Deleteable>(entity);
       deletion.is_deleted = true;
       ecs.components().set(entity, deletion);
@@ -38,4 +38,4 @@ void CollisionHandler::execute(ecs::ECS &ecs) {
   }
 }
 
-} // namespace systems::invaders
+} // namespace systems::player

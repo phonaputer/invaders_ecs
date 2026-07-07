@@ -2,9 +2,6 @@
 
 namespace components::invaders {
 
-// TODO delete this
-struct Enabled {
-    bool is_enabled;
-};
+struct IsInvader {};
 
 } // namespace components::invaders

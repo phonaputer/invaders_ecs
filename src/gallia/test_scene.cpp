@@ -12,6 +12,7 @@
 #include "gallia/systems/invaders/orchestration.hpp"
 #include "gallia/systems/lifetime.hpp"
 #include "gallia/systems/player/movement.hpp"
+#include "gallia/systems/player/projectile_collision_handler.hpp"
 #include "gallia/systems/player/shooting.hpp"
 #include "gallia/systems/position_following.hpp"
 #include "gallia/systems/rendering.hpp"
@@ -27,6 +28,8 @@ void TestScene::initialize(game::SceneInitializationContext ctx) {
 
   ctx.ecs.add_update_system(std::make_unique<systems::CollisionDetection>());
   ctx.ecs.add_update_system(std::make_unique<systems::invaders::CollisionHandler>());
+  ctx.ecs.add_update_system(std::make_unique<systems::player::ProjectileCollisionHandler>());
+
   ctx.ecs.add_update_system(std::make_unique<systems::player::Movement>(ctx.player_input_manager));
   ctx.ecs.add_update_system(
       std::make_unique<systems::player::Shooting>(

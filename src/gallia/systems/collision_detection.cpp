@@ -5,8 +5,8 @@
 #include "framework/ecs/system.hpp"
 #include "gallia/components/collision.hpp"
 #include "gallia/components/position.hpp"
+#include <iterator>
 #include <set>
-#include <vector>
 
 namespace systems {
 
@@ -21,23 +21,15 @@ void CollisionDetection::add_entity_if_matches(ecs::Entity entity, ecs::Componen
 }
 
 void CollisionDetection::execute(ecs::ECS &ecs) {
-  active_entities_this_tick.clear();
   for (const auto &entity : entities) {
-    if (ecs.components().get<components::Collision>(entity).active) {
-      active_entities_this_tick.push_back(entity);
-    }
-  }
-
-  for (const auto &entity : active_entities_this_tick) {
     auto col = ecs.components().get<components::Collision>(entity);
     col.hit_something_this_tick = false;
-    col.type_of_who_i_hit = components::collision::Type::Unspecified;
     col.who_i_hit = 0;
     ecs.components().set(entity, col);
   }
 
-  for (size_t l = 0; l < active_entities_this_tick.size(); l++) {
-    auto left_entity = active_entities_this_tick.at(l);
+  for (auto l = entities.begin(); l != entities.end(); l++) {
+    auto left_entity = *l;
 
     auto left_collision = ecs.components().get<components::Collision>(left_entity);
     if (left_collision.hit_something_this_tick) {
@@ -52,8 +44,8 @@ void CollisionDetection::execute(ecs::ECS &ecs) {
         .h = left_collision.hitbox_h,
     };
 
-    for (size_t r = l + 1; r < active_entities_this_tick.size(); r++) {
-      auto right_entity = active_entities_this_tick.at(r);
+    for (auto r = std::next(l); r != entities.end(); r++) {
+      auto right_entity = *r;
       auto right_collision = ecs.components().get<components::Collision>(right_entity);
       if (right_collision.hit_something_this_tick) {
         continue;
@@ -69,12 +61,10 @@ void CollisionDetection::execute(ecs::ECS &ecs) {
 
       if (are_touching(left_hitbox, right_hitbox)) {
         left_collision.hit_something_this_tick = true;
-        left_collision.type_of_who_i_hit = right_collision.type;
         left_collision.who_i_hit = right_entity;
         ecs.components().set(left_entity, left_collision);
 
         right_collision.hit_something_this_tick = true;
-        right_collision.type_of_who_i_hit = left_collision.type;
         right_collision.who_i_hit = left_entity;
         ecs.components().set(right_entity, right_collision);
         break;

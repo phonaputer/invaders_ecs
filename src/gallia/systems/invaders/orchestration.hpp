@@ -20,7 +20,6 @@ class Orchestration : public ecs::System {
     bool move_right = true;
     int tick_counter = 0;
     std::set<ecs::Entity> entities;
-    std::set<ecs::Entity> active_entities_this_tick;
 
     bool should_move_this_tick();
     bool did_hit_wall(ecs::ECS &ecs, ecs::Entity entity);

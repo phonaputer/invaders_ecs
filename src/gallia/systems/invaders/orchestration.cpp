@@ -4,7 +4,6 @@
 #include "framework/ecs/entity.hpp"
 #include "framework/ecs/system.hpp"
 #include "framework/game/player_input_manager.hpp"
-#include "gallia/components/invaders/enabled.hpp"
 #include "gallia/components/invaders/step_animation.hpp"
 #include "gallia/components/position.hpp"
 #include "gallia/components/sprite.hpp"
@@ -18,8 +17,7 @@ void Orchestration::remove_entity(ecs::Entity entity) {
 }
 
 void Orchestration::add_entity_if_matches(ecs::Entity entity, ecs::ComponentManager &components) {
-  if (components.has<components::invaders::Enabled>(entity) && components.has<components::Position>(entity)
-      && components.has<components::StartingPosition>(entity)
+  if (components.has<components::Position>(entity) && components.has<components::StartingPosition>(entity)
       && components.has<components::invaders::StepAnimation>(entity) && components.has<components::Sprite>(entity)) {
     entities.insert(entity);
   }
@@ -31,27 +29,15 @@ void Orchestration::execute(ecs::ECS &ecs) {
   }
 
   bool should_move_down = false;
-  active_entities_this_tick.clear();
-
   for (const auto &entity : entities) {
-    auto enabled = ecs.components().get<components::invaders::Enabled>(entity);
-    if (!enabled.is_enabled) {
-      continue;
-    }
-
-    active_entities_this_tick.insert(entity);
     should_move_down = should_move_down || did_hit_wall(ecs, entity);
-  }
-
-  if (active_entities_this_tick.size() < 1) {
-    return; // TODO rerack
   }
 
   if (should_move_down) {
     move_right = !move_right;
   }
 
-  for (const auto &entity : active_entities_this_tick) {
+  for (const auto &entity : entities) {
     move(ecs, entity, should_move_down);
     animate(ecs, entity);
   }

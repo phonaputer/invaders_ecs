@@ -4,23 +4,13 @@
 #include "framework/ecs/ecs.hpp"
 #include "framework/ecs/entity.hpp"
 #include "framework/ecs/system.hpp"
-#include "gallia/components/collision.hpp"
 #include <set>
 
-namespace systems {
+namespace systems::player {
 
-struct Hitbox {
-    float x;
-    float y;
-    float w;
-    float h;
-};
-
-class CollisionDetection : public ecs::System {
+class ProjectileCollisionHandler : public ecs::System {
   private:
     std::set<ecs::Entity> entities;
-
-    bool are_touching(Hitbox right, Hitbox left);
 
   public:
     void remove_entity(ecs::Entity entity) override;
@@ -28,4 +18,4 @@ class CollisionDetection : public ecs::System {
     void execute(ecs::ECS &ecs) override;
 };
 
-} // namespace systems
+} // namespace systems::player
