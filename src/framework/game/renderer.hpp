@@ -16,10 +16,21 @@ struct DrawImageParams {
     float dst_height;
 };
 
+struct DrawRectParams {
+    float x;
+    float y;
+    float width;
+    float height;
+    unsigned int r;
+    unsigned int g;
+    unsigned int b;
+};
+
 class Renderer {
   public:
     virtual ~Renderer() = default;
     virtual void draw_image(const DrawImageParams &params) = 0;
+    virtual void draw_rect(const DrawRectParams &params) = 0;
 };
 
 } // namespace game

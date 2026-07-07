@@ -3,6 +3,7 @@
 #include "framework/ecs/ecs.hpp"
 #include "framework/ecs/entity.hpp"
 #include "gallia/components/animation.hpp"
+#include "gallia/components/collision.hpp"
 #include "gallia/components/deletable.hpp"
 #include "gallia/components/lifetime.hpp"
 #include "gallia/components/position.hpp"
@@ -23,6 +24,17 @@ ecs::Entity add_player_projectile_entity(ecs::ECS &ecs, core::Point starting_poi
           .w = 16,
           .h = 16,
           .z = 101,
+      }
+  );
+  ecs.components().set(
+      entity,
+      components::Collision{
+          .active = true,
+          .type = components::collision::Type::PlayerProjectile,
+          .hitbox_offset_x = 7,
+          .hitbox_offset_y = 6,
+          .hitbox_w = 1,
+          .hitbox_h = 4,
       }
   );
   ecs.components().set(

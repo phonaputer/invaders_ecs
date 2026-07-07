@@ -5,7 +5,10 @@
 #include "gallia/player.hpp"
 #include "gallia/player_projectile.hpp"
 #include "gallia/systems/animation.hpp"
+#include "gallia/systems/collision_detection.hpp"
+#include "gallia/systems/debug/hitbox_rendering.hpp"
 #include "gallia/systems/deletion.hpp"
+#include "gallia/systems/invaders/collision_handler.hpp"
 #include "gallia/systems/invaders/orchestration.hpp"
 #include "gallia/systems/lifetime.hpp"
 #include "gallia/systems/player/movement.hpp"
@@ -20,6 +23,10 @@ void TestScene::initialize(game::SceneInitializationContext ctx) {
   ctx.assets.load_image_png("invaders_spritesheet", "./assets/space_invaders.png");
 
   ctx.ecs.add_draw_system(std::make_unique<systems::Rendering>(ctx.renderer));
+  ctx.ecs.add_draw_system(std::make_unique<systems::debug::HitboxRendering>(ctx.renderer));
+
+  ctx.ecs.add_update_system(std::make_unique<systems::CollisionDetection>());
+  ctx.ecs.add_update_system(std::make_unique<systems::invaders::CollisionHandler>());
   ctx.ecs.add_update_system(std::make_unique<systems::player::Movement>(ctx.player_input_manager));
   ctx.ecs.add_update_system(
       std::make_unique<systems::player::Shooting>(

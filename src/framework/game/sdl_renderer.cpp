@@ -28,4 +28,11 @@ void SDLRenderer::draw_image(const DrawImageParams &params) {
   SDL_RenderTexture(renderer, texture.get(), &src_rect, &dest_rect);
 }
 
+void SDLRenderer::draw_rect(const DrawRectParams &params) {
+  auto sdl_rect = SDL_FRect{params.x, params.y, params.width, params.height};
+
+  SDL_SetRenderDrawColor(renderer, params.r, params.g, params.b, 255);
+  SDL_RenderRect(renderer, &sdl_rect);
+}
+
 } // namespace game

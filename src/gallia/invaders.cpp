@@ -1,6 +1,8 @@
 #include "gallia/invaders.hpp"
 #include "framework/ecs/ecs.hpp"
 #include "framework/game/constants.hpp"
+#include "gallia/components/collision.hpp"
+#include "gallia/components/deletable.hpp"
 #include "gallia/components/invaders/enabled.hpp"
 #include "gallia/components/invaders/step_animation.hpp"
 #include "gallia/components/position.hpp"
@@ -13,6 +15,10 @@ struct AddInvaderArgs {
     float start_x;
     float start_y;
     std::vector<components::invaders::StepAnimationFrame> frames;
+    float hitbox_offset_x;
+    float hitfox_offset_y;
+    float hitbox_w;
+    float hitbox_h;
 };
 
 void add_invader_entity(ecs::ECS &ecs, AddInvaderArgs args) {
@@ -26,6 +32,18 @@ void add_invader_entity(ecs::ECS &ecs, AddInvaderArgs args) {
           .w = 16,
           .h = 16,
           .z = 99,
+      }
+  );
+
+  ecs.components().set(
+      entity,
+      components::Collision{
+          .active = true,
+          .type = components::collision::Type::Alien,
+          .hitbox_offset_x = args.hitbox_offset_x,
+          .hitbox_offset_y = args.hitfox_offset_y,
+          .hitbox_w = args.hitbox_w,
+          .hitbox_h = args.hitbox_h,
       }
   );
 
@@ -67,6 +85,13 @@ void add_invader_entity(ecs::ECS &ecs, AddInvaderArgs args) {
       }
   );
 
+  ecs.components().set(
+      entity,
+      components::Deleteable{
+          .is_deleted = false,
+      }
+  );
+
   ecs.register_to_systems(entity);
 }
 
@@ -79,6 +104,10 @@ void add_octopus(ecs::ECS &ecs, float start_x, float start_y) {
           .start_x = start_x,
           .start_y = start_y,
           .frames = std::move(frames),
+          .hitbox_offset_x = 0,
+          .hitfox_offset_y = 3,
+          .hitbox_w = 14,
+          .hitbox_h = 8,
       }
   );
 }
@@ -92,6 +121,10 @@ void add_jellyfish(ecs::ECS &ecs, float start_x, float start_y) {
           .start_x = start_x,
           .start_y = start_y,
           .frames = std::move(frames),
+          .hitbox_offset_x = 1,
+          .hitfox_offset_y = 3,
+          .hitbox_w = 12,
+          .hitbox_h = 8,
       }
   );
 }
@@ -105,6 +138,10 @@ void add_crab(ecs::ECS &ecs, float start_x, float start_y) {
           .start_x = start_x,
           .start_y = start_y,
           .frames = std::move(frames),
+          .hitbox_offset_x = 2,
+          .hitfox_offset_y = 2,
+          .hitbox_w = 10,
+          .hitbox_h = 9,
       }
   );
 }
@@ -118,6 +155,10 @@ void add_tadpole(ecs::ECS &ecs, float start_x, float start_y) {
           .start_x = start_x,
           .start_y = start_y,
           .frames = std::move(frames),
+          .hitbox_offset_x = 4,
+          .hitfox_offset_y = 2,
+          .hitbox_w = 5,
+          .hitbox_h = 9,
       }
   );
 }

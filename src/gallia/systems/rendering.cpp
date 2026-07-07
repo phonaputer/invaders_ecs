@@ -28,7 +28,6 @@ void Rendering::add_entity_if_matches(ecs::Entity entity, ecs::ComponentManager 
 }
 
 // TODO:
-// * Handle non-static sprites
 // * Handle z index
 // * Unit tests
 void Rendering::execute(ecs::ECS &ecs) {

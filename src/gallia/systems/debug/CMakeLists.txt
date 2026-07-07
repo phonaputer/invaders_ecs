@@ -1,6 +1,5 @@
 target_sources(
   ${PROJECT_NAME}_lib
   PRIVATE
-  collision_handler.cpp
-  orchestration.cpp
+  hitbox_rendering.cpp
 )

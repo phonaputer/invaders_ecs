@@ -16,6 +16,7 @@ class SDLRenderer : public Renderer {
   public:
     SDLRenderer(SDL_Renderer *renderer, std::shared_ptr<SDLAssetManager> asset_manager);
     void draw_image(const DrawImageParams &params) override;
+    void draw_rect(const DrawRectParams &params) override;
 };
 
 } // namespace game
