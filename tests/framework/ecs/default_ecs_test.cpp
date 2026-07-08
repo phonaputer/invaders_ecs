@@ -18,7 +18,7 @@ struct TestComponent {
 };
 
 TEST(DefaultECS, NewEntityWhenGettingSeveralEntitiesShouldReturnANewIDForEach) {
-  auto ecs = std::make_unique<ecs::DefaultECS>(std::make_unique<ecs::ComponentManager>());
+  auto ecs = std::make_unique<ecs::DefaultECS>(std::make_unique<ecs::ComponentManager>(), nullptr);
 
   auto entityOne = ecs->new_entity();
   auto entityTwo = ecs->new_entity();
@@ -30,7 +30,7 @@ TEST(DefaultECS, NewEntityWhenGettingSeveralEntitiesShouldReturnANewIDForEach) {
 }
 
 TEST(DefaultECS, UpdateWhenUpdateSystemsArePresentShouldInvokeAllOfThem) {
-  auto ecs = std::make_unique<ecs::DefaultECS>(std::make_unique<ecs::ComponentManager>());
+  auto ecs = std::make_unique<ecs::DefaultECS>(std::make_unique<ecs::ComponentManager>(), nullptr);
 
   auto systemOne = std::make_unique<StubSystem>();
   EXPECT_CALL(*systemOne, execute(testing::_)).Times(1);
@@ -44,7 +44,7 @@ TEST(DefaultECS, UpdateWhenUpdateSystemsArePresentShouldInvokeAllOfThem) {
 }
 
 TEST(DefaultECS, UpdateWhenUpdateAndDrawSystemsArePresentShouldInvokeOnlyUpdateSystems) {
-  auto ecs = std::make_unique<ecs::DefaultECS>(std::make_unique<ecs::ComponentManager>());
+  auto ecs = std::make_unique<ecs::DefaultECS>(std::make_unique<ecs::ComponentManager>(), nullptr);
 
   auto systemOne = std::make_unique<StubSystem>();
   EXPECT_CALL(*systemOne, execute(testing::_)).Times(1);
@@ -58,7 +58,7 @@ TEST(DefaultECS, UpdateWhenUpdateAndDrawSystemsArePresentShouldInvokeOnlyUpdateS
 }
 
 TEST(DefaultECS, DrawWhenDrawSystemsArePresentShouldInvokeAllOfThem) {
-  auto ecs = std::make_unique<ecs::DefaultECS>(std::make_unique<ecs::ComponentManager>());
+  auto ecs = std::make_unique<ecs::DefaultECS>(std::make_unique<ecs::ComponentManager>(), nullptr);
 
   auto systemOne = std::make_unique<StubSystem>();
   EXPECT_CALL(*systemOne, execute(testing::_)).Times(1);
@@ -72,7 +72,7 @@ TEST(DefaultECS, DrawWhenDrawSystemsArePresentShouldInvokeAllOfThem) {
 }
 
 TEST(DefaultECS, DrawWhenDrawAndUpdateSystemsArePresentShouldInvokeOnlyDrawSystems) {
-  auto ecs = std::make_unique<ecs::DefaultECS>(std::make_unique<ecs::ComponentManager>());
+  auto ecs = std::make_unique<ecs::DefaultECS>(std::make_unique<ecs::ComponentManager>(), nullptr);
 
   auto systemOne = std::make_unique<StubSystem>();
   EXPECT_CALL(*systemOne, execute(testing::_)).Times(0);
@@ -88,7 +88,7 @@ TEST(DefaultECS, DrawWhenDrawAndUpdateSystemsArePresentShouldInvokeOnlyDrawSyste
 TEST(DefaultECS, DeleteEntityWhenSeveralSystemsArePresentShouldDeleteEntityFromAllOfThemAsWellAsComponents) {
   auto components = std::make_unique<ecs::ComponentManager>();
   ecs::ComponentManager &components_ref = *components;
-  auto ecs = std::make_unique<ecs::DefaultECS>(std::move(components));
+  auto ecs = std::make_unique<ecs::DefaultECS>(std::move(components), nullptr);
 
   ecs::Entity entity = 1;
 
@@ -109,7 +109,7 @@ TEST(DefaultECS, DeleteEntityWhenSeveralSystemsArePresentShouldDeleteEntityFromA
 }
 
 TEST(DefaultECS, RegisterToSystemsWhenSeveralSystemsArePresentShouldDeleteThenAddEntityToAllSystems) {
-  auto ecs = std::make_unique<ecs::DefaultECS>(std::make_unique<ecs::ComponentManager>());
+  auto ecs = std::make_unique<ecs::DefaultECS>(std::make_unique<ecs::ComponentManager>(), nullptr);
 
   ecs::Entity entity = 1;
 

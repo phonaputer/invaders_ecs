@@ -44,4 +44,16 @@ inline void ComponentManager::delete_entity(ecs::Entity entity) {
   }
 }
 
+template <typename T> void ComponentManager::set_singleton(T component) {
+  singleton_components[std::type_index(typeid(T))] = component;
+}
+
+template <typename T> T ComponentManager::get_singleton() const {
+  assert(singleton_components.contains(std::type_index(typeid(T))));
+
+  auto any_value = singleton_components.at(std::type_index(typeid(T)));
+
+  return std::any_cast<T>(any_value);
+}
+
 } // namespace ecs

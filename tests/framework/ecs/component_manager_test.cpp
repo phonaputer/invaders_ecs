@@ -186,3 +186,46 @@ TEST(ComponentManager, DeleteEntityWhenEntityDoesExistShouldDeleteAllComponentsF
   EXPECT_FALSE(cm->has<TestComponentTwo>(entity));
   EXPECT_FALSE(cm->has<TestComponent>(entity));
 }
+
+TEST(ComponentManager, GetSingletonAfterSettingShouldReturnTheSetValue) {
+  auto cm = std::make_unique<ecs::ComponentManager>();
+  auto component = TestComponent{
+      .id = 111,
+  };
+  cm->set_singleton(component);
+
+  auto result = cm->get_singleton<TestComponent>();
+
+  EXPECT_EQ(component, result);
+}
+
+TEST(ComponentManager, DoubleSetSingletonShouldLeaveOnlyTheLastValuePresent) {
+  auto cm = std::make_unique<ecs::ComponentManager>();
+  auto component = TestComponent{
+      .id = 111,
+  };
+  cm->set_singleton(component);
+  auto componentTwo = TestComponent{
+      .id = 222,
+  };
+  cm->set_singleton(componentTwo);
+
+  auto result = cm->get_singleton<TestComponent>();
+
+  EXPECT_EQ(componentTwo, result);
+}
+
+TEST(ComponentManager, SetDifferentTypeSingletonsShouldNotInterfereWithEachOther) {
+  auto cm = std::make_unique<ecs::ComponentManager>();
+  auto component = TestComponent{
+      .id = 111,
+  };
+  cm->set_singleton(component);
+  auto componentTwo = TestComponentTwo{
+      .id_two = 222,
+  };
+  cm->set_singleton(componentTwo);
+
+  EXPECT_EQ(component, cm->get_singleton<TestComponent>());
+  EXPECT_EQ(componentTwo, cm->get_singleton<TestComponentTwo>());
+}

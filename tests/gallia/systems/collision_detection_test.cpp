@@ -1,6 +1,7 @@
 #include "framework/ecs/component_manager.hpp"
 #include "framework/ecs/default_ecs.hpp"
 #include "framework/ecs/ecs.hpp"
+#include "framework/ecs/message_board.hpp"
 #include "gallia/components/collision.hpp"
 #include "gallia/components/position.hpp"
 #include "gallia/systems/collision_detection.hpp"
@@ -14,7 +15,9 @@ struct TestSetup {
 };
 
 TestSetup setupTest() {
-  auto ecs = std::make_unique<ecs::DefaultECS>(std::make_unique<ecs::ComponentManager>());
+  auto ecs = std::make_unique<ecs::DefaultECS>(
+      std::make_unique<ecs::ComponentManager>(), std::make_unique<ecs::MessageBoard>()
+  );
 
   return TestSetup{
       .ecs = std::move(ecs),

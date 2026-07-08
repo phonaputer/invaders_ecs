@@ -3,6 +3,7 @@
 #include "framework/ecs/component_manager.hpp"
 #include "framework/ecs/ecs.hpp"
 #include "framework/ecs/entity.hpp"
+#include "framework/ecs/message_board.hpp"
 #include "framework/ecs/system.hpp"
 #include <memory>
 #include <vector>
@@ -15,11 +16,13 @@ class DefaultECS : public ECS {
     std::vector<std::unique_ptr<ecs::System>> update_systems;
     std::vector<std::unique_ptr<ecs::System>> draw_systems;
     std::unique_ptr<ComponentManager> component_manager;
+    std::unique_ptr<MessageBoard> message_board;
 
   public:
-    DefaultECS(std::unique_ptr<ComponentManager> component_manager);
+    DefaultECS(std::unique_ptr<ComponentManager> component_manager, std::unique_ptr<MessageBoard> message_board);
     Entity new_entity() override;
     ComponentManager &components() override;
+    MessageBoard &messages() override;
     void add_update_system(std::unique_ptr<System> system) override;
     void add_draw_system(std::unique_ptr<System> system) override;
     void register_to_systems(Entity entity) override;
