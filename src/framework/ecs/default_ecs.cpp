@@ -58,6 +58,8 @@ void DefaultECS::delete_entity(Entity entity) {
 }
 
 void DefaultECS::update() {
+  message_board->clear_all();
+
   for (auto &system : update_systems) {
     system->execute(*this);
   }

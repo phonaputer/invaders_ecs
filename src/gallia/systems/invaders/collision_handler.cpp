@@ -7,6 +7,7 @@
 #include "gallia/components/deletable.hpp"
 #include "gallia/components/invaders/is_invader.hpp"
 #include "gallia/components/player/is_projectile.hpp"
+#include "gallia/messages/collision_occurred.hpp"
 #include <set>
 
 namespace systems::invaders {
@@ -23,18 +24,20 @@ void CollisionHandler::add_entity_if_matches(ecs::Entity entity, ecs::ComponentM
 }
 
 void CollisionHandler::execute(ecs::ECS &ecs) {
-  for (const auto &entity : entities) {
-    auto collision = ecs.components().get<components::Collision>(entity);
+  auto collisions = ecs.messages().get_all<messages::CollisionOccurred>();
 
-    if (!collision.hit_something_this_tick) {
+  for (const auto &collision : collisions) {
+    if (!entities.contains(collision.who_am_i)) {
       continue;
     }
 
-    if (ecs.components().has<components::player::IsProjectile>(collision.who_i_hit)) {
-      auto deletion = ecs.components().get<components::Deleteable>(entity);
-      deletion.is_deleted = true;
-      ecs.components().set(entity, deletion);
+    if (!ecs.components().has<components::player::IsProjectile>(collision.who_i_hit)) {
+      continue;
     }
+
+    auto deletion = ecs.components().get<components::Deleteable>(collision.who_am_i);
+    deletion.is_deleted = true;
+    ecs.components().set(collision.who_am_i, deletion);
   }
 }
 

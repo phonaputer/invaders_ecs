@@ -4,10 +4,18 @@
 #include "framework/ecs/message_board.hpp"
 #include "gallia/components/collision.hpp"
 #include "gallia/components/position.hpp"
+#include "gallia/messages/collision_occurred.hpp"
 #include "gallia/systems/collision_detection.hpp"
+#include <gmock/gmock.h>
 #include <gtest/gtest.h>
 #include <memory>
 #include <string>
+
+namespace messages {
+void PrintTo(const CollisionOccurred &col, std::ostream *os) {
+  *os << "CollisionOccurred(" << col.who_am_i << "," << col.who_i_hit << ")";
+}
+} // namespace messages
 
 struct TestSetup {
     std::unique_ptr<ecs::ECS> ecs;
@@ -35,30 +43,32 @@ ecs::Entity createEntityWithHitbox(ecs::ECS &ecs, float x, float y, float w, flo
           .hitbox_offset_y = 0,
           .hitbox_w = w,
           .hitbox_h = h,
-          .hit_something_this_tick = false,
-          .who_i_hit = 0,
       }
   );
 
   return e;
 }
 
+void assertTotalHits(ecs::ECS &ecs, size_t expected) {
+  auto num_hits = ecs.messages().get_all<messages::CollisionOccurred>().size();
+
+  EXPECT_EQ(expected, num_hits / 2);
+}
+
 void assertHitEachOther(ecs::ECS &ecs, ecs::Entity left, ecs::Entity right) {
-  auto left_collision = ecs.components().get<components::Collision>(left);
-  auto right_collision = ecs.components().get<components::Collision>(right);
+  auto hit_messages = ecs.messages().get_all<messages::CollisionOccurred>();
 
-  EXPECT_TRUE(left_collision.hit_something_this_tick);
-  EXPECT_EQ(right, left_collision.who_i_hit);
-
-  EXPECT_TRUE(right_collision.hit_something_this_tick);
-  EXPECT_EQ(left, right_collision.who_i_hit);
+  EXPECT_THAT(hit_messages, testing::Contains(messages::CollisionOccurred{.who_am_i = left, .who_i_hit = right}));
+  EXPECT_THAT(hit_messages, testing::Contains(messages::CollisionOccurred{.who_am_i = right, .who_i_hit = left}));
 }
 
 void assertHitNothing(ecs::ECS &ecs, ecs::Entity entity) {
-  auto collision = ecs.components().get<components::Collision>(entity);
+  auto hit_messages = ecs.messages().get_all<messages::CollisionOccurred>();
 
-  EXPECT_FALSE(collision.hit_something_this_tick);
-  EXPECT_EQ(0, collision.who_i_hit);
+  for (const auto &message : hit_messages) {
+    EXPECT_FALSE(message.who_am_i == entity);
+    EXPECT_FALSE(message.who_i_hit == entity);
+  }
 }
 
 TEST(ComponentManager, ExecuteEntitiesExactlyOnTopOfEachOtherShouldMarkThemAsHavingCollided) {
@@ -197,22 +207,23 @@ TEST(ComponentManager, ExecuteWhenEntityLeftOfOtherShouldNOTMarkThemAsHavingColl
   assertHitNothing(*setup.ecs, entity_two);
 }
 
-TEST(ComponentManager, ExecuteMultipleEntitiesTouchingOneEntityShouldMarkOnlyOneOfThemAsHavingHitIt) {
+TEST(ComponentManager, ExecuteMultipleEntitiesTouchingOneEntityShouldMarkAllOfThemAsHavingHitIt) {
   TestSetup setup = setupTest();
   auto entity_one = createEntityWithHitbox(*setup.ecs, 1, 1, 3, 3);
   setup.system.add_entity_if_matches(entity_one, setup.ecs->components());
   auto entity_two = createEntityWithHitbox(*setup.ecs, 3, 3, 1, 1);
   setup.system.add_entity_if_matches(entity_two, setup.ecs->components());
   auto entity_three = createEntityWithHitbox(*setup.ecs, 1, 1, 1, 1);
-  setup.system.add_entity_if_matches(entity_two, setup.ecs->components());
+  setup.system.add_entity_if_matches(entity_three, setup.ecs->components());
   auto entity_four = createEntityWithHitbox(*setup.ecs, 1, 3, 1, 1);
-  setup.system.add_entity_if_matches(entity_two, setup.ecs->components());
+  setup.system.add_entity_if_matches(entity_four, setup.ecs->components());
 
   setup.system.execute(*setup.ecs);
 
+  assertTotalHits(*setup.ecs, 3);
   assertHitEachOther(*setup.ecs, entity_one, entity_two);
-  assertHitNothing(*setup.ecs, entity_three);
-  assertHitNothing(*setup.ecs, entity_four);
+  assertHitEachOther(*setup.ecs, entity_one, entity_three);
+  assertHitEachOther(*setup.ecs, entity_one, entity_four);
 }
 
 TEST(ComponentManager, ExecuteMultipleHitsInOneFrameShouldMarkAllOfThem) {
@@ -221,38 +232,28 @@ TEST(ComponentManager, ExecuteMultipleHitsInOneFrameShouldMarkAllOfThem) {
   setup.system.add_entity_if_matches(entity_one, setup.ecs->components());
   auto entity_two = createEntityWithHitbox(*setup.ecs, 1, 1, 1, 1);
   setup.system.add_entity_if_matches(entity_two, setup.ecs->components());
-  auto entity_three = createEntityWithHitbox(*setup.ecs, 1, 1, 1, 1);
+  auto entity_three = createEntityWithHitbox(*setup.ecs, 50, 50, 1, 1);
   setup.system.add_entity_if_matches(entity_three, setup.ecs->components());
-  auto entity_threehalf = createEntityWithHitbox(*setup.ecs, 100, 100, 1, 1);
-  setup.system.add_entity_if_matches(entity_threehalf, setup.ecs->components());
-  auto entity_four = createEntityWithHitbox(*setup.ecs, 1, 1, 1, 1);
+  auto entity_four = createEntityWithHitbox(*setup.ecs, 100, 100, 1, 1);
   setup.system.add_entity_if_matches(entity_four, setup.ecs->components());
-  auto entity_five = createEntityWithHitbox(*setup.ecs, 3, 3, 3, 3);
+  auto entity_five = createEntityWithHitbox(*setup.ecs, 50, 50, 1, 1);
   setup.system.add_entity_if_matches(entity_five, setup.ecs->components());
-  auto entity_six = createEntityWithHitbox(*setup.ecs, 4, 4, 1, 1);
+  auto entity_six = createEntityWithHitbox(*setup.ecs, 3, 3, 3, 3);
   setup.system.add_entity_if_matches(entity_six, setup.ecs->components());
+  auto entity_seven = createEntityWithHitbox(*setup.ecs, 4, 4, 1, 1);
+  setup.system.add_entity_if_matches(entity_seven, setup.ecs->components());
+  auto entity_eight = createEntityWithHitbox(*setup.ecs, 4, 4, 1, 1);
+  setup.system.add_entity_if_matches(entity_eight, setup.ecs->components());
 
   setup.system.execute(*setup.ecs);
 
+  assertTotalHits(*setup.ecs, 5);
   assertHitEachOther(*setup.ecs, entity_one, entity_two);
-  assertHitEachOther(*setup.ecs, entity_three, entity_four);
-  assertHitEachOther(*setup.ecs, entity_five, entity_six);
-  assertHitNothing(*setup.ecs, entity_threehalf);
-}
-
-TEST(ComponentManager, ExecuteEntityHitSomethingOnPreviousTickButNotThisTickShouldNOTBeMarkedAsHittingAnything) {
-  TestSetup setup = setupTest();
-
-  auto entity_one = createEntityWithHitbox(*setup.ecs, 1, 1, 1, 1);
-  setup.system.add_entity_if_matches(entity_one, setup.ecs->components());
-  auto e1_col = setup.ecs->components().get<components::Collision>(entity_one);
-  e1_col.hit_something_this_tick = true;
-  e1_col.who_i_hit = 100;
-  setup.ecs->components().set(entity_one, e1_col);
-
-  setup.system.execute(*setup.ecs);
-
-  assertHitNothing(*setup.ecs, entity_one);
+  assertHitEachOther(*setup.ecs, entity_three, entity_five);
+  assertHitNothing(*setup.ecs, entity_four);
+  assertHitEachOther(*setup.ecs, entity_six, entity_seven);
+  assertHitEachOther(*setup.ecs, entity_six, entity_eight);
+  assertHitEachOther(*setup.ecs, entity_seven, entity_eight);
 }
 
 TEST(ComponentManager, RemoveEntityWhenEntityRemovedShouldNOTBeIncludedInCollisionChecks) {
