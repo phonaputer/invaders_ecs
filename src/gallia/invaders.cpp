@@ -26,18 +26,22 @@ struct AddInvaderArgs {
 void add_invader_entity(ecs::ECS &ecs, AddInvaderArgs args) {
   auto entity = ecs.new_entity();
 
+  components::DamageTypeSet susceptible_damage_types;
+  susceptible_damage_types.set(components::damage_type_to_index(components::DamageType::Player_Projectile));
   ecs.components().set(
       entity,
       components::Hitpoints{
-          .susceptible_to = components::DamageType::Player_Projectile,
+          .susceptible_to = susceptible_damage_types,
           .cur_hitpoints = 1,
       }
   );
 
+  components::DamageTypeSet deal_damage_types;
+  deal_damage_types.set(components::damage_type_to_index(components::DamageType::Alien));
   ecs.components().set(
       entity,
       components::DamageDealer{
-          .type = components::DamageType::Alien,
+          .type = deal_damage_types,
           .amount = 1,
       }
   );

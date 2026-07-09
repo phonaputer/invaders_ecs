@@ -5,7 +5,7 @@
 namespace components {
 
 struct DamageDealer {
-    DamageType type;
+    DamageTypeSet type;
     int amount;
 };
 

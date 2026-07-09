@@ -42,7 +42,7 @@ void Damage::execute(ecs::ECS &ecs) {
     auto damage = ecs.components().get<components::DamageDealer>(collision.who_am_i);
     auto hitpoints = ecs.components().get<components::Hitpoints>(collision.who_i_hit);
 
-    if (damage.type != hitpoints.susceptible_to) {
+    if (!(damage.type & hitpoints.susceptible_to).any()) {
       continue;
     }
 

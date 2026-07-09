@@ -5,7 +5,7 @@
 namespace components {
 
 struct Hitpoints {
-    DamageType susceptible_to;
+    DamageTypeSet susceptible_to;
     int cur_hitpoints;
 };
 

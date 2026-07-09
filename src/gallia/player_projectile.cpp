@@ -19,17 +19,23 @@ namespace gallia {
 ecs::Entity add_player_projectile_entity(ecs::ECS &ecs, core::Point starting_point) {
   auto entity = ecs.new_entity();
 
+  components::DamageTypeSet susceptible_damage_types;
+  susceptible_damage_types.set(components::damage_type_to_index(components::DamageType::Alien));
+  susceptible_damage_types.set(components::damage_type_to_index(components::DamageType::Alien_Projectile));
+  susceptible_damage_types.set(components::damage_type_to_index(components::DamageType::Fortress));
   ecs.components().set(
       entity,
       components::Hitpoints{
-          .susceptible_to = components::DamageType::Alien,
+          .susceptible_to = susceptible_damage_types,
           .cur_hitpoints = 1,
       }
   );
+  components::DamageTypeSet deal_damage_types;
+  deal_damage_types.set(components::damage_type_to_index(components::DamageType::Player_Projectile));
   ecs.components().set(
       entity,
       components::DamageDealer{
-          .type = components::DamageType::Player_Projectile,
+          .type = deal_damage_types,
           .amount = 1,
       }
   );
