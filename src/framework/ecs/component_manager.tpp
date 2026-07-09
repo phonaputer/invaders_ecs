@@ -2,7 +2,6 @@
 
 #include "framework/ecs/component_manager.hpp"
 #include "framework/ecs/entity.hpp"
-#include "framework/ecs/mertens_ecs.hpp" // TODO removeme
 #include <any>
 #include <cassert>
 #include <typeindex>

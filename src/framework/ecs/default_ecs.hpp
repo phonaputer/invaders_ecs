@@ -10,6 +10,8 @@
 
 namespace ecs {
 
+// A naive ECS with no optimizations related to vectorization or anything like that.
+// Should be good enough for Space Invaders.
 class DefaultECS : public ECS {
   private:
     unsigned long cur_entity_id = 0; // note: this is not thread-safe
