@@ -6,12 +6,12 @@
 #include "framework/ecs/system.hpp"
 #include <set>
 
-namespace systems::player {
+namespace systems {
 
-// TOOD figure out a better way than
-class ProjectileCollisionHandler : public ecs::System {
+class Damage : public ecs::System {
   private:
-    std::set<ecs::Entity> entities;
+    std::set<ecs::Entity> dealers;
+    std::set<ecs::Entity> receivers;
 
   public:
     void remove_entity(ecs::Entity entity) override;
@@ -19,4 +19,4 @@ class ProjectileCollisionHandler : public ecs::System {
     void execute(ecs::ECS &ecs) override;
 };
 
-} // namespace systems::player
+} // namespace systems

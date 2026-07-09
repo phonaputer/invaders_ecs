@@ -6,13 +6,12 @@
 #include "gallia/player_projectile.hpp"
 #include "gallia/systems/animation.hpp"
 #include "gallia/systems/collision_detection.hpp"
+#include "gallia/systems/damage.hpp"
 #include "gallia/systems/debug/hitbox_rendering.hpp"
 #include "gallia/systems/deletion.hpp"
-#include "gallia/systems/invaders/collision_handler.hpp"
 #include "gallia/systems/invaders/orchestration.hpp"
 #include "gallia/systems/lifetime.hpp"
 #include "gallia/systems/player/movement.hpp"
-#include "gallia/systems/player/projectile_collision_handler.hpp"
 #include "gallia/systems/player/shooting.hpp"
 #include "gallia/systems/position_following.hpp"
 #include "gallia/systems/rendering.hpp"
@@ -27,8 +26,8 @@ void TestScene::initialize(game::SceneInitializationContext ctx) {
   ctx.ecs.add_draw_system(std::make_unique<systems::debug::HitboxRendering>(ctx.renderer));
 
   ctx.ecs.add_update_system(std::make_unique<systems::CollisionDetection>());
-  ctx.ecs.add_update_system(std::make_unique<systems::invaders::CollisionHandler>());
-  ctx.ecs.add_update_system(std::make_unique<systems::player::ProjectileCollisionHandler>());
+  ctx.ecs.add_update_system(std::make_unique<systems::Damage>());
+  ctx.ecs.add_update_system(std::make_unique<systems::Deletion>());
 
   ctx.ecs.add_update_system(std::make_unique<systems::player::Movement>(ctx.player_input_manager));
   ctx.ecs.add_update_system(
@@ -41,7 +40,6 @@ void TestScene::initialize(game::SceneInitializationContext ctx) {
   ctx.ecs.add_update_system(std::make_unique<systems::PositionFollowing>());
   ctx.ecs.add_update_system(std::make_unique<systems::Lifetime>());
   ctx.ecs.add_update_system(std::make_unique<systems::Animation>());
-  ctx.ecs.add_update_system(std::make_unique<systems::Deletion>());
 
   add_invader_entities(ctx.ecs);
   add_player_entity(ctx.ecs);

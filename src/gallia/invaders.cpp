@@ -2,8 +2,10 @@
 #include "framework/ecs/ecs.hpp"
 #include "framework/game/constants.hpp"
 #include "gallia/components/collision.hpp"
+#include "gallia/components/damage_dealer.hpp"
+#include "gallia/components/damage_type_enum.hpp"
 #include "gallia/components/deletable.hpp"
-#include "gallia/components/invaders/is_invader.hpp"
+#include "gallia/components/hitpoints.hpp"
 #include "gallia/components/invaders/step_animation.hpp"
 #include "gallia/components/position.hpp"
 #include "gallia/components/sprite.hpp"
@@ -24,7 +26,21 @@ struct AddInvaderArgs {
 void add_invader_entity(ecs::ECS &ecs, AddInvaderArgs args) {
   auto entity = ecs.new_entity();
 
-  ecs.components().set(entity, components::invaders::IsInvader{});
+  ecs.components().set(
+      entity,
+      components::Hitpoints{
+          .susceptible_to = components::DamageType::Player_Projectile,
+          .cur_hitpoints = 1,
+      }
+  );
+
+  ecs.components().set(
+      entity,
+      components::DamageDealer{
+          .type = components::DamageType::Alien,
+          .amount = 1,
+      }
+  );
 
   ecs.components().set(
       entity,

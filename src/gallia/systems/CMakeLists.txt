@@ -3,6 +3,7 @@ target_sources(
   PRIVATE
   animation.cpp
   collision_detection.cpp
+  damage.cpp
   deletion.cpp
   lifetime.cpp
   position_following.cpp
