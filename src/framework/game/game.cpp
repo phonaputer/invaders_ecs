@@ -16,8 +16,8 @@
 
 namespace game {
 
-// Roughly 60 updates per second. 1000 / 60 = 16.66 (repeating, of course).
-const Uint64 MS_PER_UPDATE = 17;
+const Uint64 TARGET_FPS = 60;
+const Uint64 MS_PER_UPDATE = 1000 / TARGET_FPS;
 
 // FIXME - tweak this for web output
 const int ACTUAL_WINDOW_WIDTH = 672;
@@ -65,6 +65,14 @@ void Game::update() {
     ecs->update();
 
     unprocessed_ms -= MS_PER_UPDATE;
+  }
+
+  // Doing this should save some CPU by preventing SDL from executing this
+  // function as fast as possible.
+  // A cursory test seemed to indicate this cuts CPU usage by about 50%.
+  const Uint64 frameTime = SDL_GetTicks() - now_ms;
+  if (MS_PER_UPDATE > frameTime) {
+    SDL_Delay(MS_PER_UPDATE - frameTime);
   }
 }
 
