@@ -9,6 +9,7 @@ target_sources(
   lifetime.cpp
   position_following.cpp
   rendering.cpp
+  score.cpp
   velocity.cpp
 )
 

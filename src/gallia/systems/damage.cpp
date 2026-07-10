@@ -8,6 +8,7 @@
 #include "gallia/components/deletable.hpp"
 #include "gallia/components/hitpoints.hpp"
 #include "gallia/events/collision_occurred.hpp"
+#include "gallia/events/player_scored.hpp"
 #include <set>
 
 namespace systems {
@@ -58,6 +59,14 @@ void Damage::execute(ecs::ECS &ecs) {
           collision.who_i_hit,
           components::Deleteable{
               .is_deleted = true,
+          }
+      );
+    }
+
+    if (hitpoints.grants_score) {
+      ecs.events().push_back(
+          events::PlayerScored{
+              .score = hitpoints.score_value,
           }
       );
     }

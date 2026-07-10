@@ -1,6 +1,7 @@
 #include "gallia/invaders.hpp"
 #include "framework/ecs/ecs.hpp"
 #include "framework/game/constants.hpp"
+#include "gallia/components/animation.hpp"
 #include "gallia/components/collision.hpp"
 #include "gallia/components/damage_dealer.hpp"
 #include "gallia/components/damage_type_enum.hpp"
@@ -10,6 +11,7 @@
 #include "gallia/components/position.hpp"
 #include "gallia/components/sprite.hpp"
 #include "gallia/components/starting_position.hpp"
+#include "gallia/components/velocity.hpp"
 
 namespace gallia {
 
@@ -21,6 +23,7 @@ struct AddInvaderArgs {
     float hitfox_offset_y;
     float hitbox_w;
     float hitbox_h;
+    unsigned int score;
 };
 
 void add_invader_entity(ecs::ECS &ecs, AddInvaderArgs args) {
@@ -33,6 +36,8 @@ void add_invader_entity(ecs::ECS &ecs, AddInvaderArgs args) {
       components::Hitpoints{
           .susceptible_to = susceptible_damage_types,
           .cur_hitpoints = 1,
+          .grants_score = true,
+          .score_value = args.score,
       }
   );
 
@@ -121,6 +126,7 @@ void add_octopus(ecs::ECS &ecs, float start_x, float start_y) {
           .hitfox_offset_y = 3,
           .hitbox_w = 14,
           .hitbox_h = 8,
+          .score = 40,
       }
   );
 }
@@ -138,6 +144,7 @@ void add_jellyfish(ecs::ECS &ecs, float start_x, float start_y) {
           .hitfox_offset_y = 3,
           .hitbox_w = 12,
           .hitbox_h = 8,
+          .score = 30,
       }
   );
 }
@@ -155,6 +162,7 @@ void add_crab(ecs::ECS &ecs, float start_x, float start_y) {
           .hitfox_offset_y = 2,
           .hitbox_w = 10,
           .hitbox_h = 9,
+          .score = 20,
       }
   );
 }
@@ -172,6 +180,7 @@ void add_tadpole(ecs::ECS &ecs, float start_x, float start_y) {
           .hitfox_offset_y = 2,
           .hitbox_w = 5,
           .hitbox_h = 9,
+          .score = 10,
       }
   );
 }
@@ -217,6 +226,95 @@ void add_invader_entities(ecs::ECS &ecs) {
     add_tadpole(ecs, x_pos, y_pos);
     x_pos += alien_width + col_spacing;
   }
+}
+
+void add_invader_projectile(ecs::ECS &ecs, core::Point starting_point) {
+  auto entity = ecs.new_entity();
+
+  ecs.components().set(
+      entity,
+      components::Position{
+          .x = starting_point.x,
+          .y = starting_point.y,
+          .w = 16,
+          .h = 16,
+          .z = 80,
+      }
+  );
+
+  ecs.components().set(
+      entity,
+      components::Sprite{
+          .src_id = "invaders_spritesheet",
+          .src_x = 80,
+          .src_y = 32,
+          .src_width = 16,
+          .src_height = 16,
+          .dst_width = 16,
+          .dst_height = 16,
+      }
+  );
+
+  std::vector<components::AnimationFrame> frames = {{5, 2}, {6, 2}};
+  ecs.components().set(
+      entity,
+      components::Animation{
+          .playing = true,
+          .play_reversed = false,
+          .frames = std::move(frames),
+          .cur_frame = 0,
+          .ticks_per_frame = 40,
+          .tick_counter = 0,
+      }
+  );
+
+  ecs.components().set(
+      entity,
+      components::Deleteable{
+          .is_deleted = false,
+      }
+  );
+
+  ecs.components().set(
+      entity,
+      components::Velocity{
+          .x = 0,
+          .y = 1,
+      }
+  );
+
+  ecs.components().set(
+      entity,
+      components::Collision{
+          .hitbox_offset_x = 6,
+          .hitbox_offset_y = 4,
+          .hitbox_w = 3,
+          .hitbox_h = 6,
+      }
+  );
+
+  components::DamageTypeSet susceptible_damage_types;
+  susceptible_damage_types.set(components::damage_type_to_index(components::DamageType::Player));
+  susceptible_damage_types.set(components::damage_type_to_index(components::DamageType::Player_Projectile));
+  susceptible_damage_types.set(components::damage_type_to_index(components::DamageType::Fortress));
+  ecs.components().set(
+      entity,
+      components::Hitpoints{
+          .susceptible_to = susceptible_damage_types,
+          .cur_hitpoints = 1,
+      }
+  );
+  components::DamageTypeSet deal_damage_types;
+  deal_damage_types.set(components::damage_type_to_index(components::DamageType::Alien_Projectile));
+  ecs.components().set(
+      entity,
+      components::DamageDealer{
+          .type = deal_damage_types,
+          .amount = 1,
+      }
+  );
+
+  ecs.register_to_systems(entity);
 }
 
 } // namespace gallia

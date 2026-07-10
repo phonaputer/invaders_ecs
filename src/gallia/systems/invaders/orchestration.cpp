@@ -1,4 +1,5 @@
 #include "gallia/systems/invaders/orchestration.hpp"
+#include "core/point.hpp"
 #include "framework/ecs/component_manager.hpp"
 #include "framework/ecs/ecs.hpp"
 #include "framework/ecs/entity.hpp"
@@ -8,22 +9,37 @@
 #include "gallia/components/position.hpp"
 #include "gallia/components/sprite.hpp"
 #include "gallia/components/starting_position.hpp"
-#include <set>
+#include <random>
+#include <utility>
+#include <vector>
 
 namespace systems::invaders {
 
+Orchestration::Orchestration(std::function<void(ecs::ECS &, core::Point)> add_projectile, unsigned int rand_seed)
+    : add_projectile{add_projectile},
+      rand_gen{rand_seed} {
+}
+
 void Orchestration::remove_entity(ecs::Entity entity) {
-  entities.erase(entity);
+  auto to_remove = std::find(entities.begin(), entities.end(), entity);
+  if (to_remove != entities.end()) {
+    std::swap(*to_remove, entities.back());
+    entities.pop_back();
+  }
 }
 
 void Orchestration::add_entity_if_matches(ecs::Entity entity, ecs::ComponentManager &components) {
   if (components.has<components::Position>(entity) && components.has<components::StartingPosition>(entity)
       && components.has<components::invaders::StepAnimation>(entity) && components.has<components::Sprite>(entity)) {
-    entities.insert(entity);
+    entities.push_back(entity);
   }
 }
 
 void Orchestration::execute(ecs::ECS &ecs) {
+  if (should_shoot_this_tick()) {
+    random_alien_shoot(ecs);
+  }
+
   if (!should_move_this_tick()) {
     return;
   }
@@ -41,6 +57,30 @@ void Orchestration::execute(ecs::ECS &ecs) {
     move(ecs, entity, should_move_down);
     animate(ecs, entity);
   }
+}
+
+bool Orchestration::should_shoot_this_tick() {
+  shoot_counter++;
+  if (shoot_counter < TICKS_PER_SHOOT_CHANCE) {
+    return false;
+  }
+
+  shoot_counter = 0;
+  std::uniform_int_distribution<int> hit_roll(1, ALIEN_SHOOT_CHANCE);
+
+  return hit_roll(rand_gen) == 1;
+}
+
+void Orchestration::random_alien_shoot(ecs::ECS &ecs) {
+  if (entities.size() < 1) {
+    return;
+  }
+
+  std::uniform_int_distribution<int> alien_selection(0, entities.size() - 1);
+  auto selected_entity = entities.at(alien_selection(rand_gen));
+
+  auto position = ecs.components().get<components::Position>(selected_entity);
+  add_projectile(ecs, {position.x, position.y});
 }
 
 bool Orchestration::should_move_this_tick() {

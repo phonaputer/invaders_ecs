@@ -26,11 +26,22 @@ struct DrawRectParams {
     unsigned int b;
 };
 
+struct DrawLineParams {
+    float start_x;
+    float start_y;
+    float end_x;
+    float end_y;
+    unsigned int r;
+    unsigned int g;
+    unsigned int b;
+};
+
 class Renderer {
   public:
     virtual ~Renderer() = default;
     virtual void draw_image(const DrawImageParams &params) = 0;
     virtual void draw_rect(const DrawRectParams &params) = 0;
+    virtual void draw_line(const DrawLineParams &params) = 0;
 };
 
 } // namespace game

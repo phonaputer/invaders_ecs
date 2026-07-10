@@ -35,4 +35,9 @@ void SDLRenderer::draw_rect(const DrawRectParams &params) {
   SDL_RenderRect(renderer, &sdl_rect);
 }
 
+void SDLRenderer::draw_line(const DrawLineParams &params) {
+  SDL_SetRenderDrawColor(renderer, params.r, params.g, params.b, 255);
+  SDL_RenderLine(renderer, params.start_x, params.start_y, params.end_x, params.end_y);
+}
+
 } // namespace game
