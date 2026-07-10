@@ -7,7 +7,7 @@
 
 namespace ecs {
 
-class MessageBoard {
+class EventBroker {
   private:
     std::unordered_map<std::type_index, std::vector<std::any>> messages;
     std::unordered_map<std::type_index, std::any> singleton_messages;
@@ -23,4 +23,4 @@ class MessageBoard {
 
 } // namespace ecs
 
-#include "framework/ecs/message_board.tpp"
+#include "framework/ecs/event_broker.tpp"

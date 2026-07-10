@@ -2,7 +2,7 @@
 
 #include "framework/ecs/entity.hpp"
 
-namespace messages {
+namespace events {
 
 struct CollisionOccurred {
     ecs::Entity who_am_i;
@@ -11,4 +11,4 @@ struct CollisionOccurred {
     bool operator==(const CollisionOccurred &) const = default;
 };
 
-} // namespace messages
+} // namespace events

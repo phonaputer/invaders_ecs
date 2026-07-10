@@ -1,7 +1,7 @@
 #include "framework/game/game.hpp"
 #include "framework/ecs/component_manager.hpp"
 #include "framework/ecs/default_ecs.hpp"
-#include "framework/ecs/message_board.hpp"
+#include "framework/ecs/event_broker.hpp"
 #include "framework/game/constants.hpp"
 #include "framework/game/player_input_manager.hpp"
 #include "framework/game/scene.hpp"
@@ -83,7 +83,7 @@ void Game::draw() {
 
 void Game::set_scene(std::unique_ptr<Scene> scene) {
   ecs = std::make_unique<ecs::DefaultECS>(
-      std::make_unique<ecs::ComponentManager>(), std::make_unique<ecs::MessageBoard>()
+      std::make_unique<ecs::ComponentManager>(), std::make_unique<ecs::EventBroker>()
   );
 
   scene->initialize(

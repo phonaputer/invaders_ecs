@@ -2,15 +2,15 @@
 #include "framework/ecs/component_manager.hpp"
 #include "framework/ecs/ecs.hpp"
 #include "framework/ecs/entity.hpp"
-#include "framework/ecs/message_board.hpp"
+#include "framework/ecs/event_broker.hpp"
 #include "framework/ecs/system.hpp"
 #include <memory>
 
 namespace ecs {
 
-DefaultECS::DefaultECS(std::unique_ptr<ComponentManager> component_manager, std::unique_ptr<MessageBoard> message_board)
+DefaultECS::DefaultECS(std::unique_ptr<ComponentManager> component_manager, std::unique_ptr<EventBroker> event_broker)
     : component_manager{std::move(component_manager)},
-      message_board{std::move(message_board)} {
+      event_broker{std::move(event_broker)} {
 }
 
 Entity DefaultECS::new_entity() {
@@ -21,8 +21,8 @@ ComponentManager &DefaultECS::components() {
   return *component_manager;
 }
 
-MessageBoard &DefaultECS::messages() {
-  return *message_board;
+EventBroker &DefaultECS::events() {
+  return *event_broker;
 }
 
 void DefaultECS::add_update_system(std::unique_ptr<System> system) {
@@ -58,7 +58,7 @@ void DefaultECS::delete_entity(Entity entity) {
 }
 
 void DefaultECS::update() {
-  message_board->clear_all();
+  event_broker->clear_all();
 
   for (auto &system : update_systems) {
     system->execute(*this);

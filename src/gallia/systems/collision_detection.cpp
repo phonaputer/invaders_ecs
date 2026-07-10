@@ -5,7 +5,7 @@
 #include "framework/ecs/system.hpp"
 #include "gallia/components/collision.hpp"
 #include "gallia/components/position.hpp"
-#include "gallia/messages/collision_occurred.hpp"
+#include "gallia/events/collision_occurred.hpp"
 #include <iterator>
 #include <set>
 
@@ -45,8 +45,8 @@ void CollisionDetection::execute(ecs::ECS &ecs) {
       };
 
       if (are_touching(left_hitbox, right_hitbox)) {
-        ecs.messages().push_back(messages::CollisionOccurred{.who_am_i = left_entity, .who_i_hit = right_entity});
-        ecs.messages().push_back(messages::CollisionOccurred{.who_am_i = right_entity, .who_i_hit = left_entity});
+        ecs.events().push_back(events::CollisionOccurred{.who_am_i = left_entity, .who_i_hit = right_entity});
+        ecs.events().push_back(events::CollisionOccurred{.who_am_i = right_entity, .who_i_hit = left_entity});
       }
     }
   }

@@ -1,21 +1,21 @@
 #include "framework/ecs/component_manager.hpp"
 #include "framework/ecs/default_ecs.hpp"
 #include "framework/ecs/ecs.hpp"
-#include "framework/ecs/message_board.hpp"
+#include "framework/ecs/event_broker.hpp"
 #include "gallia/components/collision.hpp"
 #include "gallia/components/position.hpp"
-#include "gallia/messages/collision_occurred.hpp"
+#include "gallia/events/collision_occurred.hpp"
 #include "gallia/systems/collision_detection.hpp"
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 #include <memory>
 #include <string>
 
-namespace messages {
+namespace events {
 void PrintTo(const CollisionOccurred &col, std::ostream *os) {
   *os << "CollisionOccurred(" << col.who_am_i << "," << col.who_i_hit << ")";
 }
-} // namespace messages
+} // namespace events
 
 struct TestSetup {
     std::unique_ptr<ecs::ECS> ecs;
@@ -24,7 +24,7 @@ struct TestSetup {
 
 TestSetup setupTest() {
   auto ecs = std::make_unique<ecs::DefaultECS>(
-      std::make_unique<ecs::ComponentManager>(), std::make_unique<ecs::MessageBoard>()
+      std::make_unique<ecs::ComponentManager>(), std::make_unique<ecs::EventBroker>()
   );
 
   return TestSetup{
@@ -50,20 +50,20 @@ ecs::Entity createEntityWithHitbox(ecs::ECS &ecs, float x, float y, float w, flo
 }
 
 void assertTotalHits(ecs::ECS &ecs, size_t expected) {
-  auto num_hits = ecs.messages().get_all<messages::CollisionOccurred>().size();
+  auto num_hits = ecs.events().get_all<events::CollisionOccurred>().size();
 
   EXPECT_EQ(expected, num_hits / 2);
 }
 
 void assertHitEachOther(ecs::ECS &ecs, ecs::Entity left, ecs::Entity right) {
-  auto hit_messages = ecs.messages().get_all<messages::CollisionOccurred>();
+  auto hit_messages = ecs.events().get_all<events::CollisionOccurred>();
 
-  EXPECT_THAT(hit_messages, testing::Contains(messages::CollisionOccurred{.who_am_i = left, .who_i_hit = right}));
-  EXPECT_THAT(hit_messages, testing::Contains(messages::CollisionOccurred{.who_am_i = right, .who_i_hit = left}));
+  EXPECT_THAT(hit_messages, testing::Contains(events::CollisionOccurred{.who_am_i = left, .who_i_hit = right}));
+  EXPECT_THAT(hit_messages, testing::Contains(events::CollisionOccurred{.who_am_i = right, .who_i_hit = left}));
 }
 
 void assertHitNothing(ecs::ECS &ecs, ecs::Entity entity) {
-  auto hit_messages = ecs.messages().get_all<messages::CollisionOccurred>();
+  auto hit_messages = ecs.events().get_all<events::CollisionOccurred>();
 
   for (const auto &message : hit_messages) {
     EXPECT_FALSE(message.who_am_i == entity);

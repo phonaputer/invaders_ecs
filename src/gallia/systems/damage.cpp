@@ -7,7 +7,7 @@
 #include "gallia/components/damage_type_enum.hpp"
 #include "gallia/components/deletable.hpp"
 #include "gallia/components/hitpoints.hpp"
-#include "gallia/messages/collision_occurred.hpp"
+#include "gallia/events/collision_occurred.hpp"
 #include <set>
 
 namespace systems {
@@ -28,7 +28,7 @@ void Damage::add_entity_if_matches(ecs::Entity entity, ecs::ComponentManager &co
 }
 
 void Damage::execute(ecs::ECS &ecs) {
-  auto collisions = ecs.messages().get_all<messages::CollisionOccurred>();
+  auto collisions = ecs.events().get_all<events::CollisionOccurred>();
 
   for (const auto &collision : collisions) {
     if (!dealers.contains(collision.who_am_i)) {

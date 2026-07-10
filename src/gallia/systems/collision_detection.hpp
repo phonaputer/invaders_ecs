@@ -4,7 +4,6 @@
 #include "framework/ecs/ecs.hpp"
 #include "framework/ecs/entity.hpp"
 #include "framework/ecs/system.hpp"
-#include "gallia/components/collision.hpp"
 #include <set>
 
 namespace systems {

@@ -1,4 +1,4 @@
-#include "framework/ecs/message_board.hpp"
+#include "framework/ecs/event_broker.hpp"
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 #include <ostream>
@@ -19,16 +19,16 @@ struct TestMessageTwo {
     }
 };
 
-TEST(MessageBoard, GetAllWhenNoMessagesExistShouldReturnEmptyVec) {
-  auto mb = std::make_unique<ecs::MessageBoard>();
+TEST(EventBroker, GetAllWhenNoMessagesExistShouldReturnEmptyVec) {
+  auto mb = std::make_unique<ecs::EventBroker>();
 
   auto result = mb->get_all<TestMessage>();
 
   EXPECT_TRUE(result.empty());
 }
 
-TEST(MessageBoard, GetAllWhenSeveralMessagesExistShouldReturnAllInOrder) {
-  auto mb = std::make_unique<ecs::MessageBoard>();
+TEST(EventBroker, GetAllWhenSeveralMessagesExistShouldReturnAllInOrder) {
+  auto mb = std::make_unique<ecs::EventBroker>();
   auto m1 = TestMessage{.id = 1};
   auto m2 = TestMessage{.id = 2};
   auto m3 = TestMessage{.id = 3};
@@ -42,8 +42,8 @@ TEST(MessageBoard, GetAllWhenSeveralMessagesExistShouldReturnAllInOrder) {
   EXPECT_THAT(expected, testing::ElementsAreArray(result));
 }
 
-TEST(MessageBoard, SetWithMessagesOfMultipleTypesShouldStoreDifferentTypesSeparately) {
-  auto mb = std::make_unique<ecs::MessageBoard>();
+TEST(EventBroker, SetWithMessagesOfMultipleTypesShouldStoreDifferentTypesSeparately) {
+  auto mb = std::make_unique<ecs::EventBroker>();
   auto m1 = TestMessage{.id = 1};
   mb->push_back(m1);
   auto m2 = TestMessageTwo{.id_two = 2};
@@ -57,8 +57,8 @@ TEST(MessageBoard, SetWithMessagesOfMultipleTypesShouldStoreDifferentTypesSepara
   EXPECT_THAT(expected_tm2, testing::ElementsAreArray(mb->get_all<TestMessageTwo>()));
 }
 
-TEST(MessageBoard, ClearShouldRemoveAllMessagesOfAllTypes) {
-  auto mb = std::make_unique<ecs::MessageBoard>();
+TEST(EventBroker, ClearShouldRemoveAllMessagesOfAllTypes) {
+  auto mb = std::make_unique<ecs::EventBroker>();
   auto m1 = TestMessage{.id = 1};
   mb->push_back(m1);
   auto m2 = TestMessageTwo{.id_two = 2};
@@ -70,8 +70,8 @@ TEST(MessageBoard, ClearShouldRemoveAllMessagesOfAllTypes) {
   EXPECT_TRUE(result.empty());
 }
 
-TEST(MessageBoard, GetSingletonAfterSettingShouldReturnTheSetValue) {
-  auto mb = std::make_unique<ecs::MessageBoard>();
+TEST(EventBroker, GetSingletonAfterSettingShouldReturnTheSetValue) {
+  auto mb = std::make_unique<ecs::EventBroker>();
   auto message = TestMessage{
       .id = 111,
   };
@@ -82,8 +82,8 @@ TEST(MessageBoard, GetSingletonAfterSettingShouldReturnTheSetValue) {
   EXPECT_EQ(message, result);
 }
 
-TEST(MessageBoard, DoubleSetSingletonShouldLeaveOnlyTheLastValuePresent) {
-  auto mb = std::make_unique<ecs::MessageBoard>();
+TEST(EventBroker, DoubleSetSingletonShouldLeaveOnlyTheLastValuePresent) {
+  auto mb = std::make_unique<ecs::EventBroker>();
   auto message = TestMessage{
       .id = 111,
   };
@@ -98,8 +98,8 @@ TEST(MessageBoard, DoubleSetSingletonShouldLeaveOnlyTheLastValuePresent) {
   EXPECT_EQ(messageTwo, result);
 }
 
-TEST(MessageBoard, SetDifferentTypeSingletonsShouldNotInterfereWithEachOther) {
-  auto mb = std::make_unique<ecs::MessageBoard>();
+TEST(EventBroker, SetDifferentTypeSingletonsShouldNotInterfereWithEachOther) {
+  auto mb = std::make_unique<ecs::EventBroker>();
   auto message = TestMessage{
       .id = 111,
   };

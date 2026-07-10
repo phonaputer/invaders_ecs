@@ -2,7 +2,7 @@
 #include "framework/ecs/default_ecs.hpp"
 #include "framework/ecs/ecs.hpp"
 #include "framework/ecs/entity.hpp"
-#include "framework/ecs/message_board.hpp"
+#include "framework/ecs/event_broker.hpp"
 #include "framework/ecs/system.hpp"
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
@@ -20,7 +20,7 @@ struct TestComponent {
 
 TEST(DefaultECS, NewEntityWhenGettingSeveralEntitiesShouldReturnANewIDForEach) {
   auto ecs = std::make_unique<ecs::DefaultECS>(
-      std::make_unique<ecs::ComponentManager>(), std::make_unique<ecs::MessageBoard>()
+      std::make_unique<ecs::ComponentManager>(), std::make_unique<ecs::EventBroker>()
   );
 
   auto entityOne = ecs->new_entity();
@@ -34,7 +34,7 @@ TEST(DefaultECS, NewEntityWhenGettingSeveralEntitiesShouldReturnANewIDForEach) {
 
 TEST(DefaultECS, UpdateWhenUpdateSystemsArePresentShouldInvokeAllOfThem) {
   auto ecs = std::make_unique<ecs::DefaultECS>(
-      std::make_unique<ecs::ComponentManager>(), std::make_unique<ecs::MessageBoard>()
+      std::make_unique<ecs::ComponentManager>(), std::make_unique<ecs::EventBroker>()
   );
 
   auto systemOne = std::make_unique<StubSystem>();
@@ -50,7 +50,7 @@ TEST(DefaultECS, UpdateWhenUpdateSystemsArePresentShouldInvokeAllOfThem) {
 
 TEST(DefaultECS, UpdateWhenUpdateAndDrawSystemsArePresentShouldInvokeOnlyUpdateSystems) {
   auto ecs = std::make_unique<ecs::DefaultECS>(
-      std::make_unique<ecs::ComponentManager>(), std::make_unique<ecs::MessageBoard>()
+      std::make_unique<ecs::ComponentManager>(), std::make_unique<ecs::EventBroker>()
   );
 
   auto systemOne = std::make_unique<StubSystem>();
@@ -66,7 +66,7 @@ TEST(DefaultECS, UpdateWhenUpdateAndDrawSystemsArePresentShouldInvokeOnlyUpdateS
 
 TEST(DefaultECS, DrawWhenDrawSystemsArePresentShouldInvokeAllOfThem) {
   auto ecs = std::make_unique<ecs::DefaultECS>(
-      std::make_unique<ecs::ComponentManager>(), std::make_unique<ecs::MessageBoard>()
+      std::make_unique<ecs::ComponentManager>(), std::make_unique<ecs::EventBroker>()
   );
 
   auto systemOne = std::make_unique<StubSystem>();
@@ -82,7 +82,7 @@ TEST(DefaultECS, DrawWhenDrawSystemsArePresentShouldInvokeAllOfThem) {
 
 TEST(DefaultECS, DrawWhenDrawAndUpdateSystemsArePresentShouldInvokeOnlyDrawSystems) {
   auto ecs = std::make_unique<ecs::DefaultECS>(
-      std::make_unique<ecs::ComponentManager>(), std::make_unique<ecs::MessageBoard>()
+      std::make_unique<ecs::ComponentManager>(), std::make_unique<ecs::EventBroker>()
   );
 
   auto systemOne = std::make_unique<StubSystem>();
@@ -121,7 +121,7 @@ TEST(DefaultECS, DeleteEntityWhenSeveralSystemsArePresentShouldDeleteEntityFromA
 
 TEST(DefaultECS, RegisterToSystemsWhenSeveralSystemsArePresentShouldDeleteThenAddEntityToAllSystems) {
   auto ecs = std::make_unique<ecs::DefaultECS>(
-      std::make_unique<ecs::ComponentManager>(), std::make_unique<ecs::MessageBoard>()
+      std::make_unique<ecs::ComponentManager>(), std::make_unique<ecs::EventBroker>()
   );
 
   ecs::Entity entity = 1;
