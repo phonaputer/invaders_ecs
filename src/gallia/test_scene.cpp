@@ -1,6 +1,7 @@
 #include "gallia/test_scene.hpp"
 #include "framework/game/scene.hpp"
 #include "framework/game/scene_initialization_context.hpp"
+#include "gallia/hud.hpp"
 #include "gallia/invaders.hpp"
 #include "gallia/player.hpp"
 #include "gallia/player_projectile.hpp"
@@ -9,6 +10,7 @@
 #include "gallia/systems/damage.hpp"
 #include "gallia/systems/debug/hitbox_rendering.hpp"
 #include "gallia/systems/deletion.hpp"
+#include "gallia/systems/hud_rendering.hpp"
 #include "gallia/systems/invaders/orchestration.hpp"
 #include "gallia/systems/lifetime.hpp"
 #include "gallia/systems/player/movement.hpp"
@@ -24,6 +26,7 @@ void TestScene::initialize(game::SceneInitializationContext ctx) {
 
   ctx.ecs.add_draw_system(std::make_unique<systems::Rendering>(ctx.renderer));
   ctx.ecs.add_draw_system(std::make_unique<systems::debug::HitboxRendering>(ctx.renderer));
+  ctx.ecs.add_draw_system(std::make_unique<systems::HUDRendering>(ctx.renderer));
 
   ctx.ecs.add_update_system(std::make_unique<systems::CollisionDetection>());
   ctx.ecs.add_update_system(std::make_unique<systems::Damage>());
@@ -43,6 +46,7 @@ void TestScene::initialize(game::SceneInitializationContext ctx) {
 
   add_invader_entities(ctx.ecs);
   add_player_entity(ctx.ecs);
+  add_hud_entity(ctx.ecs);
 }
 
 } // namespace gallia
