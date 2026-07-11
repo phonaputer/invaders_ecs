@@ -1,4 +1,4 @@
-#include "gallia/systems/player/movement.hpp"
+#include "game/systems/player/movement.hpp"
 #include "framework/constants.hpp"
 #include "framework/ecs/component_manager.hpp"
 #include "framework/ecs/ecs.hpp"
@@ -6,9 +6,9 @@
 #include "framework/ecs/system.hpp"
 #include "framework/player_input.hpp"
 #include "framework/player_input_manager.hpp"
-#include "gallia/components/animation.hpp"
-#include "gallia/components/player/movement.hpp"
-#include "gallia/components/position.hpp"
+#include "game/components/animation.hpp"
+#include "game/components/player/movement.hpp"
+#include "game/components/position.hpp"
 
 namespace systems::player {
 

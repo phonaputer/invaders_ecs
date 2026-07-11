@@ -2,7 +2,7 @@
 
 #include "framework/game.hpp"
 #include "framework/player_input.hpp"
-#include "gallia/invasion_scene.hpp"
+#include "game/invasion_scene.hpp"
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_main.h>
 #include <memory>

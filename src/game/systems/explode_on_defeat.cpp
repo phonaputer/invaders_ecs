@@ -1,12 +1,12 @@
-#include "gallia/systems/explode_on_defeat.hpp"
+#include "game/systems/explode_on_defeat.hpp"
 #include "framework/ecs/component_manager.hpp"
 #include "framework/ecs/ecs.hpp"
 #include "framework/ecs/entity.hpp"
 #include "framework/ecs/system.hpp"
-#include "gallia/components/explode_on_defeat.hpp"
-#include "gallia/components/hitpoints.hpp"
-#include "gallia/components/position.hpp"
-#include "gallia/events/collision_occurred.hpp"
+#include "game/components/explode_on_defeat.hpp"
+#include "game/components/hitpoints.hpp"
+#include "game/components/position.hpp"
+#include "game/events/collision_occurred.hpp"
 #include <set>
 
 namespace systems {

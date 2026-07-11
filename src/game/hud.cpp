@@ -1,6 +1,6 @@
-#include "gallia/hud.hpp"
+#include "game/hud.hpp"
 #include "framework/ecs/ecs.hpp"
-#include "gallia/components/singleton/hud_stats.hpp"
+#include "game/components/singleton/hud_stats.hpp"
 
 namespace gallia {
 

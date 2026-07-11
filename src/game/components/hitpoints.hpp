@@ -1,6 +1,6 @@
 #pragma once
 
-#include "gallia/components/damage_type_enum.hpp"
+#include "game/components/damage_type_enum.hpp"
 
 namespace components {
 

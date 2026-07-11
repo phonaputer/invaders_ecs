@@ -1,10 +1,10 @@
-#include "gallia/systems/score.hpp"
+#include "game/systems/score.hpp"
 #include "framework/ecs/component_manager.hpp"
 #include "framework/ecs/ecs.hpp"
 #include "framework/ecs/entity.hpp"
 #include "framework/ecs/system.hpp"
-#include "gallia/components/singleton/hud_stats.hpp"
-#include "gallia/events/player_scored.hpp"
+#include "game/components/singleton/hud_stats.hpp"
+#include "game/events/player_scored.hpp"
 #include <format>
 
 namespace systems {

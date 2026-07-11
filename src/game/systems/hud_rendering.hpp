@@ -5,7 +5,7 @@
 #include "framework/ecs/entity.hpp"
 #include "framework/ecs/system.hpp"
 #include "framework/renderer.hpp"
-#include "gallia/util/text_renderer.hpp"
+#include "game/util/text_renderer.hpp"
 #include <set>
 
 namespace systems {

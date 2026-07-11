@@ -1,13 +1,13 @@
-#include "gallia/systems/hud_rendering.hpp"
+#include "game/systems/hud_rendering.hpp"
 #include "framework/constants.hpp"
 #include "framework/ecs/component_manager.hpp"
 #include "framework/ecs/ecs.hpp"
 #include "framework/ecs/entity.hpp"
 #include "framework/ecs/system.hpp"
 #include "framework/renderer.hpp"
-#include "gallia/components/singleton/hud_stats.hpp"
-#include "gallia/constants.hpp"
-#include "gallia/util/text_renderer.hpp"
+#include "game/components/singleton/hud_stats.hpp"
+#include "game/constants.hpp"
+#include "game/util/text_renderer.hpp"
 #include <format>
 
 namespace systems {

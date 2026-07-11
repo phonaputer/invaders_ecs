@@ -1,14 +1,14 @@
-#include "gallia/systems/damage.hpp"
+#include "game/systems/damage.hpp"
 #include "framework/ecs/component_manager.hpp"
 #include "framework/ecs/ecs.hpp"
 #include "framework/ecs/entity.hpp"
 #include "framework/ecs/system.hpp"
-#include "gallia/components/damage_dealer.hpp"
-#include "gallia/components/damage_type_enum.hpp"
-#include "gallia/components/deletable.hpp"
-#include "gallia/components/hitpoints.hpp"
-#include "gallia/events/collision_occurred.hpp"
-#include "gallia/events/player_scored.hpp"
+#include "game/components/damage_dealer.hpp"
+#include "game/components/damage_type_enum.hpp"
+#include "game/components/deletable.hpp"
+#include "game/components/hitpoints.hpp"
+#include "game/events/collision_occurred.hpp"
+#include "game/events/player_scored.hpp"
 #include <set>
 
 namespace systems {

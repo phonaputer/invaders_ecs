@@ -1,4 +1,4 @@
-#include "gallia/util/text_renderer.hpp"
+#include "game/util/text_renderer.hpp"
 #include "framework/constants.hpp"
 #include "framework/renderer.hpp"
 #include "text_renderer.hpp"

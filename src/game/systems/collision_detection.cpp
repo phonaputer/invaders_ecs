@@ -1,11 +1,11 @@
-#include "gallia/systems/collision_detection.hpp"
+#include "game/systems/collision_detection.hpp"
 #include "framework/ecs/component_manager.hpp"
 #include "framework/ecs/ecs.hpp"
 #include "framework/ecs/entity.hpp"
 #include "framework/ecs/system.hpp"
-#include "gallia/components/collision.hpp"
-#include "gallia/components/position.hpp"
-#include "gallia/events/collision_occurred.hpp"
+#include "game/components/collision.hpp"
+#include "game/components/position.hpp"
+#include "game/events/collision_occurred.hpp"
 #include <algorithm>
 #include <cmath>
 #include <cstdint>

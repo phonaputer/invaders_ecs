@@ -1,11 +1,11 @@
-#include "gallia/systems/rendering.hpp"
+#include "game/systems/rendering.hpp"
 #include "framework/ecs/component_manager.hpp"
 #include "framework/ecs/ecs.hpp"
 #include "framework/ecs/entity.hpp"
 #include "framework/ecs/system.hpp"
 #include "framework/renderer.hpp"
-#include "gallia/components/position.hpp"
-#include "gallia/components/sprite.hpp"
+#include "game/components/position.hpp"
+#include "game/components/sprite.hpp"
 
 namespace systems {
 

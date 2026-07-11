@@ -2,10 +2,10 @@
 #include "framework/ecs/default_ecs.hpp"
 #include "framework/ecs/ecs.hpp"
 #include "framework/ecs/event_broker.hpp"
-#include "gallia/components/collision.hpp"
-#include "gallia/components/position.hpp"
-#include "gallia/events/collision_occurred.hpp"
-#include "gallia/systems/collision_detection.hpp"
+#include "game/components/collision.hpp"
+#include "game/components/position.hpp"
+#include "game/events/collision_occurred.hpp"
+#include "game/systems/collision_detection.hpp"
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 #include <memory>

@@ -15,7 +15,7 @@ target_link_libraries(${PROJECT_NAME}_lib PRIVATE SDL3::SDL3)
 target_include_directories(${PROJECT_NAME}_lib PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 
 add_subdirectory(framework)
-add_subdirectory(gallia)
+add_subdirectory(game)
 
 add_executable(
   ${PROJECT_NAME} 

@@ -1,11 +1,11 @@
-#include "gallia/systems/position_following.hpp"
+#include "game/systems/position_following.hpp"
 #include "framework/ecs/component_manager.hpp"
 #include "framework/ecs/ecs.hpp"
 #include "framework/ecs/entity.hpp"
 #include "framework/ecs/system.hpp"
-#include "gallia/components/deletable.hpp"
-#include "gallia/components/position.hpp"
-#include "gallia/components/position_following.hpp"
+#include "game/components/deletable.hpp"
+#include "game/components/position.hpp"
+#include "game/components/position_following.hpp"
 
 namespace systems {
 

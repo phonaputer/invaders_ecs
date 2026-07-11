@@ -1,10 +1,10 @@
-#include "gallia/systems/lifetime.hpp"
+#include "game/systems/lifetime.hpp"
 #include "framework/ecs/component_manager.hpp"
 #include "framework/ecs/ecs.hpp"
 #include "framework/ecs/entity.hpp"
 #include "framework/ecs/system.hpp"
-#include "gallia/components/deletable.hpp"
-#include "gallia/components/lifetime.hpp"
+#include "game/components/deletable.hpp"
+#include "game/components/lifetime.hpp"
 
 namespace systems {
 

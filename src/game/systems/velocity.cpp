@@ -1,12 +1,12 @@
-#include "gallia/systems/velocity.hpp"
+#include "game/systems/velocity.hpp"
 #include "framework/constants.hpp"
 #include "framework/ecs/component_manager.hpp"
 #include "framework/ecs/ecs.hpp"
 #include "framework/ecs/entity.hpp"
 #include "framework/ecs/system.hpp"
-#include "gallia/components/deletable.hpp"
-#include "gallia/components/position.hpp"
-#include "gallia/components/velocity.hpp"
+#include "game/components/deletable.hpp"
+#include "game/components/position.hpp"
+#include "game/components/velocity.hpp"
 #include <set>
 
 namespace systems {

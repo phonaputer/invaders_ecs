@@ -1,4 +1,4 @@
-#include "gallia/systems/player/shooting.hpp"
+#include "game/systems/player/shooting.hpp"
 #include "core/point.hpp"
 #include "framework/ecs/component_manager.hpp"
 #include "framework/ecs/ecs.hpp"
@@ -6,9 +6,9 @@
 #include "framework/ecs/system.hpp"
 #include "framework/player_input.hpp"
 #include "framework/player_input_manager.hpp"
-#include "gallia/components/deletable.hpp"
-#include "gallia/components/player/shooting.hpp"
-#include "gallia/components/position.hpp"
+#include "game/components/deletable.hpp"
+#include "game/components/player/shooting.hpp"
+#include "game/components/position.hpp"
 #include <functional>
 #include <set>
 

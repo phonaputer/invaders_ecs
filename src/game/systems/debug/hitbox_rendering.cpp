@@ -1,11 +1,11 @@
-#include "gallia/systems/debug/hitbox_rendering.hpp"
+#include "game/systems/debug/hitbox_rendering.hpp"
 #include "framework/ecs/component_manager.hpp"
 #include "framework/ecs/ecs.hpp"
 #include "framework/ecs/entity.hpp"
 #include "framework/ecs/system.hpp"
 #include "framework/renderer.hpp"
-#include "gallia/components/collision.hpp"
-#include "gallia/components/position.hpp"
+#include "game/components/collision.hpp"
+#include "game/components/position.hpp"
 
 namespace systems::debug {
 

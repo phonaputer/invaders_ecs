@@ -1,9 +1,9 @@
-#include "gallia/systems/deletion.hpp"
+#include "game/systems/deletion.hpp"
 #include "framework/ecs/component_manager.hpp"
 #include "framework/ecs/ecs.hpp"
 #include "framework/ecs/entity.hpp"
 #include "framework/ecs/system.hpp"
-#include "gallia/components/deletable.hpp"
+#include "game/components/deletable.hpp"
 #include <set>
 
 namespace systems {
