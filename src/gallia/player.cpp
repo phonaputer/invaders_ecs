@@ -53,7 +53,7 @@ void add_player_entity(ecs::ECS &ecs) {
           .play_reversed = false,
           .frames = std::move(frames),
           .cur_frame = 0,
-          .ticks_per_frame = 5,
+          .ticks_per_frame = 4,
           .tick_counter = 0,
       }
   );
@@ -75,7 +75,7 @@ void add_player_entity(ecs::ECS &ecs) {
   ecs.components().set(
       entity,
       components::player::Shooting{
-          .ticks_per_shot = 7,
+          .ticks_per_shot = 20,
           .shot_clock = 0,
           .shot_offset_x = -2,
           .shot_offset_y = -2,

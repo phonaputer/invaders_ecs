@@ -253,9 +253,9 @@ void add_invader_projectile(ecs::ECS &ecs, core::Point starting_point) {
           .src_x = 80,
           .src_y = 32,
           .src_width = 16,
-          .src_height = 16,
+          .src_height = 15,
           .dst_width = 16,
-          .dst_height = 16,
+          .dst_height = 15,
       }
   );
 
