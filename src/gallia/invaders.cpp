@@ -1,6 +1,6 @@
 #include "gallia/invaders.hpp"
+#include "framework/constants.hpp"
 #include "framework/ecs/ecs.hpp"
-#include "framework/game/constants.hpp"
 #include "gallia/components/animation.hpp"
 #include "gallia/components/collision.hpp"
 #include "gallia/components/damage_dealer.hpp"

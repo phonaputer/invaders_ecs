@@ -4,7 +4,7 @@
 #include "framework/ecs/ecs.hpp"
 #include "framework/ecs/entity.hpp"
 #include "framework/ecs/system.hpp"
-#include "framework/game/player_input_manager.hpp"
+#include "framework/player_input_manager.hpp"
 #include "gallia/components/invaders/step_animation.hpp"
 #include "gallia/components/position.hpp"
 #include "gallia/components/sprite.hpp"

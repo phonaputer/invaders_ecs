@@ -1,9 +1,9 @@
 #pragma once
 
+#include "framework/asset_loader.hpp"
 #include "framework/ecs/ecs.hpp"
-#include "framework/game/asset_loader.hpp"
-#include "framework/game/player_input_manager.hpp"
-#include "framework/game/renderer.hpp"
+#include "framework/player_input_manager.hpp"
+#include "framework/renderer.hpp"
 
 namespace game {
 

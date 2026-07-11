@@ -1,6 +1,6 @@
 #pragma once
 
-#include "framework/game/constants.hpp"
+#include "framework/constants.hpp"
 
 namespace gallia {
 

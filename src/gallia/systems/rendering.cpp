@@ -3,7 +3,7 @@
 #include "framework/ecs/ecs.hpp"
 #include "framework/ecs/entity.hpp"
 #include "framework/ecs/system.hpp"
-#include "framework/game/renderer.hpp"
+#include "framework/renderer.hpp"
 #include "gallia/components/position.hpp"
 #include "gallia/components/sprite.hpp"
 

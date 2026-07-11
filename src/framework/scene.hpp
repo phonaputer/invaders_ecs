@@ -1,6 +1,6 @@
 #pragma once
 
-#include "framework/game/scene_initialization_context.hpp"
+#include "framework/scene_initialization_context.hpp"
 
 namespace game {
 

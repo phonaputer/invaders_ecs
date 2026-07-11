@@ -1,11 +1,11 @@
 #pragma once
 
 #include "core/point.hpp"
+#include "framework/constants.hpp"
 #include "framework/ecs/component_manager.hpp"
 #include "framework/ecs/ecs.hpp"
 #include "framework/ecs/entity.hpp"
 #include "framework/ecs/system.hpp"
-#include "framework/game/constants.hpp"
 #include <functional>
 #include <random>
 #include <vector>

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "framework/game/player_input.hpp"
+#include "framework/player_input.hpp"
 #include <set>
 
 namespace game {

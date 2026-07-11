@@ -1,6 +1,6 @@
 #include "gallia/invasion_scene.hpp"
-#include "framework/game/scene.hpp"
-#include "framework/game/scene_initialization_context.hpp"
+#include "framework/scene.hpp"
+#include "framework/scene_initialization_context.hpp"
 #include "gallia/hud.hpp"
 #include "gallia/invaders.hpp"
 #include "gallia/player.hpp"

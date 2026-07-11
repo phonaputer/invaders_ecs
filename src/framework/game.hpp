@@ -1,11 +1,11 @@
 #pragma once
 
 #include "framework/ecs/ecs.hpp"
-#include "framework/game/player_input_manager.hpp"
-#include "framework/game/renderer.hpp"
-#include "framework/game/scene.hpp"
-#include "framework/game/sdl_asset_manager.hpp"
-#include "framework/game/sdl_renderer.hpp"
+#include "framework/player_input_manager.hpp"
+#include "framework/renderer.hpp"
+#include "framework/scene.hpp"
+#include "framework/sdl_asset_manager.hpp"
+#include "framework/sdl_renderer.hpp"
 #include <SDL3/SDL.h>
 #include <memory>
 #include <optional>

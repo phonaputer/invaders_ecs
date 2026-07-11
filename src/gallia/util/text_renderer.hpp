@@ -1,6 +1,6 @@
 #pragma once
 
-#include "framework/game/renderer.hpp"
+#include "framework/renderer.hpp"
 #include <string>
 
 namespace util {

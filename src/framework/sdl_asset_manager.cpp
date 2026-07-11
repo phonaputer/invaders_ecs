@@ -1,4 +1,4 @@
-#include "framework/game/sdl_asset_manager.hpp"
+#include "framework/sdl_asset_manager.hpp"
 #include <SDL3/SDL.h>
 #include <format>
 #include <memory>
@@ -26,8 +26,8 @@ void SDLAssetManager::load_image_png(std::string src_id, std::string path) {
     throw std::runtime_error(std::format("Failed to create PNG surface '{}': {}", path, SDL_GetError()));
   }
 
-  auto png_texture =
-      std::shared_ptr<SDL_Texture>(SDL_CreateTextureFromSurface(renderer, png_surface.get()), SDLDeleter());
+  auto png_texture
+      = std::shared_ptr<SDL_Texture>(SDL_CreateTextureFromSurface(renderer, png_surface.get()), SDLDeleter());
   if (!png_texture.get()) {
     throw std::runtime_error(std::format("Failed to create PNG texture from surface '{}': {}", path, SDL_GetError()));
   }

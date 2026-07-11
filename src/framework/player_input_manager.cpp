@@ -1,5 +1,5 @@
-#include "framework/game/player_input_manager.hpp"
-#include "framework/game/player_input.hpp"
+#include "framework/player_input_manager.hpp"
+#include "framework/player_input.hpp"
 
 namespace game {
 

@@ -4,7 +4,7 @@
 #include "framework/ecs/ecs.hpp"
 #include "framework/ecs/entity.hpp"
 #include "framework/ecs/system.hpp"
-#include "framework/game/renderer.hpp"
+#include "framework/renderer.hpp"
 #include <set>
 
 namespace systems {

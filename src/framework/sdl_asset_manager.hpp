@@ -1,6 +1,6 @@
 #pragma once
 
-#include "framework/game/asset_loader.hpp"
+#include "framework/asset_loader.hpp"
 #include <SDL3/SDL.h>
 #include <memory>
 #include <string>

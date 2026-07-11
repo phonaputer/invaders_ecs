@@ -1,7 +1,7 @@
 #pragma once
 
-#include "framework/game/renderer.hpp"
-#include "framework/game/sdl_asset_manager.hpp"
+#include "framework/renderer.hpp"
+#include "framework/sdl_asset_manager.hpp"
 #include <SDL3/SDL.h>
 #include <string>
 

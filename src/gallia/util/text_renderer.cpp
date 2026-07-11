@@ -1,6 +1,6 @@
 #include "gallia/util/text_renderer.hpp"
-#include "framework/game/constants.hpp"
-#include "framework/game/renderer.hpp"
+#include "framework/constants.hpp"
+#include "framework/renderer.hpp"
 #include "text_renderer.hpp"
 #include <string>
 #include <unordered_map>

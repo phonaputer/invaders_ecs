@@ -1,7 +1,7 @@
 #pragma once
 
-#include "framework/game/scene.hpp"
-#include "framework/game/scene_initialization_context.hpp"
+#include "framework/scene.hpp"
+#include "framework/scene_initialization_context.hpp"
 
 namespace gallia {
 
