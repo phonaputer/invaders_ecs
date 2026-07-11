@@ -25,6 +25,12 @@ void add_player_entity(ecs::ECS &ecs) {
 
   ecs.components().set(
       entity,
+      components::Deleteable{
+          .is_deleted = false,
+      }
+  );
+  ecs.components().set(
+      entity,
       components::Position{
           .x = game::WINDOW_WIDTH / 2 - 8,
           .y = game::WINDOW_HEIGHT - 35,
@@ -80,6 +86,24 @@ void add_player_entity(ecs::ECS &ecs) {
           .shot_offset_x = -2,
           .shot_offset_y = -2,
           .max_simultaneous_shots = 2,
+      }
+  );
+  components::DamageTypeSet susceptible_damage_types;
+  susceptible_damage_types.set(components::damage_type_to_index(components::DamageType::Alien_Projectile));
+  ecs.components().set(
+      entity,
+      components::Hitpoints{
+          .susceptible_to = susceptible_damage_types,
+          .cur_hitpoints = 1,
+      }
+  );
+  components::DamageTypeSet deal_damage_types;
+  deal_damage_types.set(components::damage_type_to_index(components::DamageType::Player));
+  ecs.components().set(
+      entity,
+      components::DamageDealer{
+          .type = deal_damage_types,
+          .amount = 1,
       }
   );
 
@@ -215,6 +239,59 @@ void add_player_muzzle_flash_entity(ecs::ECS &ecs, ecs::Entity shooter) {
       components::Lifetime{
           .ticks = 20,
           .tick_counter = 0,
+      }
+  );
+
+  ecs.register_to_systems(entity);
+}
+
+void add_player_explosion_entity(ecs::ECS &ecs, core::Point position, unsigned int lifetime) {
+  auto entity = ecs.new_entity();
+
+  ecs.components().set(
+      entity,
+      components::Position{
+          .x = position.x,
+          .y = position.y,
+          .w = 16,
+          .h = 16,
+          .z = 99,
+      }
+  );
+  ecs.components().set(
+      entity,
+      components::Sprite{
+          .src_id = "invaders_spritesheet",
+          .src_x = 16,
+          .src_y = 48,
+          .src_width = 16,
+          .src_height = 16,
+          .dst_width = 16,
+          .dst_height = 16,
+      }
+  );
+  ecs.components().set(
+      entity,
+      components::Deleteable{
+          .is_deleted = false,
+      }
+  );
+  std::vector<components::AnimationFrame> frames = {{1, 3}, {0, 3}, {1, 3}, {2, 3}};
+  ecs.components().set(
+      entity,
+      components::Animation{
+          .playing = true,
+          .play_reversed = false,
+          .frames = std::move(frames),
+          .cur_frame = 0,
+          .ticks_per_frame = 5,
+          .tick_counter = 0,
+      }
+  );
+  ecs.components().set(
+      entity,
+      components::Lifetime{
+          .ticks = lifetime,
       }
   );
 

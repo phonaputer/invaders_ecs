@@ -9,6 +9,7 @@
 #include "game/components/position.hpp"
 #include "game/components/sprite.hpp"
 #include "game/components/starting_position.hpp"
+#include "game/events/pause.hpp"
 #include <random>
 #include <utility>
 #include <vector>
@@ -36,6 +37,15 @@ void Orchestration::add_entity_if_matches(ecs::Entity entity, ecs::ComponentMana
 }
 
 void Orchestration::execute(ecs::ECS &ecs) {
+  const auto pause = ecs.events().get_singleton<events::Pause>();
+  if (pause.has_value()) {
+    paused = pause.value().is_paused;
+  }
+
+  if (paused) {
+    return;
+  }
+
   if (should_shoot_this_tick()) {
     random_alien_shoot(ecs);
   }

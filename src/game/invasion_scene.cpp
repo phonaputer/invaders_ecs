@@ -13,6 +13,7 @@
 #include "game/systems/hud_rendering.hpp"
 #include "game/systems/invaders/orchestration.hpp"
 #include "game/systems/lifetime.hpp"
+#include "game/systems/player/defeat.hpp"
 #include "game/systems/player/movement.hpp"
 #include "game/systems/player/shooting.hpp"
 #include "game/systems/position_following.hpp"
@@ -30,6 +31,7 @@ void InvasionScene::initialize(game::SceneInitializationContext ctx) {
 
   ctx.ecs.add_update_system(std::make_unique<systems::CollisionDetection>());
   ctx.ecs.add_update_system(std::make_unique<systems::Damage>());
+  ctx.ecs.add_update_system(std::make_unique<systems::player::Defeat>(add_player_explosion_entity, add_player_entity));
   ctx.ecs.add_update_system(std::make_unique<systems::ExplodeOnDefeat>(add_explosion));
   ctx.ecs.add_update_system(std::make_unique<systems::Deletion>());
   ctx.ecs.add_update_system(std::make_unique<systems::player::Movement>(ctx.player_input_manager));

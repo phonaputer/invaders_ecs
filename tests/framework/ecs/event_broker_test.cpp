@@ -79,7 +79,8 @@ TEST(EventBroker, GetSingletonAfterSettingShouldReturnTheSetValue) {
 
   auto result = mb->get_singleton<TestMessage>();
 
-  EXPECT_EQ(message, result);
+  EXPECT_TRUE(result.has_value());
+  EXPECT_EQ(message, result.value());
 }
 
 TEST(EventBroker, DoubleSetSingletonShouldLeaveOnlyTheLastValuePresent) {
@@ -95,7 +96,8 @@ TEST(EventBroker, DoubleSetSingletonShouldLeaveOnlyTheLastValuePresent) {
 
   auto result = mb->get_singleton<TestMessage>();
 
-  EXPECT_EQ(messageTwo, result);
+  EXPECT_TRUE(result.has_value());
+  EXPECT_EQ(messageTwo, result.value());
 }
 
 TEST(EventBroker, SetDifferentTypeSingletonsShouldNotInterfereWithEachOther) {
@@ -109,6 +111,19 @@ TEST(EventBroker, SetDifferentTypeSingletonsShouldNotInterfereWithEachOther) {
   };
   mb->set_singleton(messageTwo);
 
-  EXPECT_EQ(message, mb->get_singleton<TestMessage>());
-  EXPECT_EQ(messageTwo, mb->get_singleton<TestMessageTwo>());
+  auto result = mb->get_singleton<TestMessage>();
+  EXPECT_TRUE(result.has_value());
+  EXPECT_EQ(message, result.value());
+
+  auto resultTwo = mb->get_singleton<TestMessageTwo>();
+  EXPECT_TRUE(resultTwo.has_value());
+  EXPECT_EQ(messageTwo, resultTwo.value());
+}
+
+TEST(EventBroker, GetSingletonWhenNoneExistsShouldReturnEmptyOptional) {
+  auto mb = std::make_unique<ecs::EventBroker>();
+
+  auto result = mb->get_singleton<TestMessage>();
+
+  EXPECT_FALSE(result.has_value());
 }

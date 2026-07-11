@@ -38,8 +38,10 @@ template <typename T> void EventBroker::set_singleton(T message) {
   singleton_messages[std::type_index(typeid(T))] = message;
 }
 
-template <typename T> T EventBroker::get_singleton() const {
-  assert(singleton_messages.contains(std::type_index(typeid(T))));
+template <typename T> std::optional<T> EventBroker::get_singleton() const {
+  if (!singleton_messages.contains(std::type_index(typeid(T)))) {
+    return std::nullopt;
+  }
 
   auto any_value = singleton_messages.at(std::type_index(typeid(T)));
 

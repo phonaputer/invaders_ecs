@@ -1,6 +1,7 @@
 #pragma once
 
 #include <any>
+#include <optional>
 #include <typeindex>
 #include <unordered_map>
 #include <vector>
@@ -18,7 +19,7 @@ class EventBroker {
     void clear_all();
 
     template <typename T> void set_singleton(T message);
-    template <typename T> T get_singleton() const;
+    template <typename T> std::optional<T> get_singleton() const;
 };
 
 } // namespace ecs

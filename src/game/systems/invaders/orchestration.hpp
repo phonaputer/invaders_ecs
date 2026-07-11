@@ -22,6 +22,8 @@ class Orchestration : public ecs::System {
     static constexpr int TICKS_PER_SHOOT_CHANCE = 45;
     static constexpr int ALIEN_SHOOT_CHANCE = 3;
 
+    bool paused = false;
+
     bool move_right = true;
     int tick_counter = 0;
     std::function<void(ecs::ECS &, core::Point)> add_projectile;

@@ -12,6 +12,8 @@ class Velocity : public ecs::System {
   private:
     std::set<ecs::Entity> entities;
 
+    bool paused = false;
+
   public:
     void remove_entity(ecs::Entity entity) override;
     void add_entity_if_matches(ecs::Entity entity, ecs::ComponentManager &components) override;

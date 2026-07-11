@@ -7,6 +7,7 @@
 #include "game/components/deletable.hpp"
 #include "game/components/position.hpp"
 #include "game/components/velocity.hpp"
+#include "game/events/pause.hpp"
 #include <set>
 
 namespace systems {
@@ -22,6 +23,15 @@ void Velocity::add_entity_if_matches(ecs::Entity entity, ecs::ComponentManager &
 }
 
 void Velocity::execute(ecs::ECS &ecs) {
+  const auto pause = ecs.events().get_singleton<events::Pause>();
+  if (pause.has_value()) {
+    paused = pause.value().is_paused;
+  }
+
+  if (paused) {
+    return;
+  }
+
   for (const auto &entity : entities) {
     auto position = ecs.components().get<components::Position>(entity);
     auto velocity = ecs.components().get<components::Velocity>(entity);
