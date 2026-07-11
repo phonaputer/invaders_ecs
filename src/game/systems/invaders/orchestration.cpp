@@ -16,8 +16,13 @@
 
 namespace systems::invaders {
 
-Orchestration::Orchestration(std::function<void(ecs::ECS &, core::Point)> add_projectile, unsigned int rand_seed)
+Orchestration::Orchestration(
+    std::function<void(ecs::ECS &, core::Point)> add_projectile,
+    std::function<void(ecs::ECS &)> rerack_aliens,
+    unsigned int rand_seed
+)
     : add_projectile{add_projectile},
+      rerack_aliens{rerack_aliens},
       rand_gen{rand_seed} {
 }
 
@@ -44,6 +49,11 @@ void Orchestration::execute(ecs::ECS &ecs) {
 
   if (paused) {
     return;
+  }
+
+  if (entities.size() < 1) {
+    rerack_aliens(ecs);
+    move_right = true;
   }
 
   if (should_shoot_this_tick()) {

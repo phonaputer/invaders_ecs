@@ -27,6 +27,7 @@ class Orchestration : public ecs::System {
     bool move_right = true;
     int tick_counter = 0;
     std::function<void(ecs::ECS &, core::Point)> add_projectile;
+    std::function<void(ecs::ECS &)> rerack_aliens;
     std::mt19937 rand_gen;
     unsigned int shoot_counter = 0;
 
@@ -40,7 +41,11 @@ class Orchestration : public ecs::System {
     void animate(ecs::ECS &ecs, ecs::Entity entity);
 
   public:
-    Orchestration(std::function<void(ecs::ECS &, core::Point)> add_projectile, unsigned int rand_seed);
+    Orchestration(
+        std::function<void(ecs::ECS &, core::Point)> add_projectile,
+        std::function<void(ecs::ECS &)> rerack_aliens,
+        unsigned int rand_seed
+    );
     void remove_entity(ecs::Entity entity) override;
     void add_entity_if_matches(ecs::Entity entity, ecs::ComponentManager &components) override;
     void execute(ecs::ECS &ecs) override;

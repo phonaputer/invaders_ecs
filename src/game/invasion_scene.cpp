@@ -40,7 +40,9 @@ void InvasionScene::initialize(game::SceneInitializationContext ctx) {
           ctx.player_input_manager, add_player_projectile_entity, add_player_muzzle_flash_entity
       )
   );
-  ctx.ecs.add_update_system(std::make_unique<systems::invaders::Orchestration>(add_invader_projectile, rd()));
+  ctx.ecs.add_update_system(
+      std::make_unique<systems::invaders::Orchestration>(add_invader_projectile, add_invader_entities, rd())
+  );
   ctx.ecs.add_update_system(std::make_unique<systems::Velocity>());
   ctx.ecs.add_update_system(std::make_unique<systems::PositionFollowing>());
   ctx.ecs.add_update_system(std::make_unique<systems::Lifetime>());
