@@ -155,6 +155,53 @@ TEST(ComponentManager, ExecuteWhenEntitiesBarelyTouchingShouldMarkThemAsHavingCo
   assertHitEachOther(*setup.ecs, entity_one, entity_two);
 }
 
+TEST(ComponentManager, ExecuteBigEntityCrossingMultipleBucketsShouldStillRegisterCollisionsCorrectly) {
+  TestSetup setup = setupTest();
+  auto entity_one = createEntityWithHitbox(*setup.ecs, 8, 8, 16, 16);
+  setup.system.add_entity_if_matches(entity_one, setup.ecs->components());
+  auto entity_two = createEntityWithHitbox(*setup.ecs, 8, 8, 1, 1);
+  setup.system.add_entity_if_matches(entity_two, setup.ecs->components());
+  auto entity_three = createEntityWithHitbox(*setup.ecs, 23, 23, 1, 1);
+  setup.system.add_entity_if_matches(entity_three, setup.ecs->components());
+  auto entity_four = createEntityWithHitbox(*setup.ecs, 8, 23, 1, 1);
+  setup.system.add_entity_if_matches(entity_four, setup.ecs->components());
+  auto entity_five = createEntityWithHitbox(*setup.ecs, 23, 8, 1, 1);
+  setup.system.add_entity_if_matches(entity_five, setup.ecs->components());
+
+  setup.system.execute(*setup.ecs);
+
+  assertTotalHits(*setup.ecs, 4);
+  assertHitEachOther(*setup.ecs, entity_one, entity_two);
+  assertHitEachOther(*setup.ecs, entity_one, entity_three);
+  assertHitEachOther(*setup.ecs, entity_one, entity_four);
+  assertHitEachOther(*setup.ecs, entity_one, entity_five);
+}
+
+TEST(ComponentManager, ExecuteEntitiesOverlapAtNegativeCoordinatesShouldMarkThemAsHavingCollided) {
+  TestSetup setup = setupTest();
+  auto entity_one = createEntityWithHitbox(*setup.ecs, -10, -10, 1, 1);
+  setup.system.add_entity_if_matches(entity_one, setup.ecs->components());
+  auto entity_two = createEntityWithHitbox(*setup.ecs, -10, -10, 1, 1);
+  setup.system.add_entity_if_matches(entity_two, setup.ecs->components());
+
+  setup.system.execute(*setup.ecs);
+
+  assertHitEachOther(*setup.ecs, entity_one, entity_two);
+}
+
+TEST(ComponentManager, ExecuteEntitiesTouchingInMultipleBucketsShouldOnlyRegisterOneHit) {
+  TestSetup setup = setupTest();
+  auto entity_one = createEntityWithHitbox(*setup.ecs, 8, 8, 16, 16);
+  setup.system.add_entity_if_matches(entity_one, setup.ecs->components());
+  auto entity_two = createEntityWithHitbox(*setup.ecs, 8, 8, 16, 16);
+  setup.system.add_entity_if_matches(entity_two, setup.ecs->components());
+
+  setup.system.execute(*setup.ecs);
+
+  assertTotalHits(*setup.ecs, 1);
+  assertHitEachOther(*setup.ecs, entity_one, entity_two);
+}
+
 TEST(ComponentManager, ExecuteWhenEntityAboveOtherShouldNOTMarkThemAsHavingCollided) {
   TestSetup setup = setupTest();
   auto entity_one = createEntityWithHitbox(*setup.ecs, 2, 5, 1, 1);

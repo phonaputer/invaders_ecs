@@ -6,6 +6,9 @@
 #include "gallia/components/collision.hpp"
 #include "gallia/components/position.hpp"
 #include "gallia/events/collision_occurred.hpp"
+#include <algorithm>
+#include <cmath>
+#include <cstdint>
 #include <iterator>
 #include <set>
 
@@ -22,34 +25,87 @@ void CollisionDetection::add_entity_if_matches(ecs::Entity entity, ecs::Componen
 }
 
 void CollisionDetection::execute(ecs::ECS &ecs) {
-  for (auto l = entities.begin(); l != entities.end(); l++) {
-    auto left_entity = *l;
-    auto left_collision = ecs.components().get<components::Collision>(left_entity);
-    auto left_position = ecs.components().get<components::Position>(left_entity);
-    auto left_hitbox = Hitbox{
-        .x = left_collision.hitbox_offset_x + left_position.x,
-        .y = left_collision.hitbox_offset_y + left_position.y,
-        .w = left_collision.hitbox_w,
-        .h = left_collision.hitbox_h,
+  fill_buckets(ecs);
+
+  for (const auto &[_, bucket] : hitbox_buckets) {
+    check_collisions(ecs, bucket);
+  }
+
+  clear_buckets();
+}
+
+std::int32_t CollisionDetection::to_bucket_key(float x, float y) {
+  auto bucket_x = static_cast<std::int16_t>(x / BUCKET_WIDTH);
+  auto bucket_y = static_cast<std::int16_t>(y / BUCKET_HEIGHT);
+
+  return ((std::int32_t)bucket_x << 8) | bucket_y;
+}
+
+void CollisionDetection::fill_buckets(ecs::ECS &ecs) {
+  for (auto e = entities.begin(); e != entities.end(); e++) {
+    auto collision = ecs.components().get<components::Collision>(*e);
+    auto position = ecs.components().get<components::Position>(*e);
+    auto hitbox = Hitbox{
+        .entity = *e,
+        .x = collision.hitbox_offset_x + position.x,
+        .y = collision.hitbox_offset_y + position.y,
+        .w = collision.hitbox_w,
+        .h = collision.hitbox_h,
     };
 
-    for (auto r = std::next(l); r != entities.end(); r++) {
-      auto right_entity = *r;
-      auto right_collision = ecs.components().get<components::Collision>(right_entity);
-      auto right_position = ecs.components().get<components::Position>(right_entity);
-      auto right_hitbox = Hitbox{
-          .x = right_collision.hitbox_offset_x + right_position.x,
-          .y = right_collision.hitbox_offset_y + right_position.y,
-          .w = right_collision.hitbox_w,
-          .h = right_collision.hitbox_h,
-      };
+    add_to_bucket(hitbox, hitbox.x, hitbox.y);
+    add_to_bucket(hitbox, hitbox.x, std::ceil(hitbox.y + hitbox.h));
+    add_to_bucket(hitbox, std::ceil(hitbox.x + hitbox.w), hitbox.y);
+    add_to_bucket(hitbox, std::ceil(hitbox.x + hitbox.w), std::ceil(hitbox.y + hitbox.h));
+  }
+}
 
-      if (are_touching(left_hitbox, right_hitbox)) {
-        ecs.events().push_back(events::CollisionOccurred{.who_am_i = left_entity, .who_i_hit = right_entity});
-        ecs.events().push_back(events::CollisionOccurred{.who_am_i = right_entity, .who_i_hit = left_entity});
+void CollisionDetection::add_to_bucket(Hitbox hitbox, float x, float y) {
+  auto &bucket = hitbox_buckets[to_bucket_key(x, y)];
+
+  for (const auto &hb : bucket) {
+    if (hb.entity == hitbox.entity) {
+      return;
+    }
+  }
+
+  bucket.push_back(hitbox);
+}
+
+// It's ok to clear these without deleting them from the map since the size of
+// the canvas never changes meaning the list of buckets is fixed.
+void CollisionDetection::clear_buckets() {
+  for (auto &[_, v] : hitbox_buckets) {
+    v.clear();
+  }
+}
+
+void CollisionDetection::check_collisions(ecs::ECS &ecs, const std::vector<Hitbox> hitboxes) {
+  for (size_t l = 0; l < hitboxes.size(); l++) {
+    auto left = hitboxes.at(l);
+
+    for (size_t r = l + 1; r < hitboxes.size(); r++) {
+      auto right = hitboxes.at(r);
+
+      if (are_touching(left, right)) {
+        emit_collided_if_didnt_already(ecs, left.entity, right.entity);
       }
     }
   }
+}
+
+void CollisionDetection::emit_collided_if_didnt_already(ecs::ECS &ecs, ecs::Entity right, ecs::Entity left) {
+  for (const auto &event : ecs.events().get_all<events::CollisionOccurred>()) {
+    if (event.who_am_i == right && event.who_i_hit == left) {
+      return;
+    }
+    if (event.who_am_i == left && event.who_i_hit == right) {
+      return;
+    }
+  }
+
+  ecs.events().push_back(events::CollisionOccurred{.who_am_i = left, .who_i_hit = right});
+  ecs.events().push_back(events::CollisionOccurred{.who_am_i = right, .who_i_hit = left});
 }
 
 bool CollisionDetection::are_touching(Hitbox right, Hitbox left) {
