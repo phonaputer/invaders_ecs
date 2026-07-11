@@ -6,8 +6,10 @@
 #include "gallia/components/damage_dealer.hpp"
 #include "gallia/components/damage_type_enum.hpp"
 #include "gallia/components/deletable.hpp"
+#include "gallia/components/explode_on_defeat.hpp"
 #include "gallia/components/hitpoints.hpp"
 #include "gallia/components/invaders/step_animation.hpp"
+#include "gallia/components/lifetime.hpp"
 #include "gallia/components/position.hpp"
 #include "gallia/components/sprite.hpp"
 #include "gallia/components/starting_position.hpp"
@@ -109,6 +111,8 @@ void add_invader_entity(ecs::ECS &ecs, AddInvaderArgs args) {
           .is_deleted = false,
       }
   );
+
+  ecs.components().set(entity, components::ExplodeOnDefeat{});
 
   ecs.register_to_systems(entity);
 }
@@ -311,6 +315,62 @@ void add_invader_projectile(ecs::ECS &ecs, core::Point starting_point) {
       components::DamageDealer{
           .type = deal_damage_types,
           .amount = 1,
+      }
+  );
+
+  ecs.components().set(entity, components::ExplodeOnDefeat{});
+
+  ecs.register_to_systems(entity);
+}
+
+void add_explosion(ecs::ECS &ecs, core::Point position) {
+  auto entity = ecs.new_entity();
+
+  ecs.components().set(
+      entity,
+      components::Position{
+          .x = position.x,
+          .y = position.y,
+          .w = 16,
+          .h = 16,
+          .z = 102,
+      }
+  );
+  ecs.components().set(
+      entity,
+      components::Sprite{
+          .src_id = "invaders_spritesheet",
+          .src_x = 48,
+          .src_y = 16,
+          .src_width = 16,
+          .src_height = 16,
+          .dst_width = 16,
+          .dst_height = 16,
+      }
+  );
+  ecs.components().set(
+      entity,
+      components::Deleteable{
+          .is_deleted = false,
+      }
+  );
+  std::vector<components::AnimationFrame> frames = {{3, 1}, {4, 1}, {5, 1}, {6, 1}};
+  ecs.components().set(
+      entity,
+      components::Animation{
+          .playing = true,
+          .play_reversed = false,
+          .frames = std::move(frames),
+          .cur_frame = 0,
+          .ticks_per_frame = 5,
+          .tick_counter = 0,
+      }
+  );
+  ecs.components().set(
+      entity,
+      components::Lifetime{
+          .ticks = 20,
+          .tick_counter = 0,
       }
   );
 

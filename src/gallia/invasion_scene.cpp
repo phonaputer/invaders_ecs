@@ -1,4 +1,4 @@
-#include "gallia/test_scene.hpp"
+#include "gallia/invasion_scene.hpp"
 #include "framework/game/scene.hpp"
 #include "framework/game/scene_initialization_context.hpp"
 #include "gallia/hud.hpp"
@@ -9,6 +9,7 @@
 #include "gallia/systems/damage.hpp"
 #include "gallia/systems/debug/hitbox_rendering.hpp"
 #include "gallia/systems/deletion.hpp"
+#include "gallia/systems/explode_on_defeat.hpp"
 #include "gallia/systems/hud_rendering.hpp"
 #include "gallia/systems/invaders/orchestration.hpp"
 #include "gallia/systems/lifetime.hpp"
@@ -22,13 +23,14 @@
 
 namespace gallia {
 
-void TestScene::initialize(game::SceneInitializationContext ctx) {
+void InvasionScene::initialize(game::SceneInitializationContext ctx) {
   ctx.assets.load_image_png("invaders_spritesheet", "./assets/space_invaders.png");
 
   std::random_device rd;
 
   ctx.ecs.add_update_system(std::make_unique<systems::CollisionDetection>());
   ctx.ecs.add_update_system(std::make_unique<systems::Damage>());
+  ctx.ecs.add_update_system(std::make_unique<systems::ExplodeOnDefeat>(add_explosion));
   ctx.ecs.add_update_system(std::make_unique<systems::Deletion>());
   ctx.ecs.add_update_system(std::make_unique<systems::player::Movement>(ctx.player_input_manager));
   ctx.ecs.add_update_system(

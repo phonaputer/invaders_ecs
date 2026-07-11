@@ -5,6 +5,7 @@ target_sources(
   collision_detection.cpp
   damage.cpp
   deletion.cpp
+  explode_on_defeat.cpp
   hud_rendering.cpp
   lifetime.cpp
   position_following.cpp
