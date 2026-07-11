@@ -65,6 +65,15 @@ void add_player_entity(ecs::ECS &ecs) {
   );
   ecs.components().set(
       entity,
+      components::Collision{
+          .hitbox_offset_x = 0,
+          .hitbox_offset_y = 7,
+          .hitbox_w = 15,
+          .hitbox_h = 5,
+      }
+  );
+  ecs.components().set(
+      entity,
       components::player::Shooting{
           .ticks_per_shot = 7,
           .shot_clock = 0,
