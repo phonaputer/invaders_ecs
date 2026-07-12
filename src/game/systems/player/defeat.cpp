@@ -19,10 +19,13 @@
 namespace systems::player {
 
 Defeat::Defeat(
-    std::function<void(ecs::ECS &, core::Point, unsigned int)> add_explosion, std::function<void(ecs::ECS &)> add_player
+    std::function<void(ecs::ECS &, core::Point, unsigned int)> add_explosion,
+    std::function<void(ecs::ECS &)> add_player,
+    std::function<void(ecs::ECS &)> add_fortresses
 )
     : add_explosion{add_explosion},
-      add_player{add_player} {
+      add_player{add_player},
+      add_fortresses{add_fortresses} {
 }
 
 void Defeat::remove_entity(ecs::Entity entity) {
@@ -117,6 +120,8 @@ void Defeat::handle_ongoing_pause(ecs::ECS &ecs) {
     ecs.components().set_singleton(stats);
 
     delete_all_entities(ecs);
+
+    add_fortresses(ecs);
   }
 
   add_player(ecs);

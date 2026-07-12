@@ -81,11 +81,11 @@ void add_player_entity(ecs::ECS &ecs) {
   ecs.components().set(
       entity,
       components::player::Shooting{
-          .ticks_per_shot = 20,
+          .ticks_per_shot = 8,
           .shot_clock = 0,
           .shot_offset_x = -2,
           .shot_offset_y = -2,
-          .max_simultaneous_shots = 2,
+          .max_simultaneous_shots = 3,
       }
   );
   components::DamageTypeSet susceptible_damage_types;

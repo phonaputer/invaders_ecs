@@ -23,6 +23,7 @@ class Defeat : public ecs::System {
     bool game_is_over = false;
     std::function<void(ecs::ECS &, core::Point, unsigned int)> add_explosion;
     std::function<void(ecs::ECS &)> add_player;
+    std::function<void(ecs::ECS &)> add_fortresses;
 
     void handle_defeat_if_any(ecs::ECS &ecs);
     void handle_defeat(ecs::ECS &ecs, ecs::Entity player_entity);
@@ -32,7 +33,8 @@ class Defeat : public ecs::System {
   public:
     Defeat(
         std::function<void(ecs::ECS &, core::Point, unsigned int)> add_explosion,
-        std::function<void(ecs::ECS &)> add_player
+        std::function<void(ecs::ECS &)> add_player,
+        std::function<void(ecs::ECS &)> add_fortresses
     );
     void remove_entity(ecs::Entity entity) override;
     void add_entity_if_matches(ecs::Entity entity, ecs::ComponentManager &components) override;

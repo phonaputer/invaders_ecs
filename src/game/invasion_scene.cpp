@@ -34,7 +34,9 @@ void InvasionScene::initialize(game::SceneInitializationContext ctx) {
   ctx.ecs.add_update_system(std::make_unique<systems::CollisionDetection>());
   ctx.ecs.add_update_system(std::make_unique<systems::Damage>());
   ctx.ecs.add_update_system(std::make_unique<systems::SpriteOffsetOnDamage>());
-  ctx.ecs.add_update_system(std::make_unique<systems::player::Defeat>(add_player_explosion_entity, add_player_entity));
+  ctx.ecs.add_update_system(
+      std::make_unique<systems::player::Defeat>(add_player_explosion_entity, add_player_entity, add_fortresses)
+  );
   ctx.ecs.add_update_system(std::make_unique<systems::ExplodeOnDefeat>(add_explosion));
   ctx.ecs.add_update_system(std::make_unique<systems::Deletion>());
   ctx.ecs.add_update_system(std::make_unique<systems::player::Movement>(ctx.player_input_manager));

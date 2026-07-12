@@ -290,9 +290,9 @@ void add_invader_projectile(ecs::ECS &ecs, core::Point starting_point) {
   ecs.components().set(
       entity,
       components::Collision{
-          .hitbox_offset_x = 6,
+          .hitbox_offset_x = 7,
           .hitbox_offset_y = 4,
-          .hitbox_w = 3,
+          .hitbox_w = 1,
           .hitbox_h = 6,
       }
   );
