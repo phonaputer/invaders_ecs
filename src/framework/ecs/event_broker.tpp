@@ -32,6 +32,7 @@ template <typename T> std::vector<T> EventBroker::get_all() const {
 
 inline void EventBroker::clear_all() {
   messages.clear();
+  singleton_messages.clear();
 }
 
 template <typename T> void EventBroker::set_singleton(T message) {

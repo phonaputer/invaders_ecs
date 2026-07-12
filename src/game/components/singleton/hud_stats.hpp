@@ -6,6 +6,7 @@ struct HUDStats {
     int lives;
     int score;
     int high_score;
+    bool game_over;
 };
 
 } // namespace components::singleton

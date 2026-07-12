@@ -45,6 +45,10 @@ void HUDRendering::execute(ecs::ECS &ecs) {
   text_renderer.render_text(6, 6, std::format("score:{}", hud_stats.score));
   text_renderer.render_text(game::WINDOW_WIDTH / 2 - 28, 6, std::format("hi-score:{}", hud_stats.high_score));
   text_renderer.render_text(game::WINDOW_WIDTH - 48, 6, std::format("lives:{}", hud_stats.lives));
+
+  if (hud_stats.game_over) {
+    text_renderer.render_text(game::WINDOW_WIDTH / 2 - 28, game::WINDOW_HEIGHT / 2, "game over");
+  }
 }
 
 } // namespace systems

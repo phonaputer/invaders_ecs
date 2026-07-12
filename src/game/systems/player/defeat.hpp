@@ -14,15 +14,18 @@ class Defeat : public ecs::System {
   private:
     static constexpr unsigned int DEFEAT_PAUSE_TICKS = 100;
 
-    std::set<ecs::Entity> entities;
+    std::set<ecs::Entity> player_entities;
+    std::set<ecs::Entity> deletable_entities;
 
     unsigned int defeat_pause_counter = 0;
     bool defeat_pause_ongoing = false;
+    bool game_is_over = false;
     std::function<void(ecs::ECS &, core::Point, unsigned int)> add_explosion;
     std::function<void(ecs::ECS &)> add_player;
 
     void handle_defeat_if_any(ecs::ECS &ecs);
     void handle_ongoing_pause(ecs::ECS &ecs);
+    void delete_all_entities(ecs::ECS &ecs);
 
   public:
     Defeat(

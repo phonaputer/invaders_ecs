@@ -127,3 +127,26 @@ TEST(EventBroker, GetSingletonWhenNoneExistsShouldReturnEmptyOptional) {
 
   EXPECT_FALSE(result.has_value());
 }
+
+TEST(EventBroker, ClearAllShouldClearAllEvents) {
+  auto mb = std::make_unique<ecs::EventBroker>();
+  auto m1 = TestMessage{.id = 1};
+  mb->push_back(m1);
+  auto m2 = TestMessageTwo{.id_two = 2};
+  mb->push_back(m2);
+  auto s1 = TestMessage{
+      .id = 111,
+  };
+  mb->set_singleton(s1);
+  auto s2 = TestMessageTwo{
+      .id_two = 222,
+  };
+  mb->set_singleton(s2);
+
+  mb->clear_all();
+
+  EXPECT_EQ(0, mb->get_all<TestMessage>().size());
+  EXPECT_EQ(0, mb->get_all<TestMessageTwo>().size());
+  EXPECT_FALSE(mb->get_singleton<TestMessage>().has_value());
+  EXPECT_FALSE(mb->get_singleton<TestMessageTwo>().has_value());
+}
