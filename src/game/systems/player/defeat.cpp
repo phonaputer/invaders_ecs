@@ -13,6 +13,7 @@
 #include "game/events/collision_occurred.hpp"
 #include "game/events/pause.hpp"
 #include <functional>
+#include <optional>
 #include <set>
 
 namespace systems::player {
@@ -25,14 +26,17 @@ Defeat::Defeat(
 }
 
 void Defeat::remove_entity(ecs::Entity entity) {
-  player_entities.erase(entity);
   deletable_entities.erase(entity);
+
+  if (player.has_value() && player.value() == entity) {
+    player = std::nullopt;
+  }
 }
 
 void Defeat::add_entity_if_matches(ecs::Entity entity, ecs::ComponentManager &components) {
   if (components.has<components::player::Movement>(entity) && components.has<components::Hitpoints>(entity)
       && components.has<components::Position>(entity) && components.has<components::Deleteable>(entity)) {
-    player_entities.insert(entity);
+    player = entity;
   }
 
   if (components.has<components::Deleteable>(entity)) {
@@ -49,35 +53,40 @@ void Defeat::execute(ecs::ECS &ecs) {
 }
 
 void Defeat::handle_defeat_if_any(ecs::ECS &ecs) {
-  for (const auto &event : ecs.events().get_all<events::CollisionOccurred>()) {
-    if (player_entities.contains(event.who_i_hit)
-        && ecs.components().get<components::Hitpoints>(event.who_i_hit).cur_hitpoints < 1) {
-      auto position = ecs.components().get<components::Position>(event.who_i_hit);
-
-      add_explosion(ecs, {position.x, position.y}, DEFEAT_PAUSE_TICKS);
-
-      ecs.events().set_singleton(
-          events::Pause{
-              .is_paused = true,
-          }
-      );
-
-      ecs.components().set(event.who_i_hit, components::Deleteable{.is_deleted = true});
-
-      auto stats = ecs.components().get_singleton<components::singleton::HUDStats>();
-      stats.lives -= 1;
-
-      if (stats.lives < 0) {
-        stats.game_over = true;
-        stats.lives = 0;
-        game_is_over = true;
-      }
-
-      ecs.components().set_singleton(stats);
-
-      defeat_pause_ongoing = true;
-    }
+  if (!player.has_value()) {
+    return;
   }
+
+  if (ecs.components().get<components::Hitpoints>(player.value()).cur_hitpoints < 1) {
+    handle_defeat(ecs, player.value());
+  }
+}
+
+void Defeat::handle_defeat(ecs::ECS &ecs, ecs::Entity player_entity) {
+  auto position = ecs.components().get<components::Position>(player_entity);
+
+  add_explosion(ecs, {position.x, position.y}, DEFEAT_PAUSE_TICKS);
+
+  ecs.events().set_singleton(
+      events::Pause{
+          .is_paused = true,
+      }
+  );
+
+  ecs.components().set(player_entity, components::Deleteable{.is_deleted = true});
+
+  auto stats = ecs.components().get_singleton<components::singleton::HUDStats>();
+  stats.lives -= 1;
+
+  if (stats.lives < 0) {
+    stats.game_over = true;
+    stats.lives = 0;
+    game_is_over = true;
+  }
+
+  ecs.components().set_singleton(stats);
+
+  defeat_pause_ongoing = true;
 }
 
 void Defeat::handle_ongoing_pause(ecs::ECS &ecs) {
