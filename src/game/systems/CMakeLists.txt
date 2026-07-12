@@ -11,6 +11,7 @@ target_sources(
   position_following.cpp
   rendering.cpp
   score.cpp
+  sprite_offset_on_damage.cpp
   velocity.cpp
 )
 

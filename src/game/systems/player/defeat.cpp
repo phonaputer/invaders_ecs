@@ -10,7 +10,7 @@
 #include "game/components/position.hpp"
 #include "game/components/singleton/hud_stats.hpp"
 #include "game/constants.hpp"
-#include "game/events/collision_occurred.hpp"
+#include "game/events/defeated.hpp"
 #include "game/events/pause.hpp"
 #include <functional>
 #include <optional>
@@ -57,8 +57,11 @@ void Defeat::handle_defeat_if_any(ecs::ECS &ecs) {
     return;
   }
 
-  if (ecs.components().get<components::Hitpoints>(player.value()).cur_hitpoints < 1) {
-    handle_defeat(ecs, player.value());
+  for (const auto &event : ecs.events().get_all<events::Defeated>()) {
+    if (event.entity == player.value()) {
+      handle_defeat(ecs, player.value());
+      return;
+    }
   }
 }
 

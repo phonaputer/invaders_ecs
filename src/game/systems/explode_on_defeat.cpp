@@ -4,9 +4,8 @@
 #include "framework/ecs/entity.hpp"
 #include "framework/ecs/system.hpp"
 #include "game/components/explode_on_defeat.hpp"
-#include "game/components/hitpoints.hpp"
 #include "game/components/position.hpp"
-#include "game/events/collision_occurred.hpp"
+#include "game/events/defeated.hpp"
 #include <set>
 
 namespace systems {
@@ -20,19 +19,15 @@ void ExplodeOnDefeat::remove_entity(ecs::Entity entity) {
 }
 
 void ExplodeOnDefeat::add_entity_if_matches(ecs::Entity entity, ecs::ComponentManager &components) {
-  if (components.has<components::ExplodeOnDefeat>(entity) && components.has<components::Position>(entity)
-      && components.has<components::Hitpoints>(entity)) {
+  if (components.has<components::ExplodeOnDefeat>(entity) && components.has<components::Position>(entity)) {
     entities.insert(entity);
   }
 }
 
 void ExplodeOnDefeat::execute(ecs::ECS &ecs) {
-  // iterating collisions because most ticks there won't be a collision but
-  // there will always be entities in the entity set
-  for (const auto &event : ecs.events().get_all<events::CollisionOccurred>()) {
-    if (entities.contains(event.who_i_hit)
-        && ecs.components().get<components::Hitpoints>(event.who_i_hit).cur_hitpoints < 1) {
-      auto position = ecs.components().get<components::Position>(event.who_i_hit);
+  for (const auto &event : ecs.events().get_all<events::Defeated>()) {
+    if (entities.contains(event.entity)) {
+      auto position = ecs.components().get<components::Position>(event.entity);
 
       add_explosion(ecs, {position.x, position.y});
     }

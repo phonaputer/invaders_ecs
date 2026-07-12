@@ -8,7 +8,9 @@
 #include "game/components/deletable.hpp"
 #include "game/components/hitpoints.hpp"
 #include "game/events/collision_occurred.hpp"
+#include "game/events/defeated.hpp"
 #include "game/events/player_scored.hpp"
+#include "game/events/took_damage.hpp"
 #include <set>
 
 namespace systems {
@@ -50,9 +52,13 @@ void Damage::execute(ecs::ECS &ecs) {
     hitpoints.cur_hitpoints -= damage.amount;
     ecs.components().set(collision.who_i_hit, hitpoints);
 
+    ecs.events().push_back(events::TookDamage{.entity = collision.who_i_hit, .amount = damage.amount});
+
     if (hitpoints.cur_hitpoints > 0) {
       continue;
     }
+
+    ecs.events().push_back(events::Defeated{.entity = collision.who_i_hit});
 
     if (ecs.components().has<components::Deleteable>(collision.who_i_hit)) {
       ecs.components().set(

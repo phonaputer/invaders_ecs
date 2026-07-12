@@ -1,6 +1,7 @@
 #include "game/invasion_scene.hpp"
 #include "framework/scene.hpp"
 #include "framework/scene_initialization_context.hpp"
+#include "game/fortress.hpp"
 #include "game/hud.hpp"
 #include "game/invaders.hpp"
 #include "game/player.hpp"
@@ -19,6 +20,7 @@
 #include "game/systems/position_following.hpp"
 #include "game/systems/rendering.hpp"
 #include "game/systems/score.hpp"
+#include "game/systems/sprite_offset_on_damage.hpp"
 #include "game/systems/velocity.hpp"
 #include <random>
 
@@ -31,6 +33,7 @@ void InvasionScene::initialize(game::SceneInitializationContext ctx) {
 
   ctx.ecs.add_update_system(std::make_unique<systems::CollisionDetection>());
   ctx.ecs.add_update_system(std::make_unique<systems::Damage>());
+  ctx.ecs.add_update_system(std::make_unique<systems::SpriteOffsetOnDamage>());
   ctx.ecs.add_update_system(std::make_unique<systems::player::Defeat>(add_player_explosion_entity, add_player_entity));
   ctx.ecs.add_update_system(std::make_unique<systems::ExplodeOnDefeat>(add_explosion));
   ctx.ecs.add_update_system(std::make_unique<systems::Deletion>());
@@ -56,6 +59,7 @@ void InvasionScene::initialize(game::SceneInitializationContext ctx) {
   add_invader_entities(ctx.ecs);
   add_player_entity(ctx.ecs);
   add_hud_entity(ctx.ecs);
+  add_fortresses(ctx.ecs);
 }
 
 } // namespace gallia
