@@ -7,6 +7,7 @@
 #include "framework/sdl_asset_manager.hpp"
 #include "framework/sdl_renderer.hpp"
 #include <SDL3/SDL.h>
+#include <flecs.h> // not used for anything yet, just checking if this can compile
 #include <memory>
 #include <optional>
 

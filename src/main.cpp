@@ -7,12 +7,6 @@
 #include <SDL3/SDL_main.h>
 #include <memory>
 
-// TODO
-// * Test ECS and see if it works.
-// * Maybe add some unit tests.
-// * Add a player spaceship.
-// * Make player spaceship movable with the arrow keys.
-// * Allow player spaceship to shoot projectiles with spacebar.
 SDL_AppResult SDL_AppInit(void **appstate, [[maybe_unused]] int argc, [[maybe_unused]] char *argv[]) {
   framework::Game *game = nullptr;
   try {
