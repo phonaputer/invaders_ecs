@@ -15,7 +15,7 @@
 namespace systems::player {
 
 Shooting::Shooting(
-    game::PlayerInputManager &player_input_manager,
+    framework::PlayerInputManager &player_input_manager,
     std::function<ecs::Entity(ecs::ECS &ecs, core::Point)> add_projectile,
     std::function<void(ecs::ECS &, ecs::Entity)> add_muzzle_flash
 )
@@ -45,7 +45,7 @@ void Shooting::execute(ecs::ECS &ecs) {
 
     bool fire = false;
 
-    if (player_input_manager.is_engaged(game::PlayerInput::FIRE)
+    if (player_input_manager.is_engaged(framework::PlayerInput::FIRE)
         && active_projectiles.size() < shooting.max_simultaneous_shots
         && shooting.shot_clock >= shooting.ticks_per_shot) {
       fire = true;

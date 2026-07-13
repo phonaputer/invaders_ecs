@@ -12,11 +12,11 @@ namespace systems {
 
 class HUDRendering : public ecs::System {
   private:
-    game::Renderer &renderer;
+    framework::Renderer &renderer;
     util::TextRenderer text_renderer;
 
   public:
-    HUDRendering(game::Renderer &renderer);
+    HUDRendering(framework::Renderer &renderer);
     void remove_entity(ecs::Entity entity) override;
     void add_entity_if_matches(ecs::Entity entity, ecs::ComponentManager &components) override;
     void execute(ecs::ECS &ecs) override;

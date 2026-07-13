@@ -26,7 +26,7 @@
 
 namespace gallia {
 
-void InvasionScene::initialize(game::SceneInitializationContext ctx) {
+void InvasionScene::initialize(framework::SceneInitializationContext ctx) {
   ctx.assets.load_image_png("invaders_spritesheet", "./assets/space_invaders.png");
 
   std::random_device rd;

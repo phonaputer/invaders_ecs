@@ -11,11 +11,11 @@ namespace systems::player {
 
 class Movement : public ecs::System {
   private:
-    game::PlayerInputManager &player_input_manager;
+    framework::PlayerInputManager &player_input_manager;
     std::set<ecs::Entity> entities;
 
   public:
-    Movement(game::PlayerInputManager &player_input_manager);
+    Movement(framework::PlayerInputManager &player_input_manager);
     void remove_entity(ecs::Entity entity) override;
     void add_entity_if_matches(ecs::Entity entity, ecs::ComponentManager &components) override;
     void execute(ecs::ECS &ecs) override;

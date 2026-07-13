@@ -6,7 +6,7 @@
 #include <string>
 #include <unordered_map>
 
-namespace game {
+namespace framework {
 
 class SDLAssetManager : public AssetLoader {
   private:
@@ -20,4 +20,4 @@ class SDLAssetManager : public AssetLoader {
     std::shared_ptr<SDL_Texture> get_texture(std::string src_id) const;
 };
 
-} // namespace game
+} // namespace framework

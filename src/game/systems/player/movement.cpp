@@ -12,7 +12,7 @@
 
 namespace systems::player {
 
-Movement::Movement(game::PlayerInputManager &player_input_manager)
+Movement::Movement(framework::PlayerInputManager &player_input_manager)
     : player_input_manager{player_input_manager} {
 }
 
@@ -33,14 +33,14 @@ void Movement::execute(ecs::ECS &ecs) {
     auto movement = ecs.components().get<components::player::Movement>(entity);
     auto animation = ecs.components().get<components::Animation>(entity);
 
-    if (player_input_manager.is_engaged(game::PlayerInput::LEFT)
-        == player_input_manager.is_engaged(game::PlayerInput::RIGHT)) {
+    if (player_input_manager.is_engaged(framework::PlayerInput::LEFT)
+        == player_input_manager.is_engaged(framework::PlayerInput::RIGHT)) {
       animation.playing = false;
       ecs.components().set(entity, animation);
       return;
     }
 
-    if (player_input_manager.is_engaged(game::PlayerInput::LEFT)) {
+    if (player_input_manager.is_engaged(framework::PlayerInput::LEFT)) {
       auto new_x = position.x - movement.x_speed;
       if (new_x < 0) {
         new_x = 0;
@@ -59,10 +59,10 @@ void Movement::execute(ecs::ECS &ecs) {
       ecs.components().set<components::Position>(entity, position);
     }
 
-    if (player_input_manager.is_engaged(game::PlayerInput::RIGHT)) {
+    if (player_input_manager.is_engaged(framework::PlayerInput::RIGHT)) {
       auto new_x = position.x + movement.x_speed;
-      if (new_x + position.w > game::WINDOW_WIDTH) {
-        new_x = game::WINDOW_WIDTH - position.w;
+      if (new_x + position.w > framework::WINDOW_WIDTH) {
+        new_x = framework::WINDOW_WIDTH - position.w;
       }
 
       if (new_x != position.x) {

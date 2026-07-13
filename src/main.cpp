@@ -14,9 +14,9 @@
 // * Make player spaceship movable with the arrow keys.
 // * Allow player spaceship to shoot projectiles with spacebar.
 SDL_AppResult SDL_AppInit(void **appstate, [[maybe_unused]] int argc, [[maybe_unused]] char *argv[]) {
-  game::Game *game = nullptr;
+  framework::Game *game = nullptr;
   try {
-    game = new game::Game();
+    game = new framework::Game();
     *appstate = game;
   } catch (const std::exception &e) {
     return SDL_APP_FAILURE;
@@ -31,7 +31,7 @@ SDL_AppResult SDL_AppInit(void **appstate, [[maybe_unused]] int argc, [[maybe_un
 }
 
 SDL_AppResult SDL_AppEvent(void *appstate, [[maybe_unused]] SDL_Event *event) {
-  auto game = (game::Game *)appstate;
+  auto game = (framework::Game *)appstate;
 
   switch (event->type) {
     case SDL_EVENT_QUIT:
@@ -40,22 +40,22 @@ SDL_AppResult SDL_AppEvent(void *appstate, [[maybe_unused]] SDL_Event *event) {
     case SDL_EVENT_KEY_DOWN:
       switch (event->key.scancode) {
         case SDL_SCANCODE_A:
-          game->get_player_input_manager().engage(game::PlayerInput::LEFT);
+          game->get_player_input_manager().engage(framework::PlayerInput::LEFT);
           break;
         case SDL_SCANCODE_D:
-          game->get_player_input_manager().engage(game::PlayerInput::RIGHT);
+          game->get_player_input_manager().engage(framework::PlayerInput::RIGHT);
           break;
         case SDL_SCANCODE_SPACE:
-          game->get_player_input_manager().engage(game::PlayerInput::FIRE);
+          game->get_player_input_manager().engage(framework::PlayerInput::FIRE);
           break;
         case SDL_SCANCODE_W:
-          game->get_player_input_manager().engage(game::PlayerInput::UP);
+          game->get_player_input_manager().engage(framework::PlayerInput::UP);
           break;
         case SDL_SCANCODE_S:
-          game->get_player_input_manager().engage(game::PlayerInput::DOWN);
+          game->get_player_input_manager().engage(framework::PlayerInput::DOWN);
           break;
         case SDL_SCANCODE_ESCAPE:
-          game->get_player_input_manager().engage(game::PlayerInput::PAUSE);
+          game->get_player_input_manager().engage(framework::PlayerInput::PAUSE);
           break;
         default:
           // do nothing
@@ -65,22 +65,22 @@ SDL_AppResult SDL_AppEvent(void *appstate, [[maybe_unused]] SDL_Event *event) {
     case SDL_EVENT_KEY_UP:
       switch (event->key.scancode) {
         case SDL_SCANCODE_A:
-          game->get_player_input_manager().disengage(game::PlayerInput::LEFT);
+          game->get_player_input_manager().disengage(framework::PlayerInput::LEFT);
           break;
         case SDL_SCANCODE_D:
-          game->get_player_input_manager().disengage(game::PlayerInput::RIGHT);
+          game->get_player_input_manager().disengage(framework::PlayerInput::RIGHT);
           break;
         case SDL_SCANCODE_SPACE:
-          game->get_player_input_manager().disengage(game::PlayerInput::FIRE);
+          game->get_player_input_manager().disengage(framework::PlayerInput::FIRE);
           break;
         case SDL_SCANCODE_W:
-          game->get_player_input_manager().disengage(game::PlayerInput::UP);
+          game->get_player_input_manager().disengage(framework::PlayerInput::UP);
           break;
         case SDL_SCANCODE_S:
-          game->get_player_input_manager().disengage(game::PlayerInput::DOWN);
+          game->get_player_input_manager().disengage(framework::PlayerInput::DOWN);
           break;
         case SDL_SCANCODE_ESCAPE:
-          game->get_player_input_manager().disengage(game::PlayerInput::PAUSE);
+          game->get_player_input_manager().disengage(framework::PlayerInput::PAUSE);
           break;
         default:
           // do nothing
@@ -92,7 +92,7 @@ SDL_AppResult SDL_AppEvent(void *appstate, [[maybe_unused]] SDL_Event *event) {
 }
 
 SDL_AppResult SDL_AppIterate(void *appstate) {
-  auto game = (game::Game *)appstate;
+  auto game = (framework::Game *)appstate;
 
   game->update();
   game->draw();
@@ -101,7 +101,7 @@ SDL_AppResult SDL_AppIterate(void *appstate) {
 }
 
 void SDL_AppQuit(void *appstate, [[maybe_unused]] SDL_AppResult result) {
-  auto game = (game::Game *)appstate;
+  auto game = (framework::Game *)appstate;
 
   delete game;
 

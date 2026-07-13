@@ -13,7 +13,7 @@ namespace systems::player {
 
 class Shooting : public ecs::System {
   private:
-    game::PlayerInputManager &player_input_manager;
+    framework::PlayerInputManager &player_input_manager;
     std::set<ecs::Entity> entities;
     std::function<ecs::Entity(ecs::ECS &, core::Point)> add_projectile;
     std::set<ecs::Entity> active_projectiles;
@@ -21,7 +21,7 @@ class Shooting : public ecs::System {
 
   public:
     Shooting(
-        game::PlayerInputManager &player_input_manager,
+        framework::PlayerInputManager &player_input_manager,
         std::function<ecs::Entity(ecs::ECS &ecs, core::Point)> add_projectile,
         std::function<void(ecs::ECS &, ecs::Entity)> add_muzzle_flash
     );

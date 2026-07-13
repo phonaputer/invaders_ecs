@@ -2,7 +2,7 @@
 
 #include <string>
 
-namespace game {
+namespace framework {
 
 struct DrawImageParams {
     std::string src_id;
@@ -44,4 +44,4 @@ class Renderer {
     virtual void draw_line(const DrawLineParams &params) = 0;
 };
 
-} // namespace game
+} // namespace framework

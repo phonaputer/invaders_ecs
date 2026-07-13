@@ -5,7 +5,7 @@
 #include "framework/player_input_manager.hpp"
 #include "framework/renderer.hpp"
 
-namespace game {
+namespace framework {
 
 struct SceneInitializationContext {
     AssetLoader &assets;
@@ -14,4 +14,4 @@ struct SceneInitializationContext {
     PlayerInputManager &player_input_manager;
 };
 
-} // namespace game
+} // namespace framework

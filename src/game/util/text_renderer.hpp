@@ -15,12 +15,12 @@ class TextRenderer {
 
     const std::string IMAGE_SRC = "invaders_spritesheet";
 
-    game::Renderer &renderer;
+    framework::Renderer &renderer;
 
   public:
     static constexpr float CHARACTER_X_SPACING = 6;
 
-    TextRenderer(game::Renderer &renderer);
+    TextRenderer(framework::Renderer &renderer);
     void render_text(float x, float y, std::string text) const;
     void render_text_centered(float y, std::string text) const;
 };

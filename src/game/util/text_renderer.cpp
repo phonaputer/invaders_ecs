@@ -21,7 +21,7 @@ std::unordered_map<char, Frame> chars_to_frames({
     {'z', {9, 10}}, {'-', {10, 10}}, {':', {11, 10}}, {'<', {12, 10}}, {'>', {13, 10}},
 });
 
-TextRenderer::TextRenderer(game::Renderer &renderer)
+TextRenderer::TextRenderer(framework::Renderer &renderer)
     : renderer(renderer) {
 }
 
@@ -35,7 +35,7 @@ void TextRenderer::render_text(float x, float y, std::string text) const {
       auto frame = chars_to_frames.at(c_normalized);
 
       renderer.draw_image(
-          game::DrawImageParams{
+          framework::DrawImageParams{
               .src_id = IMAGE_SRC,
               .src_x = CHARACTER_SRC_WIDTH * frame.x,
               .src_y = CHARACTER_SRC_WIDTH * frame.y,
@@ -56,7 +56,7 @@ void TextRenderer::render_text(float x, float y, std::string text) const {
 void TextRenderer::render_text_centered(float y, std::string text) const {
   float text_width_px = text.length() * TextRenderer::CHARACTER_X_SPACING;
 
-  float start_x = game::WINDOW_WIDTH * 0.5 - text_width_px * 0.5;
+  float start_x = framework::WINDOW_WIDTH * 0.5 - text_width_px * 0.5;
 
   render_text(start_x, y, text);
 }

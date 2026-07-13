@@ -1,7 +1,7 @@
 #include "framework/player_input_manager.hpp"
 #include "framework/player_input.hpp"
 
-namespace game {
+namespace framework {
 
 bool PlayerInputManager::is_engaged(PlayerInput input) const {
   return current_inputs.contains(input);

@@ -9,7 +9,7 @@
 
 namespace systems::debug {
 
-HitboxRendering::HitboxRendering(game::Renderer &renderer)
+HitboxRendering::HitboxRendering(framework::Renderer &renderer)
     : renderer{renderer} {
 }
 
@@ -29,7 +29,7 @@ void HitboxRendering::execute(ecs::ECS &ecs) {
     auto collision = ecs.components().get<components::Collision>(entity);
 
     renderer.draw_rect(
-        game::DrawRectParams{
+        framework::DrawRectParams{
             .x = position.x + collision.hitbox_offset_x,
             .y = position.y + collision.hitbox_offset_y,
             .width = collision.hitbox_w,

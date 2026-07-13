@@ -2,7 +2,7 @@
 
 #include <string>
 
-namespace game {
+namespace framework {
 
 class AssetLoader {
   public:
@@ -10,4 +10,4 @@ class AssetLoader {
     virtual void load_image_png(std::string src_id, std::string path) = 0;
 };
 
-} // namespace game
+} // namespace framework

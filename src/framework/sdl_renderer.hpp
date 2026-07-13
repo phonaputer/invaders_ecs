@@ -5,7 +5,7 @@
 #include <SDL3/SDL.h>
 #include <string>
 
-namespace game {
+namespace framework {
 
 class SDLRenderer : public Renderer {
   private:
@@ -20,4 +20,4 @@ class SDLRenderer : public Renderer {
     void draw_line(const DrawLineParams &params) override;
 };
 
-} // namespace game
+} // namespace framework

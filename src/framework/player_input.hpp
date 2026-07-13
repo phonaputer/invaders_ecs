@@ -1,6 +1,6 @@
 #pragma once
 
-namespace game {
+namespace framework {
 
 enum PlayerInput { LEFT, RIGHT, FIRE, UP, DOWN, PAUSE };
 

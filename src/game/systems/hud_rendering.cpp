@@ -12,7 +12,7 @@
 
 namespace systems {
 
-HUDRendering::HUDRendering(game::Renderer &renderer)
+HUDRendering::HUDRendering(framework::Renderer &renderer)
     : renderer{renderer},
       text_renderer{renderer} {
 }
@@ -29,10 +29,10 @@ void HUDRendering::add_entity_if_matches(
 // Probably worth it though to avoid adding complexity elsewhere
 void HUDRendering::execute(ecs::ECS &ecs) {
   renderer.draw_line(
-      game::DrawLineParams{
+      framework::DrawLineParams{
           .start_x = 0,
           .start_y = gallia::GROUND_HEIGHT,
-          .end_x = game::WINDOW_WIDTH,
+          .end_x = framework::WINDOW_WIDTH,
           .end_y = gallia::GROUND_HEIGHT,
           .r = 0,
           .g = 255,
@@ -43,11 +43,11 @@ void HUDRendering::execute(ecs::ECS &ecs) {
   auto hud_stats = ecs.components().get_singleton<components::singleton::HUDStats>();
 
   text_renderer.render_text(6, 6, std::format("score:{}", hud_stats.score));
-  text_renderer.render_text(game::WINDOW_WIDTH / 2 - 28, 6, std::format("hi-score:{}", hud_stats.high_score));
-  text_renderer.render_text(game::WINDOW_WIDTH - 48, 6, std::format("lives:{}", hud_stats.lives));
+  text_renderer.render_text(framework::WINDOW_WIDTH / 2 - 28, 6, std::format("hi-score:{}", hud_stats.high_score));
+  text_renderer.render_text(framework::WINDOW_WIDTH - 48, 6, std::format("lives:{}", hud_stats.lives));
 
   if (hud_stats.game_over) {
-    text_renderer.render_text(game::WINDOW_WIDTH / 2 - 28, game::WINDOW_HEIGHT / 2, "game over");
+    text_renderer.render_text(framework::WINDOW_WIDTH / 2 - 28, framework::WINDOW_HEIGHT / 2, "game over");
   }
 }
 

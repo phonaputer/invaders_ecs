@@ -77,7 +77,7 @@ void add_invader_entity(ecs::ECS &ecs, AddInvaderArgs args) {
   ecs.components().set(
       entity,
       components::StartingPosition{
-          .x = game::WINDOW_WIDTH / 2 - 8,
+          .x = framework::WINDOW_WIDTH / 2 - 8,
           .y = 50,
       }
   );

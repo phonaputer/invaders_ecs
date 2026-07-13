@@ -12,10 +12,10 @@ namespace systems {
 class Rendering : public ecs::System {
   private:
     std::set<ecs::Entity> entities;
-    game::Renderer &renderer;
+    framework::Renderer &renderer;
 
   public:
-    Rendering(game::Renderer &renderer);
+    Rendering(framework::Renderer &renderer);
     void remove_entity(ecs::Entity entity) override;
     void add_entity_if_matches(ecs::Entity entity, ecs::ComponentManager &components) override;
     void execute(ecs::ECS &ecs) override;

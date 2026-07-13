@@ -3,7 +3,7 @@
 #include "framework/player_input.hpp"
 #include <set>
 
-namespace game {
+namespace framework {
 
 class PlayerInputManager {
   private:

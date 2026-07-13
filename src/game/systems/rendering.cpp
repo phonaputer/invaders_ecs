@@ -9,7 +9,7 @@
 
 namespace systems {
 
-Rendering::Rendering(game::Renderer &renderer)
+Rendering::Rendering(framework::Renderer &renderer)
     : renderer{renderer} {
 }
 
@@ -36,7 +36,7 @@ void Rendering::execute(ecs::ECS &ecs) {
     auto sprite = ecs.components().get<components::Sprite>(entity);
 
     renderer.draw_image(
-        game::DrawImageParams{
+        framework::DrawImageParams{
             .src_id = sprite.src_id,
             .src_x = sprite.src_x,
             .src_y = sprite.src_y,

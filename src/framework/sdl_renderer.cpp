@@ -2,7 +2,7 @@
 #include <SDL3/SDL.h>
 #include <string>
 
-namespace game {
+namespace framework {
 
 SDLRenderer::SDLRenderer(SDL_Renderer *renderer, std::shared_ptr<SDLAssetManager> asset_manager)
     : renderer{renderer},
@@ -40,4 +40,4 @@ void SDLRenderer::draw_line(const DrawLineParams &params) {
   SDL_RenderLine(renderer, params.start_x, params.start_y, params.end_x, params.end_y);
 }
 
-} // namespace game
+} // namespace framework

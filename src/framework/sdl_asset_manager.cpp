@@ -5,7 +5,7 @@
 #include <stdexcept>
 #include <string>
 
-namespace game {
+namespace framework {
 
 struct SDLDeleter {
     void operator()(SDL_Texture *p) const {
@@ -41,4 +41,4 @@ std::shared_ptr<SDL_Texture> SDLAssetManager::get_texture(std::string src_id) co
   return textures.at(src_id);
 }
 
-} // namespace game
+} // namespace framework

@@ -5,8 +5,8 @@
 
 namespace gallia {
 
-class InvasionScene : public game::Scene {
-    void initialize(game::SceneInitializationContext ctx) override;
+class InvasionScene : public framework::Scene {
+    void initialize(framework::SceneInitializationContext ctx) override;
 };
 
 } // namespace gallia

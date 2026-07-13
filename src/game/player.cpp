@@ -32,8 +32,8 @@ void add_player_entity(ecs::ECS &ecs) {
   ecs.components().set(
       entity,
       components::Position{
-          .x = game::WINDOW_WIDTH / 2 - 8,
-          .y = game::WINDOW_HEIGHT - 35,
+          .x = framework::WINDOW_WIDTH / 2 - 8,
+          .y = framework::WINDOW_HEIGHT - 35,
           .w = 16,
           .h = 16,
           .z = 100,

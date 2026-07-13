@@ -18,7 +18,7 @@ class Orchestration : public ecs::System {
     static constexpr float X_SPEED = 5;
     static constexpr float Y_SPEED = 5;
     static constexpr float LEFT_MOVEMENT_BOUNDARY = 0;
-    static constexpr float RIGHT_MOVEMENT_BOUNDARY = game::WINDOW_WIDTH;
+    static constexpr float RIGHT_MOVEMENT_BOUNDARY = framework::WINDOW_WIDTH;
     static constexpr int TICKS_PER_SHOOT_CHANCE = 12;
     static constexpr int ALIEN_SHOOT_CHANCE = 3;
 

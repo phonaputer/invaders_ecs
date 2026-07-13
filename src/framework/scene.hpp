@@ -2,7 +2,7 @@
 
 #include "framework/scene_initialization_context.hpp"
 
-namespace game {
+namespace framework {
 
 class Scene {
   public:
@@ -10,4 +10,4 @@ class Scene {
     virtual void initialize(SceneInitializationContext ctx) = 0;
 };
 
-} // namespace game
+} // namespace framework

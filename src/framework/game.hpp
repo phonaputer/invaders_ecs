@@ -10,7 +10,7 @@
 #include <memory>
 #include <optional>
 
-namespace game {
+namespace framework {
 
 class Game {
   private:
@@ -36,4 +36,4 @@ class Game {
     PlayerInputManager &get_player_input_manager();
 };
 
-} // namespace game
+} // namespace framework
