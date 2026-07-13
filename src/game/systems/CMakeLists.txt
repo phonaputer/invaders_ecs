@@ -4,7 +4,6 @@ target_sources(
   animation.cpp
   collision_detection.cpp
   damage.cpp
-  deletion.cpp
   explode_on_defeat.cpp
   hud_rendering.cpp
   lifetime.cpp

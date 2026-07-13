@@ -62,7 +62,7 @@ void Game::update() {
   while (unprocessed_ms > MS_PER_UPDATE) {
     player_input_manager->update();
 
-    ecs->update();
+    world.progress();
 
     unprocessed_ms -= MS_PER_UPDATE;
   }
@@ -84,20 +84,18 @@ void Game::draw() {
   SDL_SetRenderDrawColorFloat(renderer, 0, 0, 0, SDL_ALPHA_OPAQUE_FLOAT);
   SDL_RenderClear(renderer);
 
-  ecs->draw();
+  for (const auto &system : draw_systems) {
+    system.run();
+  }
 
   SDL_RenderPresent(renderer);
 }
 
 void Game::set_scene(std::unique_ptr<Scene> scene) {
-  ecs = std::make_unique<ecs::DefaultECS>(
-      std::make_unique<ecs::ComponentManager>(), std::make_unique<ecs::EventBroker>()
-  );
-
   scene->initialize(
       SceneInitializationContext{
           .assets = *asset_manager,
-          .ecs = *ecs,
+          .world = world,
           .renderer = *renderer_wrapper,
           .player_input_manager = *player_input_manager,
       }
@@ -108,6 +106,16 @@ void Game::set_scene(std::unique_ptr<Scene> scene) {
 
 PlayerInputManager &Game::get_player_input_manager() {
   return *player_input_manager;
+}
+
+void Game::add_draw_system(flecs::system system) {
+  // This prevents the system from running in world.progress().
+  // Would be nice enough to have this run as part of world.progress(), but I
+  // don't want to refactor the entire game to use deltaT instead of a fixed
+  // frame rate.
+  system.disable();
+
+  draw_systems.push_back(system);
 }
 
 } // namespace framework
