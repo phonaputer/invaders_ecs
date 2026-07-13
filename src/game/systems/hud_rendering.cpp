@@ -31,9 +31,9 @@ void HUDRendering::execute(ecs::ECS &ecs) {
   renderer.draw_line(
       framework::DrawLineParams{
           .start_x = 0,
-          .start_y = gallia::GROUND_HEIGHT,
+          .start_y = game::GROUND_HEIGHT,
           .end_x = framework::WINDOW_WIDTH,
-          .end_y = gallia::GROUND_HEIGHT,
+          .end_y = game::GROUND_HEIGHT,
           .r = 0,
           .g = 255,
           .b = 0,

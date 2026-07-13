@@ -2,8 +2,8 @@
 
 #include "framework/ecs/ecs.hpp"
 
-namespace gallia {
+namespace game {
 
 void add_hud_entity(ecs::ECS &ecs);
 
-} // namespace gallia
+} // namespace game

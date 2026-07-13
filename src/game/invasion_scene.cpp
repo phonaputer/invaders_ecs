@@ -24,7 +24,7 @@
 #include "game/systems/velocity.hpp"
 #include <random>
 
-namespace gallia {
+namespace game {
 
 void InvasionScene::initialize(framework::SceneInitializationContext ctx) {
   ctx.assets.load_image_png("invaders_spritesheet", "./assets/space_invaders.png");
@@ -64,4 +64,4 @@ void InvasionScene::initialize(framework::SceneInitializationContext ctx) {
   add_fortresses(ctx.ecs);
 }
 
-} // namespace gallia
+} // namespace game

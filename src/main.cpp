@@ -22,7 +22,7 @@ SDL_AppResult SDL_AppInit(void **appstate, [[maybe_unused]] int argc, [[maybe_un
     return SDL_APP_FAILURE;
   }
 
-  auto scene = std::make_unique<gallia::InvasionScene>();
+  auto scene = std::make_unique<game::InvasionScene>();
   game->set_scene(std::move(scene));
 
   SDL_Log("Setup complete...");

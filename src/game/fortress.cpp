@@ -9,7 +9,7 @@
 #include "game/components/sprite.hpp"
 #include "game/components/sprite_offset_on_damage.hpp"
 
-namespace gallia {
+namespace game {
 
 constexpr float TILE_DRAW_WIDTH = 4;
 constexpr float TILE_DRAW_HEIGHT = 4;
@@ -128,4 +128,4 @@ void add_fortress_tile(ecs::ECS &ecs, AddFortressTileArgs args) {
   ecs.register_to_systems(entity);
 }
 
-} // namespace gallia
+} // namespace game

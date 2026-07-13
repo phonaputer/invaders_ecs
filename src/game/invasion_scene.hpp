@@ -3,10 +3,10 @@
 #include "framework/scene.hpp"
 #include "framework/scene_initialization_context.hpp"
 
-namespace gallia {
+namespace game {
 
 class InvasionScene : public framework::Scene {
     void initialize(framework::SceneInitializationContext ctx) override;
 };
 
-} // namespace gallia
+} // namespace game

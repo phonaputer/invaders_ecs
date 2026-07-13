@@ -2,7 +2,7 @@
 
 #include "framework/ecs/ecs.hpp"
 
-namespace gallia {
+namespace game {
 
 void add_fortresses(ecs::ECS &ecs);
 

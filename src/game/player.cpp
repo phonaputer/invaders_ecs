@@ -18,7 +18,7 @@
 #include "game/components/velocity.hpp"
 #include <vector>
 
-namespace gallia {
+namespace game {
 
 void add_player_entity(ecs::ECS &ecs) {
   auto entity = ecs.new_entity();
@@ -298,4 +298,4 @@ void add_player_explosion_entity(ecs::ECS &ecs, core::Point position, unsigned i
   ecs.register_to_systems(entity);
 }
 
-} // namespace gallia
+} // namespace game

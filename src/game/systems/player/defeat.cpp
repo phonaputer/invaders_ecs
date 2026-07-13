@@ -115,7 +115,7 @@ void Defeat::handle_ongoing_pause(ecs::ECS &ecs) {
 
     auto stats = ecs.components().get_singleton<components::singleton::HUDStats>();
     stats.score = 0;
-    stats.lives = gallia::STARTING_LIVES;
+    stats.lives = game::STARTING_LIVES;
     stats.game_over = false;
     ecs.components().set_singleton(stats);
 

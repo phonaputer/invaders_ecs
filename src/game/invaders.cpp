@@ -15,7 +15,7 @@
 #include "game/components/starting_position.hpp"
 #include "game/components/velocity.hpp"
 
-namespace gallia {
+namespace game {
 
 struct AddInvaderArgs {
     float start_x;
@@ -377,4 +377,4 @@ void add_explosion(ecs::ECS &ecs, core::Point position) {
   ecs.register_to_systems(entity);
 }
 
-} // namespace gallia
+} // namespace game

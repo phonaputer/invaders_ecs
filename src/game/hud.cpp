@@ -3,12 +3,12 @@
 #include "game/components/singleton/hud_stats.hpp"
 #include "game/constants.hpp"
 
-namespace gallia {
+namespace game {
 
 void add_hud_entity(ecs::ECS &ecs) {
   ecs.components().set_singleton(
       components::singleton::HUDStats{
-          .lives = gallia::STARTING_LIVES,
+          .lives = game::STARTING_LIVES,
           .score = 0,
           .high_score = 0,
           .game_over = false,
@@ -16,4 +16,4 @@ void add_hud_entity(ecs::ECS &ecs) {
   );
 }
 
-} // namespace gallia
+} // namespace game

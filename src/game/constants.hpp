@@ -2,7 +2,7 @@
 
 #include "framework/constants.hpp"
 
-namespace gallia {
+namespace game {
 
 constexpr float GROUND_HEIGHT = framework::WINDOW_HEIGHT - 23;
 
