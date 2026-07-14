@@ -61,14 +61,15 @@ void Game::update() {
   unprocessed_ms += now_ms - previous_now_ms;
   previous_now_ms = now_ms;
 
+  ExecuteCtx ctx = {
+      .ecs = ecs,
+      .events = event_broker,
+      .player_input = *player_input_manager,
+  };
+
   while (unprocessed_ms > MS_PER_UPDATE) {
     player_input_manager->update();
-
-    ExecuteCtx ctx = {
-        .ecs = ecs,
-        .events = event_broker,
-        .player_input = *player_input_manager,
-    };
+    event_broker.clear_all();
 
     for (const auto &system : update_systems) {
       system->execute(ctx);

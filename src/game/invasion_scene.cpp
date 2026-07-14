@@ -13,7 +13,7 @@
 // #include "game/systems/explode_on_defeat.hpp"
 // #include "game/systems/hud_rendering.hpp"
 // #include "game/systems/invaders/orchestration.hpp"
-// #include "game/systems/lifetime.hpp"
+#include "game/systems/lifetime.hpp"
 // #include "game/systems/player/defeat.hpp"
 #include "game/systems/player/movement.hpp"
 #include "game/systems/player/shooting.hpp"
@@ -48,7 +48,7 @@ void InvasionScene::initialize(framework::SceneInitializationContext ctx) {
   //   );
   ctx.systems.add_update_system(std::make_unique<systems::Velocity>());
   ctx.systems.add_update_system(std::make_unique<systems::PositionFollowing>());
-  //   ctx.systems.add_update_system(std::make_unique<systems::Lifetime>());
+  ctx.systems.add_update_system(std::make_unique<systems::Lifetime>());
   ctx.systems.add_update_system(std::make_unique<systems::Animation>());
   //   ctx.systems.add_update_system(std::make_unique<systems::Score>());
 

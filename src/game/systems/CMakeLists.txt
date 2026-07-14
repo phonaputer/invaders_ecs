@@ -7,7 +7,7 @@ target_sources(
   deletion.cpp
   #explode_on_defeat.cpp
   #hud_rendering.cpp
-  #lifetime.cpp
+  lifetime.cpp
   position_following.cpp
   rendering.cpp
   #score.cpp

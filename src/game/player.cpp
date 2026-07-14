@@ -5,7 +5,6 @@
 #include "game/components/collision.hpp"
 #include "game/components/damage_dealer.hpp"
 #include "game/components/damage_type_enum.hpp"
-#include "game/components/deletable.hpp"
 #include "game/components/hitpoints.hpp"
 #include "game/components/lifetime.hpp"
 #include "game/components/player/movement.hpp"
@@ -21,12 +20,6 @@ namespace game {
 void add_player_entity(entt::registry &ecs) {
   const auto entity = ecs.create();
 
-  ecs.emplace<components::Deleteable>(
-      entity,
-      components::Deleteable{
-          .is_deleted = false,
-      }
-  );
   ecs.emplace<components::Position>(
       entity,
       components::Position{
@@ -167,12 +160,6 @@ entt::entity add_player_projectile_entity(entt::registry &ecs, core::Point start
           .y = -4,
       }
   );
-  ecs.emplace<components::Deleteable>(
-      entity,
-      components::Deleteable{
-          .is_deleted = false,
-      }
-  );
 
   return entity;
 }
@@ -208,12 +195,6 @@ void add_player_muzzle_flash_entity(entt::registry &ecs, entt::entity shooter) {
           .leader = shooter,
           .x_offset = -2,
           .y_offset = -2,
-      }
-  );
-  ecs.emplace<components::Deleteable>(
-      entity,
-      components::Deleteable{
-          .is_deleted = false,
       }
   );
   std::vector<components::AnimationFrame> frames = {{3, 2}, {4, 2}};
@@ -260,12 +241,6 @@ void add_player_explosion_entity(entt::registry &ecs, core::Point position, unsi
           .src_height = 16,
           .dst_width = 16,
           .dst_height = 16,
-      }
-  );
-  ecs.emplace<components::Deleteable>(
-      entity,
-      components::Deleteable{
-          .is_deleted = false,
       }
   );
   std::vector<components::AnimationFrame> frames = {{1, 3}, {0, 3}, {1, 3}, {2, 3}};

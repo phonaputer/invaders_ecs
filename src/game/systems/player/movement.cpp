@@ -1,46 +1,25 @@
 #include "game/systems/player/movement.hpp"
 #include "framework/constants.hpp"
-#include "framework/ecs/component_manager.hpp"
-#include "framework/ecs/ecs.hpp"
-#include "framework/ecs/entity.hpp"
-#include "framework/ecs/system.hpp"
 #include "framework/player_input.hpp"
 #include "framework/player_input_manager.hpp"
+#include "framework/system.hpp"
 #include "game/components/animation.hpp"
 #include "game/components/player/movement.hpp"
 #include "game/components/position.hpp"
 
 namespace systems::player {
 
-Movement::Movement(framework::PlayerInputManager &player_input_manager)
-    : player_input_manager{player_input_manager} {
-}
+void Movement::execute(framework::ExecuteCtx &ctx) {
+  auto view = ctx.ecs.view<components::player::Movement, components::Position, components::Animation>();
 
-void Movement::remove_entity(ecs::Entity entity) {
-  entities.erase(entity);
-}
-
-void Movement::add_entity_if_matches(ecs::Entity entity, ecs::ComponentManager &components) {
-  if (components.has<components::player::Movement>(entity) && components.has<components::Position>(entity)
-      && components.has<components::Animation>(entity)) {
-    entities.insert(entity);
-  }
-}
-
-void Movement::execute(ecs::ECS &ecs) {
-  for (const auto &entity : entities) {
-    auto position = ecs.components().get<components::Position>(entity);
-    auto movement = ecs.components().get<components::player::Movement>(entity);
-    auto animation = ecs.components().get<components::Animation>(entity);
-
-    if (player_input_manager.is_engaged(framework::PlayerInput::LEFT)
-        == player_input_manager.is_engaged(framework::PlayerInput::RIGHT)) {
+  for (auto [entity, movement, position, animation] : view.each()) {
+    if (ctx.player_input.is_engaged(framework::PlayerInput::LEFT)
+        == ctx.player_input.is_engaged(framework::PlayerInput::RIGHT)) {
       animation.playing = false;
-      ecs.components().set(entity, animation);
-      return;
+      continue;
     }
 
-    if (player_input_manager.is_engaged(framework::PlayerInput::LEFT)) {
+    if (ctx.player_input.is_engaged(framework::PlayerInput::LEFT)) {
       auto new_x = position.x - movement.x_speed;
       if (new_x < 0) {
         new_x = 0;
@@ -52,14 +31,11 @@ void Movement::execute(ecs::ECS &ecs) {
       } else {
         animation.playing = false;
       }
-      ecs.components().set(entity, animation);
 
       position.x = new_x;
-
-      ecs.components().set<components::Position>(entity, position);
     }
 
-    if (player_input_manager.is_engaged(framework::PlayerInput::RIGHT)) {
+    if (ctx.player_input.is_engaged(framework::PlayerInput::RIGHT)) {
       auto new_x = position.x + movement.x_speed;
       if (new_x + position.w > framework::WINDOW_WIDTH) {
         new_x = framework::WINDOW_WIDTH - position.w;
@@ -71,11 +47,8 @@ void Movement::execute(ecs::ECS &ecs) {
       } else {
         animation.playing = false;
       }
-      ecs.components().set(entity, animation);
 
       position.x = new_x;
-
-      ecs.components().set<components::Position>(entity, position);
     }
   }
 }

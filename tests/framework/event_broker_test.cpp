@@ -1,4 +1,4 @@
-#include "framework/ecs/event_broker.hpp"
+#include "framework/event_broker.hpp"
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 #include <ostream>
@@ -20,7 +20,7 @@ struct TestMessageTwo {
 };
 
 TEST(EventBroker, GetAllWhenNoMessagesExistShouldReturnEmptyVec) {
-  auto mb = std::make_unique<ecs::EventBroker>();
+  auto mb = std::make_unique<framework::EventBroker>();
 
   auto result = mb->get_all<TestMessage>();
 
@@ -28,7 +28,7 @@ TEST(EventBroker, GetAllWhenNoMessagesExistShouldReturnEmptyVec) {
 }
 
 TEST(EventBroker, GetAllWhenSeveralMessagesExistShouldReturnAllInOrder) {
-  auto mb = std::make_unique<ecs::EventBroker>();
+  auto mb = std::make_unique<framework::EventBroker>();
   auto m1 = TestMessage{.id = 1};
   auto m2 = TestMessage{.id = 2};
   auto m3 = TestMessage{.id = 3};
@@ -43,7 +43,7 @@ TEST(EventBroker, GetAllWhenSeveralMessagesExistShouldReturnAllInOrder) {
 }
 
 TEST(EventBroker, SetWithMessagesOfMultipleTypesShouldStoreDifferentTypesSeparately) {
-  auto mb = std::make_unique<ecs::EventBroker>();
+  auto mb = std::make_unique<framework::EventBroker>();
   auto m1 = TestMessage{.id = 1};
   mb->push_back(m1);
   auto m2 = TestMessageTwo{.id_two = 2};
@@ -58,7 +58,7 @@ TEST(EventBroker, SetWithMessagesOfMultipleTypesShouldStoreDifferentTypesSeparat
 }
 
 TEST(EventBroker, ClearShouldRemoveAllMessagesOfAllTypes) {
-  auto mb = std::make_unique<ecs::EventBroker>();
+  auto mb = std::make_unique<framework::EventBroker>();
   auto m1 = TestMessage{.id = 1};
   mb->push_back(m1);
   auto m2 = TestMessageTwo{.id_two = 2};
@@ -71,7 +71,7 @@ TEST(EventBroker, ClearShouldRemoveAllMessagesOfAllTypes) {
 }
 
 TEST(EventBroker, GetSingletonAfterSettingShouldReturnTheSetValue) {
-  auto mb = std::make_unique<ecs::EventBroker>();
+  auto mb = std::make_unique<framework::EventBroker>();
   auto message = TestMessage{
       .id = 111,
   };
@@ -84,7 +84,7 @@ TEST(EventBroker, GetSingletonAfterSettingShouldReturnTheSetValue) {
 }
 
 TEST(EventBroker, DoubleSetSingletonShouldLeaveOnlyTheLastValuePresent) {
-  auto mb = std::make_unique<ecs::EventBroker>();
+  auto mb = std::make_unique<framework::EventBroker>();
   auto message = TestMessage{
       .id = 111,
   };
@@ -101,7 +101,7 @@ TEST(EventBroker, DoubleSetSingletonShouldLeaveOnlyTheLastValuePresent) {
 }
 
 TEST(EventBroker, SetDifferentTypeSingletonsShouldNotInterfereWithEachOther) {
-  auto mb = std::make_unique<ecs::EventBroker>();
+  auto mb = std::make_unique<framework::EventBroker>();
   auto message = TestMessage{
       .id = 111,
   };
@@ -121,7 +121,7 @@ TEST(EventBroker, SetDifferentTypeSingletonsShouldNotInterfereWithEachOther) {
 }
 
 TEST(EventBroker, GetSingletonWhenNoneExistsShouldReturnEmptyOptional) {
-  auto mb = std::make_unique<ecs::EventBroker>();
+  auto mb = std::make_unique<framework::EventBroker>();
 
   auto result = mb->get_singleton<TestMessage>();
 
@@ -129,7 +129,7 @@ TEST(EventBroker, GetSingletonWhenNoneExistsShouldReturnEmptyOptional) {
 }
 
 TEST(EventBroker, ClearAllShouldClearAllEvents) {
-  auto mb = std::make_unique<ecs::EventBroker>();
+  auto mb = std::make_unique<framework::EventBroker>();
   auto m1 = TestMessage{.id = 1};
   mb->push_back(m1);
   auto m2 = TestMessageTwo{.id_two = 2};
