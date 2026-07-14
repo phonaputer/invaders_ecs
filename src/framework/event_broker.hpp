@@ -6,7 +6,7 @@
 #include <unordered_map>
 #include <vector>
 
-namespace ecs {
+namespace framework {
 
 class EventBroker {
   private:
@@ -22,6 +22,6 @@ class EventBroker {
     template <typename T> std::optional<T> get_singleton() const;
 };
 
-} // namespace ecs
+} // namespace framework
 
-#include "framework/ecs/event_broker.tpp"
+#include "framework/event_broker.tpp"

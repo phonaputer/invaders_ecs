@@ -1,14 +1,13 @@
 #include "framework/game.hpp"
 #include "framework/constants.hpp"
-#include "framework/ecs/component_manager.hpp"
-#include "framework/ecs/default_ecs.hpp"
-#include "framework/ecs/event_broker.hpp"
+#include "framework/event_broker.hpp"
 #include "framework/player_input_manager.hpp"
 #include "framework/scene.hpp"
 #include "framework/scene_initialization_context.hpp"
 #include "framework/sdl_asset_manager.hpp"
 #include "framework/sdl_renderer.hpp"
 #include <SDL3/SDL.h>
+#include <entt.hpp>
 #include <format>
 #include <memory>
 #include <optional>
@@ -29,7 +28,10 @@ Game::Game() {
   }
 
   window = SDL_CreateWindow(
-      "Gallia", ACTUAL_WINDOW_WIDTH, ACTUAL_WINDOW_HEIGHT, SDL_WINDOW_HIGH_PIXEL_DENSITY | SDL_WINDOW_RESIZABLE
+      "Invaders... from space!!!",
+      ACTUAL_WINDOW_WIDTH,
+      ACTUAL_WINDOW_HEIGHT,
+      SDL_WINDOW_HIGH_PIXEL_DENSITY | SDL_WINDOW_RESIZABLE
   );
   if (!window) {
     throw std::runtime_error(std::format("Couldn't create window: {}", SDL_GetError()));
@@ -62,7 +64,15 @@ void Game::update() {
   while (unprocessed_ms > MS_PER_UPDATE) {
     player_input_manager->update();
 
-    ecs->update();
+    ExecuteCtx ctx = {
+        .entities = ecs,
+        .events = event_broker,
+        .player_input = *player_input_manager,
+    };
+
+    for (const auto &system : update_systems) {
+      system->execute(ctx);
+    }
 
     unprocessed_ms -= MS_PER_UPDATE;
   }
@@ -84,22 +94,26 @@ void Game::draw() {
   SDL_SetRenderDrawColorFloat(renderer, 0, 0, 0, SDL_ALPHA_OPAQUE_FLOAT);
   SDL_RenderClear(renderer);
 
-  ecs->draw();
+  ExecuteCtx ctx = {
+      .entities = ecs,
+      .events = event_broker,
+      .player_input = *player_input_manager,
+  };
+
+  for (const auto &system : draw_systems) {
+    system->execute(ctx);
+  }
 
   SDL_RenderPresent(renderer);
 }
 
 void Game::set_scene(std::unique_ptr<Scene> scene) {
-  ecs = std::make_unique<ecs::DefaultECS>(
-      std::make_unique<ecs::ComponentManager>(), std::make_unique<ecs::EventBroker>()
-  );
-
   scene->initialize(
       SceneInitializationContext{
           .assets = *asset_manager,
-          .ecs = *ecs,
+          .systems = *this,
+          .ecs = ecs,
           .renderer = *renderer_wrapper,
-          .player_input_manager = *player_input_manager,
       }
   );
 
@@ -108,6 +122,14 @@ void Game::set_scene(std::unique_ptr<Scene> scene) {
 
 PlayerInputManager &Game::get_player_input_manager() {
   return *player_input_manager;
+}
+
+void Game::add_update_system(std::unique_ptr<System> system) {
+  update_systems.push_back(std::move(system));
+}
+
+void Game::add_draw_system(std::unique_ptr<System> system) {
+  draw_systems.push_back(std::move(system));
 }
 
 } // namespace framework

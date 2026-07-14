@@ -1,17 +1,18 @@
 #pragma once
 
 #include "framework/asset_loader.hpp"
-#include "framework/ecs/ecs.hpp"
-#include "framework/player_input_manager.hpp"
 #include "framework/renderer.hpp"
+#include "framework/system_registry.hpp"
+
+#include <entt.hpp>
 
 namespace framework {
 
 struct SceneInitializationContext {
     AssetLoader &assets;
-    ecs::ECS &ecs;
+    SystemRegistry &systems;
+    entt::registry &ecs;
     Renderer &renderer;
-    PlayerInputManager &player_input_manager;
 };
 
 } // namespace framework

@@ -1,13 +1,13 @@
 #pragma once
 
-#include "framework/ecs/event_broker.hpp"
+#include "framework/event_broker.hpp"
 #include <any>
 #include <cassert>
 #include <typeindex>
 #include <unordered_map>
 #include <vector>
 
-namespace ecs {
+namespace framework {
 
 template <typename T> void EventBroker::push_back(T message) {
   messages[std::type_index(typeid(T))].push_back(message);
@@ -49,4 +49,4 @@ template <typename T> std::optional<T> EventBroker::get_singleton() const {
   return std::any_cast<T>(any_value);
 }
 
-} // namespace ecs
+} // namespace framework

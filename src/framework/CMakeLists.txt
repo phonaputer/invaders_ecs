@@ -6,5 +6,3 @@ target_sources(
   sdl_asset_manager.cpp
   sdl_renderer.cpp
 )
-
-add_subdirectory(ecs)
