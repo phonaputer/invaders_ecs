@@ -6,6 +6,4 @@ namespace systems {
 
 void damage(flecs::world world);
 
-};
-
 } // namespace systems

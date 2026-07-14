@@ -5,22 +5,11 @@
 #include "framework/ecs/ecs.hpp"
 #include "framework/ecs/entity.hpp"
 #include "framework/ecs/system.hpp"
+#include <flecs.h>
 #include <functional>
-#include <set>
 
 namespace systems {
 
-class ExplodeOnDefeat : public ecs::System {
-  private:
-    std::set<ecs::Entity> entities;
-
-    std::function<void(ecs::ECS &, core::Point)> add_explosion;
-
-  public:
-    ExplodeOnDefeat(std::function<void(ecs::ECS &, core::Point)> add_explosion);
-    void remove_entity(ecs::Entity entity) override;
-    void add_entity_if_matches(ecs::Entity entity, ecs::ComponentManager &components) override;
-    void execute(ecs::ECS &ecs) override;
-};
+void explode_on_defeat(flecs::world world, std::function<void(flecs::world, core::Point)> add_explosion);
 
 } // namespace systems
