@@ -19,7 +19,7 @@ struct Hitbox {
     float h;
 };
 
-class CollisionDetection : public ecs::System {
+class CollisionDetection : public framework::system {
   private:
     // These must always be larger than the max hitbox in game to avoid a
     // really big hitbox encompassing an entire bucket without any of its

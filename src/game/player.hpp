@@ -1,17 +1,16 @@
 #pragma once
 
 #include "core/point.hpp"
-#include "framework/ecs/ecs.hpp"
-#include "framework/ecs/entity.hpp"
+#include <entt.hpp>
 
 namespace game {
 
-void add_player_entity(ecs::ECS &ecs);
+void add_player_entity(entt::registry &ecs);
 
-ecs::Entity add_player_projectile_entity(ecs::ECS &ecs, core::Point starting_point);
+entt::entity add_player_projectile_entity(entt::registry &ecs, core::Point starting_point);
 
-void add_player_muzzle_flash_entity(ecs::ECS &ecs, ecs::Entity shooter);
+void add_player_muzzle_flash_entity(entt::registry &ecs, entt::entity shooter);
 
-void add_player_explosion_entity(ecs::ECS &ecs, core::Point position, unsigned int lifetime);
+void add_player_explosion_entity(entt::registry &ecs, core::Point position, unsigned int lifetime);
 
 } // namespace game

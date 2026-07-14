@@ -8,7 +8,7 @@
 
 namespace systems {
 
-class SpriteOffsetOnDamage : public ecs::System {
+class SpriteOffsetOnDamage : public framework::system {
   private:
     std::set<ecs::Entity> entities;
 

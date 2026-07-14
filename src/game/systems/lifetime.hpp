@@ -8,7 +8,7 @@
 
 namespace systems {
 
-class Lifetime : public ecs::System {
+class Lifetime : public framework::system {
   private:
     std::set<ecs::Entity> entities;
 

@@ -8,7 +8,7 @@
 
 namespace systems {
 
-class Score : public ecs::System {
+class Score : public framework::system {
   public:
     void remove_entity(ecs::Entity entity) override;
     void add_entity_if_matches(ecs::Entity entity, ecs::ComponentManager &components) override;

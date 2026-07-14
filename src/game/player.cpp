@@ -1,8 +1,6 @@
 #include "game/player.hpp"
 #include "core/point.hpp"
 #include "framework/constants.hpp"
-#include "framework/ecs/ecs.hpp"
-#include "framework/ecs/entity.hpp"
 #include "game/components/animation.hpp"
 #include "game/components/collision.hpp"
 #include "game/components/damage_dealer.hpp"
@@ -20,16 +18,16 @@
 
 namespace game {
 
-void add_player_entity(ecs::ECS &ecs) {
-  auto entity = ecs.new_entity();
+void add_player_entity(entt::registry &ecs) {
+  const auto entity = ecs.create();
 
-  ecs.components().set(
+  ecs.emplace<components::Deleteable>(
       entity,
       components::Deleteable{
           .is_deleted = false,
       }
   );
-  ecs.components().set(
+  ecs.emplace<components::Position>(
       entity,
       components::Position{
           .x = framework::WINDOW_WIDTH / 2 - 8,
@@ -39,7 +37,7 @@ void add_player_entity(ecs::ECS &ecs) {
           .z = 100,
       }
   );
-  ecs.components().set(
+  ecs.emplace<components::Sprite>(
       entity,
       components::Sprite{
           .src_id = "invaders_spritesheet",
@@ -52,7 +50,7 @@ void add_player_entity(ecs::ECS &ecs) {
       }
   );
   std::vector<components::AnimationFrame> frames = {{0, 2}, {1, 2}, {2, 2}};
-  ecs.components().set(
+  ecs.emplace<components::Animation>(
       entity,
       components::Animation{
           .playing = false,
@@ -63,13 +61,13 @@ void add_player_entity(ecs::ECS &ecs) {
           .tick_counter = 0,
       }
   );
-  ecs.components().set(
+  ecs.emplace<components::player::Movement>(
       entity,
       components::player::Movement{
           .x_speed = 1,
       }
   );
-  ecs.components().set(
+  ecs.emplace<components::Collision>(
       entity,
       components::Collision{
           .hitbox_offset_x = 0,
@@ -78,7 +76,7 @@ void add_player_entity(ecs::ECS &ecs) {
           .hitbox_h = 5,
       }
   );
-  ecs.components().set(
+  ecs.emplace<components::player::Shooting>(
       entity,
       components::player::Shooting{
           .ticks_per_shot = 8,
@@ -90,7 +88,7 @@ void add_player_entity(ecs::ECS &ecs) {
   );
   components::DamageTypeSet susceptible_damage_types;
   susceptible_damage_types.set(components::damage_type_to_index(components::DamageType::Alien_Projectile));
-  ecs.components().set(
+  ecs.emplace<components::Hitpoints>(
       entity,
       components::Hitpoints{
           .susceptible_to = susceptible_damage_types,
@@ -99,25 +97,23 @@ void add_player_entity(ecs::ECS &ecs) {
   );
   components::DamageTypeSet deal_damage_types;
   deal_damage_types.set(components::damage_type_to_index(components::DamageType::Player));
-  ecs.components().set(
+  ecs.emplace<components::DamageDealer>(
       entity,
       components::DamageDealer{
           .type = deal_damage_types,
           .amount = 1,
       }
   );
-
-  ecs.register_to_systems(entity);
 }
 
-ecs::Entity add_player_projectile_entity(ecs::ECS &ecs, core::Point starting_point) {
-  auto entity = ecs.new_entity();
+entt::entity add_player_projectile_entity(entt::registry &ecs, core::Point starting_point) {
+  const auto entity = ecs.create();
 
   components::DamageTypeSet susceptible_damage_types;
   susceptible_damage_types.set(components::damage_type_to_index(components::DamageType::Alien));
   susceptible_damage_types.set(components::damage_type_to_index(components::DamageType::Alien_Projectile));
   susceptible_damage_types.set(components::damage_type_to_index(components::DamageType::Fortress));
-  ecs.components().set(
+  ecs.emplace<components::Hitpoints>(
       entity,
       components::Hitpoints{
           .susceptible_to = susceptible_damage_types,
@@ -126,14 +122,14 @@ ecs::Entity add_player_projectile_entity(ecs::ECS &ecs, core::Point starting_poi
   );
   components::DamageTypeSet deal_damage_types;
   deal_damage_types.set(components::damage_type_to_index(components::DamageType::Player_Projectile));
-  ecs.components().set(
+  ecs.emplace<components::DamageDealer>(
       entity,
       components::DamageDealer{
           .type = deal_damage_types,
           .amount = 1,
       }
   );
-  ecs.components().set(
+  ecs.emplace<components::Position>(
       entity,
       components::Position{
           .x = starting_point.x,
@@ -143,7 +139,7 @@ ecs::Entity add_player_projectile_entity(ecs::ECS &ecs, core::Point starting_poi
           .z = 101,
       }
   );
-  ecs.components().set(
+  ecs.emplace<components::Collision>(
       entity,
       components::Collision{
           .hitbox_offset_x = 7,
@@ -152,7 +148,7 @@ ecs::Entity add_player_projectile_entity(ecs::ECS &ecs, core::Point starting_poi
           .hitbox_h = 4,
       }
   );
-  ecs.components().set(
+  ecs.emplace<components::Sprite>(
       entity,
       components::Sprite{
           .src_id = "invaders_spritesheet",
@@ -164,29 +160,27 @@ ecs::Entity add_player_projectile_entity(ecs::ECS &ecs, core::Point starting_poi
           .dst_height = 16,
       }
   );
-  ecs.components().set(
+  ecs.emplace<components::Velocity>(
       entity,
       components::Velocity{
           .x = 0,
           .y = -4,
       }
   );
-  ecs.components().set(
+  ecs.emplace<components::Deleteable>(
       entity,
       components::Deleteable{
           .is_deleted = false,
       }
   );
 
-  ecs.register_to_systems(entity);
-
   return entity;
 }
 
-void add_player_muzzle_flash_entity(ecs::ECS &ecs, ecs::Entity shooter) {
-  auto entity = ecs.new_entity();
+void add_player_muzzle_flash_entity(entt::registry &ecs, entt::entity shooter) {
+  const auto entity = ecs.create();
 
-  ecs.components().set(
+  ecs.emplace<components::Position>(
       entity,
       components::Position{
           .x = 0,
@@ -196,7 +190,7 @@ void add_player_muzzle_flash_entity(ecs::ECS &ecs, ecs::Entity shooter) {
           .z = 102,
       }
   );
-  ecs.components().set(
+  ecs.emplace<components::Sprite>(
       entity,
       components::Sprite{
           .src_id = "invaders_spritesheet",
@@ -208,7 +202,7 @@ void add_player_muzzle_flash_entity(ecs::ECS &ecs, ecs::Entity shooter) {
           .dst_height = 16,
       }
   );
-  ecs.components().set(
+  ecs.emplace<components::PositionFollowing>(
       entity,
       components::PositionFollowing{
           .leader = shooter,
@@ -216,14 +210,14 @@ void add_player_muzzle_flash_entity(ecs::ECS &ecs, ecs::Entity shooter) {
           .y_offset = -2,
       }
   );
-  ecs.components().set(
+  ecs.emplace<components::Deleteable>(
       entity,
       components::Deleteable{
           .is_deleted = false,
       }
   );
   std::vector<components::AnimationFrame> frames = {{3, 2}, {4, 2}};
-  ecs.components().set(
+  ecs.emplace<components::Animation>(
       entity,
       components::Animation{
           .playing = true,
@@ -234,21 +228,19 @@ void add_player_muzzle_flash_entity(ecs::ECS &ecs, ecs::Entity shooter) {
           .tick_counter = 0,
       }
   );
-  ecs.components().set(
+  ecs.emplace<components::Lifetime>(
       entity,
       components::Lifetime{
           .ticks = 20,
           .tick_counter = 0,
       }
   );
-
-  ecs.register_to_systems(entity);
 }
 
-void add_player_explosion_entity(ecs::ECS &ecs, core::Point position, unsigned int lifetime) {
-  auto entity = ecs.new_entity();
+void add_player_explosion_entity(entt::registry &ecs, core::Point position, unsigned int lifetime) {
+  const auto entity = ecs.create();
 
-  ecs.components().set(
+  ecs.emplace<components::Position>(
       entity,
       components::Position{
           .x = position.x,
@@ -258,7 +250,7 @@ void add_player_explosion_entity(ecs::ECS &ecs, core::Point position, unsigned i
           .z = 99,
       }
   );
-  ecs.components().set(
+  ecs.emplace<components::Sprite>(
       entity,
       components::Sprite{
           .src_id = "invaders_spritesheet",
@@ -270,14 +262,14 @@ void add_player_explosion_entity(ecs::ECS &ecs, core::Point position, unsigned i
           .dst_height = 16,
       }
   );
-  ecs.components().set(
+  ecs.emplace<components::Deleteable>(
       entity,
       components::Deleteable{
           .is_deleted = false,
       }
   );
   std::vector<components::AnimationFrame> frames = {{1, 3}, {0, 3}, {1, 3}, {2, 3}};
-  ecs.components().set(
+  ecs.emplace<components::Animation>(
       entity,
       components::Animation{
           .playing = true,
@@ -288,14 +280,12 @@ void add_player_explosion_entity(ecs::ECS &ecs, core::Point position, unsigned i
           .tick_counter = 0,
       }
   );
-  ecs.components().set(
+  ecs.emplace<components::Lifetime>(
       entity,
       components::Lifetime{
           .ticks = lifetime,
       }
   );
-
-  ecs.register_to_systems(entity);
 }
 
 } // namespace game

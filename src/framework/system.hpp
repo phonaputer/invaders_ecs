@@ -7,7 +7,7 @@
 namespace framework {
 
 struct ExecuteCtx {
-    entt::registry &entities;
+    entt::registry &ecs;
     framework::EventBroker &events;
     const PlayerInputManager &player_input;
 };

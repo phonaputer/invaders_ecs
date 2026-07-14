@@ -8,7 +8,7 @@
 
 namespace systems {
 
-class Damage : public ecs::System {
+class Damage : public framework::system {
   private:
     std::set<ecs::Entity> dealers;
     std::set<ecs::Entity> receivers;

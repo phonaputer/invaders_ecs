@@ -7,7 +7,7 @@
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
-class StubSystem : public ecs::System {
+class StubSystem : public framework::system {
   public:
     MOCK_METHOD(void, remove_entity, (ecs::Entity entity), (override));
     MOCK_METHOD(void, add_entity_if_matches, (ecs::Entity entity, ecs::ComponentManager &components), (override));

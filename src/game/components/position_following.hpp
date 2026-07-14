@@ -1,11 +1,11 @@
 #pragma once
 
-#include "framework/ecs/entity.hpp"
+#include <entt.hpp>
 
 namespace components {
 
 struct PositionFollowing {
-    ecs::Entity leader;
+    entt::entity leader;
     float x_offset;
     float y_offset;
 };

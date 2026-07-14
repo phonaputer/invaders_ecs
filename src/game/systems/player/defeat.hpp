@@ -11,7 +11,7 @@
 
 namespace systems::player {
 
-class Defeat : public ecs::System {
+class Defeat : public framework::system {
   private:
     static constexpr unsigned int DEFEAT_PAUSE_TICKS = 100;
 

@@ -65,7 +65,7 @@ void Game::update() {
     player_input_manager->update();
 
     ExecuteCtx ctx = {
-        .entities = ecs,
+        .ecs = ecs,
         .events = event_broker,
         .player_input = *player_input_manager,
     };
@@ -95,7 +95,7 @@ void Game::draw() {
   SDL_RenderClear(renderer);
 
   ExecuteCtx ctx = {
-      .entities = ecs,
+      .ecs = ecs,
       .events = event_broker,
       .player_input = *player_input_manager,
   };

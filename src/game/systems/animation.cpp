@@ -1,28 +1,14 @@
 #include "game/systems/animation.hpp"
-#include "framework/ecs/component_manager.hpp"
-#include "framework/ecs/ecs.hpp"
-#include "framework/ecs/entity.hpp"
-#include "framework/ecs/system.hpp"
+#include "framework/system.hpp"
 #include "game/components/animation.hpp"
 #include "game/components/sprite.hpp"
-#include <set>
 
 namespace systems {
 
-void Animation::remove_entity(ecs::Entity entity) {
-  entities.erase(entity);
-}
+void Animation::execute(framework::ExecuteCtx &ctx) {
+  auto view = ctx.ecs.view<components::Animation, components::Sprite>();
 
-void Animation::add_entity_if_matches(ecs::Entity entity, ecs::ComponentManager &components) {
-  if (components.has<components::Animation>(entity) && components.has<components::Sprite>(entity)) {
-    entities.insert(entity);
-  }
-}
-
-void Animation::execute(ecs::ECS &ecs) {
-  for (const auto &entity : entities) {
-    auto animation = ecs.components().get<components::Animation>(entity);
-
+  for (auto [entity, animation, sprite] : view.each()) {
     if (!animation.playing) {
       continue;
     }
@@ -48,17 +34,17 @@ void Animation::execute(ecs::ECS &ecs) {
       }
     }
 
-    ecs.components().set(entity, animation);
+    ctx.ecs.replace<components::Animation>(entity, animation);
+
+    // TODO REMOVE ecs.components().set(entity, animation);
 
     if (should_update_frame) {
-      auto sprite = ecs.components().get<components::Sprite>(entity);
-
       auto frame = animation.frames.at(animation.cur_frame);
 
       sprite.src_x = frame.x * sprite.src_width;
       sprite.src_y = frame.y * sprite.src_height;
 
-      ecs.components().set(entity, sprite);
+      // TODO REMOVE ecs.components().set(entity, sprite);
     }
   }
 }

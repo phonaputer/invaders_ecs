@@ -10,7 +10,7 @@
 
 namespace systems {
 
-class HUDRendering : public ecs::System {
+class HUDRendering : public framework::system {
   private:
     framework::Renderer &renderer;
     util::TextRenderer text_renderer;

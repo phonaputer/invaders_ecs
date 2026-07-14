@@ -12,7 +12,7 @@
 
 namespace systems::invaders {
 
-class Orchestration : public ecs::System {
+class Orchestration : public framework::system {
   private:
     static constexpr int BASE_TICKS_PER_MOVE = 58;
     static constexpr float X_SPEED = 5;

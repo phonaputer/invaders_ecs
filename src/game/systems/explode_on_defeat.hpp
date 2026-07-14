@@ -10,7 +10,7 @@
 
 namespace systems {
 
-class ExplodeOnDefeat : public ecs::System {
+class ExplodeOnDefeat : public framework::system {
   private:
     std::set<ecs::Entity> entities;
 

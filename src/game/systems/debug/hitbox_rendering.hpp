@@ -9,7 +9,7 @@
 
 namespace systems::debug {
 
-class HitboxRendering : public ecs::System {
+class HitboxRendering : public framework::system {
   private:
     std::set<ecs::Entity> entities;
     framework::Renderer &renderer;

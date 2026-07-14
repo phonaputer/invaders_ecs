@@ -1,7 +1,5 @@
 #pragma once
 
-#include "framework/ecs/entity.hpp"
-
 namespace components {
 
 struct Collision {
