@@ -8,7 +8,7 @@
 
 namespace systems {
 
-class Animation : public ecs::System {
+class Deletion : public ecs::System {
   private:
     std::set<ecs::Entity> entities;
 

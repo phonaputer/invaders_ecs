@@ -10,14 +10,28 @@
 
 namespace systems {
 
-void explode_on_defeat(flecs::world world, std::function<void(flecs::world, core::Point)> add_explosion) {
-  world.system<const components::ExplodeOnDefeat, const events::Defeated, const components::Position>("ExplodeOnDefeat")
-      .each([add_explosion](
-                flecs::iter &it,
-                const components::ExplodeOnDefeat e,
-                const events::Defeated d,
-                const components::Position p
-            ) { add_explosion(it.world(), {p.x, p.y}); });
+ExplodeOnDefeat::ExplodeOnDefeat(std::function<void(ecs::ECS &, core::Point)> add_explosion)
+    : add_explosion{add_explosion} {
+}
+
+void ExplodeOnDefeat::remove_entity(ecs::Entity entity) {
+  entities.erase(entity);
+}
+
+void ExplodeOnDefeat::add_entity_if_matches(ecs::Entity entity, ecs::ComponentManager &components) {
+  if (components.has<components::ExplodeOnDefeat>(entity) && components.has<components::Position>(entity)) {
+    entities.insert(entity);
+  }
+}
+
+void ExplodeOnDefeat::execute(ecs::ECS &ecs) {
+  for (const auto &event : ecs.events().get_all<events::Defeated>()) {
+    if (entities.contains(event.entity)) {
+      auto position = ecs.components().get<components::Position>(event.entity);
+
+      add_explosion(ecs, {position.x, position.y});
+    }
+  }
 }
 
 } // namespace systems

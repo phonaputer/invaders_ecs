@@ -2,6 +2,8 @@
 
 namespace components {
 
-struct Deleteable {};
+struct Deleteable {
+    bool is_deleted;
+};
 
 } // namespace components

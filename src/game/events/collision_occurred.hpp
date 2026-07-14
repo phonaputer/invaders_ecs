@@ -1,12 +1,12 @@
 #pragma once
 
-#include <flecs.h>
+#include "framework/ecs/entity.hpp"
 
 namespace events {
 
 struct CollisionOccurred {
-    flecs::entity who_am_i;
-    flecs::entity who_i_hit;
+    ecs::Entity who_am_i;
+    ecs::Entity who_i_hit;
 
     bool operator==(const CollisionOccurred &) const = default;
 };

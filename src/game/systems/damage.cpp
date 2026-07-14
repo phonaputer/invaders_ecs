@@ -1,5 +1,8 @@
 #include "game/systems/damage.hpp"
-#include "game/components/collided_with.hpp"
+#include "framework/ecs/component_manager.hpp"
+#include "framework/ecs/ecs.hpp"
+#include "framework/ecs/entity.hpp"
+#include "framework/ecs/system.hpp"
 #include "game/components/damage_dealer.hpp"
 #include "game/components/damage_type_enum.hpp"
 #include "game/components/deletable.hpp"
@@ -8,44 +11,72 @@
 #include "game/events/defeated.hpp"
 #include "game/events/player_scored.hpp"
 #include "game/events/took_damage.hpp"
-#include <flecs.h>
 #include <set>
 
 namespace systems {
 
-void damage(flecs::world world) {
-  world.system<events::CollisionOccurred>("Damage").each(
-      [](flecs::iter &it, size_t index, flecs::entity ent, events::CollisionOccurred &collision) {
-        ent.destruct();
+void Damage::remove_entity(ecs::Entity entity) {
+  dealers.erase(entity);
+  receivers.erase(entity);
+}
 
-        if (!collision.who_am_i.has<components::DamageDealer>() && !collision.who_i_hit.has<components::Hitpoints>()) {
-          return;
-        }
+void Damage::add_entity_if_matches(ecs::Entity entity, ecs::ComponentManager &components) {
+  if (components.has<components::DamageDealer>(entity)) {
+    dealers.insert(entity);
+  }
 
-        auto damage = collision.who_am_i.get<components::DamageDealer>();
-        auto hitpoints = collision.who_i_hit.get<components::Hitpoints>();
+  if (components.has<components::Hitpoints>(entity)) {
+    receivers.insert(entity);
+  }
+}
 
-        if (!(damage.type & hitpoints.susceptible_to).any()) {
-          return;
-        }
+void Damage::execute(ecs::ECS &ecs) {
+  auto collisions = ecs.events().get_all<events::CollisionOccurred>();
 
-        hitpoints.cur_hitpoints -= damage.amount;
-        collision.who_i_hit.set(hitpoints);
+  for (const auto &collision : collisions) {
+    if (!dealers.contains(collision.who_am_i)) {
+      continue;
+    }
 
-        collision.who_i_hit.set<events::TookDamage>({.amount = damage.amount});
+    if (!receivers.contains(collision.who_i_hit)) {
+      continue;
+    }
 
-        if (hitpoints.cur_hitpoints > 0) {
-          return;
-        }
+    auto damage = ecs.components().get<components::DamageDealer>(collision.who_am_i);
+    auto hitpoints = ecs.components().get<components::Hitpoints>(collision.who_i_hit);
 
-        collision.who_i_hit.add<events::Defeated>();
-        collision.who_i_hit.add<components::Deleteable>();
+    if (!(damage.type & hitpoints.susceptible_to).any()) {
+      continue;
+    }
 
-        if (hitpoints.grants_score) {
-          it.world().entity().set<events::PlayerScored>({.score = hitpoints.score_value});
-        }
-      }
-  );
+    hitpoints.cur_hitpoints -= damage.amount;
+    ecs.components().set(collision.who_i_hit, hitpoints);
+
+    ecs.events().push_back(events::TookDamage{.entity = collision.who_i_hit, .amount = damage.amount});
+
+    if (hitpoints.cur_hitpoints > 0) {
+      continue;
+    }
+
+    ecs.events().push_back(events::Defeated{.entity = collision.who_i_hit});
+
+    if (ecs.components().has<components::Deleteable>(collision.who_i_hit)) {
+      ecs.components().set(
+          collision.who_i_hit,
+          components::Deleteable{
+              .is_deleted = true,
+          }
+      );
+    }
+
+    if (hitpoints.grants_score) {
+      ecs.events().push_back(
+          events::PlayerScored{
+              .score = hitpoints.score_value,
+          }
+      );
+    }
+  }
 }
 
 } // namespace systems

@@ -1,44 +1,66 @@
+#include "game/systems/animation.hpp"
+#include "framework/ecs/component_manager.hpp"
+#include "framework/ecs/ecs.hpp"
+#include "framework/ecs/entity.hpp"
+#include "framework/ecs/system.hpp"
 #include "game/components/animation.hpp"
 #include "game/components/sprite.hpp"
-#include <flecs.h>
+#include <set>
 
 namespace systems {
 
-flecs::system animation(flecs::world world) {
-  world.system<components::Animation, components::Sprite>("Animation")
-      .each([](components::Animation &animation, components::Sprite &sprite) {
-        if (!animation.playing) {
-          return;
+void Animation::remove_entity(ecs::Entity entity) {
+  entities.erase(entity);
+}
+
+void Animation::add_entity_if_matches(ecs::Entity entity, ecs::ComponentManager &components) {
+  if (components.has<components::Animation>(entity) && components.has<components::Sprite>(entity)) {
+    entities.insert(entity);
+  }
+}
+
+void Animation::execute(ecs::ECS &ecs) {
+  for (const auto &entity : entities) {
+    auto animation = ecs.components().get<components::Animation>(entity);
+
+    if (!animation.playing) {
+      continue;
+    }
+
+    bool should_update_frame = false;
+
+    animation.tick_counter++;
+    if (animation.tick_counter >= animation.ticks_per_frame) {
+      animation.tick_counter = 0;
+      should_update_frame = true;
+
+      if (animation.play_reversed) {
+        if (animation.cur_frame == 0) {
+          animation.cur_frame = animation.frames.size() - 1;
+        } else {
+          animation.cur_frame--;
         }
-
-        bool should_update_frame = false;
-
-        auto cur_ticks = ++animation.tick_counter;
-        if (cur_ticks >= animation.ticks_per_frame) {
-          animation.tick_counter = 0;
-          should_update_frame = true;
-
-          if (animation.play_reversed) {
-            if (animation.cur_frame = 0) {
-              animation.cur_frame = animation.frames.size() - 1;
-            } else {
-              animation.cur_frame--;
-            }
-          } else {
-            animation.cur_frame++;
-            if (animation.cur_frame >= animation.frames.size()) {
-              animation.cur_frame = 0;
-            }
-          }
+      } else {
+        animation.cur_frame++;
+        if (animation.cur_frame >= animation.frames.size()) {
+          animation.cur_frame = 0;
         }
+      }
+    }
 
-        if (should_update_frame) {
-          auto frame = animation.frames.at(animation.cur_frame);
+    ecs.components().set(entity, animation);
 
-          sprite.src_x = frame.x * sprite.src_width;
-          sprite.src_y = frame.y * sprite.src_height;
-        }
-      });
+    if (should_update_frame) {
+      auto sprite = ecs.components().get<components::Sprite>(entity);
+
+      auto frame = animation.frames.at(animation.cur_frame);
+
+      sprite.src_x = frame.x * sprite.src_width;
+      sprite.src_y = frame.y * sprite.src_height;
+
+      ecs.components().set(entity, sprite);
+    }
+  }
 }
 
 } // namespace systems
