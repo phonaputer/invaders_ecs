@@ -13,7 +13,7 @@ ExplodeOnDefeat::ExplodeOnDefeat(std::function<void(entt::registry &, core::Poin
 
 void ExplodeOnDefeat::execute(framework::ExecuteCtx &ctx) {
   for (const auto &event : ctx.events.get_all<events::Defeated>()) {
-    if (ctx.ecs.all_of<components::Position>(event.entity)) {
+    if (ctx.ecs.all_of<components::ExplodeOnDefeat, components::Position>(event.entity)) {
       auto position = ctx.ecs.get<components::Position>(event.entity);
 
       add_explosion(ctx.ecs, {position.x, position.y});

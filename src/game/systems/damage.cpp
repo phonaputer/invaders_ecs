@@ -41,7 +41,7 @@ void Damage::execute(framework::ExecuteCtx &ctx) {
 
     ctx.events.push_back(events::Defeated{.entity = collision.who_i_hit});
 
-    ctx.ecs.emplace<components::Deleteable>(collision.who_i_hit);
+    ctx.ecs.emplace_or_replace<components::Deleteable>(collision.who_i_hit);
 
     if (hitpoints.grants_score) {
       ctx.events.push_back(
