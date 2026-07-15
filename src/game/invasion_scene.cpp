@@ -6,7 +6,7 @@
 #include "game/invaders.hpp"
 #include "game/player.hpp"
 #include "game/systems/animation.hpp"
-// #include "game/systems/collision_detection.hpp"
+#include "game/systems/collision_detection.hpp"
 // #include "game/systems/damage.hpp"
 // #include "game/systems/debug/hitbox_rendering.hpp"
 #include "game/systems/deletion.hpp"

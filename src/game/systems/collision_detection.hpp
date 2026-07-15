@@ -1,10 +1,8 @@
 #pragma once
 
-#include "framework/ecs/component_manager.hpp"
-#include "framework/ecs/ecs.hpp"
-#include "framework/ecs/entity.hpp"
-#include "framework/ecs/system.hpp"
+#include "framework/system.hpp"
 #include <cstdint>
+#include <entt.hpp>
 #include <set>
 #include <unordered_map>
 #include <vector>
@@ -12,14 +10,14 @@
 namespace systems {
 
 struct Hitbox {
-    ecs::Entity entity;
+    entt::entity entity;
     float x;
     float y;
     float w;
     float h;
 };
 
-class CollisionDetection : public framework::system {
+class CollisionDetection : public framework::System {
   private:
     // These must always be larger than the max hitbox in game to avoid a
     // really big hitbox encompassing an entire bucket without any of its
@@ -28,21 +26,19 @@ class CollisionDetection : public framework::system {
     static constexpr std::uint16_t BUCKET_WIDTH = 17;
     static constexpr std::uint16_t BUCKET_HEIGHT = 17;
 
-    std::set<ecs::Entity> entities;
+    std::set<entt::entity> entities;
     std::unordered_map<std::int32_t, std::vector<Hitbox>> hitbox_buckets;
 
     std::int32_t to_bucket_key(float x, float y);
-    void fill_buckets(ecs::ECS &ecs);
+    void fill_buckets(entt::registry &ecs);
     void add_to_bucket(Hitbox hitbox, float x, float y);
     void clear_buckets();
-    void check_collisions(ecs::ECS &ecs, const std::vector<Hitbox> hitboxes);
-    void emit_collided_if_didnt_already(ecs::ECS &ecs, ecs::Entity right, ecs::Entity left);
+    void check_collisions(framework::ExecuteCtx &ctx, const std::vector<Hitbox> hitboxes);
+    void emit_collided_if_didnt_already(framework::ExecuteCtx &ctx, entt::entity right, entt::entity left);
     bool are_touching(Hitbox right, Hitbox left);
 
   public:
-    void remove_entity(ecs::Entity entity) override;
-    void add_entity_if_matches(ecs::Entity entity, ecs::ComponentManager &components) override;
-    void execute(ecs::ECS &ecs) override;
+    void execute(framework::ExecuteCtx &ctx) override;
 };
 
 } // namespace systems

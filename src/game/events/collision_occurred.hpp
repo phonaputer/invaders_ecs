@@ -1,12 +1,12 @@
 #pragma once
 
-#include "framework/ecs/entity.hpp"
+#include <entt.hpp>
 
 namespace events {
 
 struct CollisionOccurred {
-    ecs::Entity who_am_i;
-    ecs::Entity who_i_hit;
+    entt::entity who_am_i;
+    entt::entity who_i_hit;
 
     bool operator==(const CollisionOccurred &) const = default;
 };

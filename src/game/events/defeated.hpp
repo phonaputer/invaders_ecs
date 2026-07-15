@@ -1,11 +1,11 @@
 #pragma once
 
-#include "framework/ecs/entity.hpp"
+#include <entt.hpp>
 
 namespace events {
 
 struct Defeated {
-    ecs::Entity entity;
+    entt::entity entity;
 };
 
 } // namespace events

@@ -1,8 +1,5 @@
 #include "game/systems/damage.hpp"
-#include "framework/ecs/component_manager.hpp"
-#include "framework/ecs/ecs.hpp"
-#include "framework/ecs/entity.hpp"
-#include "framework/ecs/system.hpp"
+#include "framework/system.hpp"
 #include "game/components/damage_dealer.hpp"
 #include "game/components/damage_type_enum.hpp"
 #include "game/components/deletable.hpp"
@@ -11,66 +8,44 @@
 #include "game/events/defeated.hpp"
 #include "game/events/player_scored.hpp"
 #include "game/events/took_damage.hpp"
-#include <set>
+#include <entt.hpp>
 
 namespace systems {
 
-void Damage::remove_entity(ecs::Entity entity) {
-  dealers.erase(entity);
-  receivers.erase(entity);
-}
-
-void Damage::add_entity_if_matches(ecs::Entity entity, ecs::ComponentManager &components) {
-  if (components.has<components::DamageDealer>(entity)) {
-    dealers.insert(entity);
-  }
-
-  if (components.has<components::Hitpoints>(entity)) {
-    receivers.insert(entity);
-  }
-}
-
-void Damage::execute(ecs::ECS &ecs) {
-  auto collisions = ecs.events().get_all<events::CollisionOccurred>();
+void Damage::execute(framework::ExecuteCtx &ctx) {
+  auto collisions = ctx.events.get_all<events::CollisionOccurred>();
 
   for (const auto &collision : collisions) {
-    if (!dealers.contains(collision.who_am_i)) {
+    if (!ctx.ecs.all_of<components::DamageDealer>(collision.who_am_i)) {
       continue;
     }
 
-    if (!receivers.contains(collision.who_i_hit)) {
+    if (!ctx.ecs.all_of<components::Hitpoints>(collision.who_i_hit)) {
       continue;
     }
 
-    auto damage = ecs.components().get<components::DamageDealer>(collision.who_am_i);
-    auto hitpoints = ecs.components().get<components::Hitpoints>(collision.who_i_hit);
+    auto damage = ctx.ecs.get<components::DamageDealer>(collision.who_am_i);
+    auto hitpoints = ctx.ecs.get<components::Hitpoints>(collision.who_i_hit);
 
     if (!(damage.type & hitpoints.susceptible_to).any()) {
       continue;
     }
 
     hitpoints.cur_hitpoints -= damage.amount;
-    ecs.components().set(collision.who_i_hit, hitpoints);
+    ctx.ecs.replace<components::Hitpoints>(collision.who_i_hit, hitpoints);
 
-    ecs.events().push_back(events::TookDamage{.entity = collision.who_i_hit, .amount = damage.amount});
+    ctx.events.push_back(events::TookDamage{.entity = collision.who_i_hit, .amount = damage.amount});
 
     if (hitpoints.cur_hitpoints > 0) {
       continue;
     }
 
-    ecs.events().push_back(events::Defeated{.entity = collision.who_i_hit});
+    ctx.events.push_back(events::Defeated{.entity = collision.who_i_hit});
 
-    if (ecs.components().has<components::Deleteable>(collision.who_i_hit)) {
-      ecs.components().set(
-          collision.who_i_hit,
-          components::Deleteable{
-              .is_deleted = true,
-          }
-      );
-    }
+    ctx.ecs.emplace<components::Deleteable>(collision.who_i_hit);
 
     if (hitpoints.grants_score) {
-      ecs.events().push_back(
+      ctx.events.push_back(
           events::PlayerScored{
               .score = hitpoints.score_value,
           }

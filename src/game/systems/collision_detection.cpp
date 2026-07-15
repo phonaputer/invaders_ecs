@@ -1,8 +1,5 @@
 #include "game/systems/collision_detection.hpp"
-#include "framework/ecs/component_manager.hpp"
-#include "framework/ecs/ecs.hpp"
-#include "framework/ecs/entity.hpp"
-#include "framework/ecs/system.hpp"
+#include "framework/system.hpp"
 #include "game/components/collision.hpp"
 #include "game/components/position.hpp"
 #include "game/events/collision_occurred.hpp"
@@ -14,21 +11,11 @@
 
 namespace systems {
 
-void CollisionDetection::remove_entity(ecs::Entity entity) {
-  entities.erase(entity);
-}
-
-void CollisionDetection::add_entity_if_matches(ecs::Entity entity, ecs::ComponentManager &components) {
-  if (components.has<components::Position>(entity) && components.has<components::Collision>(entity)) {
-    entities.insert(entity);
-  }
-}
-
-void CollisionDetection::execute(ecs::ECS &ecs) {
-  fill_buckets(ecs);
+void CollisionDetection::execute(framework::ExecuteCtx &ctx) {
+  fill_buckets(ctx.ecs);
 
   for (const auto &[_, bucket] : hitbox_buckets) {
-    check_collisions(ecs, bucket);
+    check_collisions(ctx, bucket);
   }
 
   clear_buckets();
@@ -41,12 +28,12 @@ std::int32_t CollisionDetection::to_bucket_key(float x, float y) {
   return ((std::int32_t)bucket_x << 8) | bucket_y;
 }
 
-void CollisionDetection::fill_buckets(ecs::ECS &ecs) {
-  for (auto e = entities.begin(); e != entities.end(); e++) {
-    auto collision = ecs.components().get<components::Collision>(*e);
-    auto position = ecs.components().get<components::Position>(*e);
+void CollisionDetection::fill_buckets(entt::registry &ecs) {
+  auto view = ecs.view<const components::Collision, const components::Position>();
+
+  for (auto [entity, collision, position] : view.each()) {
     auto hitbox = Hitbox{
-        .entity = *e,
+        .entity = entity,
         .x = collision.hitbox_offset_x + position.x,
         .y = collision.hitbox_offset_y + position.y,
         .w = collision.hitbox_w,
@@ -80,7 +67,7 @@ void CollisionDetection::clear_buckets() {
   }
 }
 
-void CollisionDetection::check_collisions(ecs::ECS &ecs, const std::vector<Hitbox> hitboxes) {
+void CollisionDetection::check_collisions(framework::ExecuteCtx &ctx, const std::vector<Hitbox> hitboxes) {
   for (size_t l = 0; l < hitboxes.size(); l++) {
     auto left = hitboxes.at(l);
 
@@ -88,14 +75,16 @@ void CollisionDetection::check_collisions(ecs::ECS &ecs, const std::vector<Hitbo
       auto right = hitboxes.at(r);
 
       if (are_touching(left, right)) {
-        emit_collided_if_didnt_already(ecs, left.entity, right.entity);
+        emit_collided_if_didnt_already(ctx, left.entity, right.entity);
       }
     }
   }
 }
 
-void CollisionDetection::emit_collided_if_didnt_already(ecs::ECS &ecs, ecs::Entity right, ecs::Entity left) {
-  for (const auto &event : ecs.events().get_all<events::CollisionOccurred>()) {
+void CollisionDetection::emit_collided_if_didnt_already(
+    framework::ExecuteCtx &ctx, entt::entity right, entt::entity left
+) {
+  for (const auto &event : ctx.events.get_all<events::CollisionOccurred>()) {
     if (event.who_am_i == right && event.who_i_hit == left) {
       return;
     }
@@ -104,8 +93,8 @@ void CollisionDetection::emit_collided_if_didnt_already(ecs::ECS &ecs, ecs::Enti
     }
   }
 
-  ecs.events().push_back(events::CollisionOccurred{.who_am_i = left, .who_i_hit = right});
-  ecs.events().push_back(events::CollisionOccurred{.who_am_i = right, .who_i_hit = left});
+  ctx.events.push_back(events::CollisionOccurred{.who_am_i = left, .who_i_hit = right});
+  ctx.events.push_back(events::CollisionOccurred{.who_am_i = right, .who_i_hit = left});
 }
 
 bool CollisionDetection::are_touching(Hitbox right, Hitbox left) {
