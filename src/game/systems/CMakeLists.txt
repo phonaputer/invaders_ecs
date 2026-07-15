@@ -2,19 +2,19 @@ target_sources(
   ${PROJECT_NAME}_lib
   PRIVATE
   animation.cpp
-  #collision_detection.cpp
-  #damage.cpp
+  collision_detection.cpp
+  damage.cpp
   deletion.cpp
-  #explode_on_defeat.cpp
-  #hud_rendering.cpp
+  explode_on_defeat.cpp
+  hud_rendering.cpp
   lifetime.cpp
   position_following.cpp
   rendering.cpp
-  #score.cpp
-  #sprite_offset_on_damage.cpp
+  score.cpp
+  sprite_offset_on_damage.cpp
   velocity.cpp
 )
 
-#add_subdirectory(debug)
-#add_subdirectory(invaders)
+add_subdirectory(debug)
+add_subdirectory(invaders)
 add_subdirectory(player)

@@ -1,9 +1,9 @@
 #pragma once
 
-#include "framework/ecs/ecs.hpp"
+#include <entt.hpp>
 
 namespace game {
 
-void add_hud_entity(ecs::ECS &ecs);
+void add_hud_entity(entt::registry &ecs);
 
 } // namespace game

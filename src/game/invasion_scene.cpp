@@ -1,9 +1,9 @@
 #include "game/invasion_scene.hpp"
 #include "framework/scene.hpp"
 #include "framework/scene_initialization_context.hpp"
-// #include "game/fortress.hpp"
-// #include "game/hud.hpp"
-// #include "game/invaders.hpp"
+#include "game/fortress.hpp"
+#include "game/hud.hpp"
+#include "game/invaders.hpp"
 #include "game/player.hpp"
 #include "game/systems/animation.hpp"
 // #include "game/systems/collision_detection.hpp"
@@ -56,10 +56,10 @@ void InvasionScene::initialize(framework::SceneInitializationContext ctx) {
   // ctx.ecs.add_draw_system(std::make_unique<systems::debug::HitboxRendering>(ctx.renderer));
   //   ctx.systems.add_draw_system(std::make_unique<systems::HUDRendering>(ctx.renderer));
 
-  //   add_invader_entities(ctx.ecs);
+  add_invader_entities(ctx.ecs);
   add_player_entity(ctx.ecs);
-  //   add_hud_entity(ctx.ecs);
-  //   add_fortresses(ctx.ecs);
+  add_hud_entity(ctx.ecs);
+  add_fortresses(ctx.ecs);
 }
 
 } // namespace game

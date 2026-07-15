@@ -1,14 +1,14 @@
 #pragma once
 
 #include "core/point.hpp"
-#include "framework/ecs/ecs.hpp"
+#include <entt.hpp>
 
 namespace game {
 
-void add_invader_entities(ecs::ECS &ecs);
+void add_invader_entities(entt::registry &ecs);
 
-void add_invader_projectile(ecs::ECS &ecs, core::Point starting_point);
+void add_invader_projectile(entt::registry &ecs, core::Point starting_point);
 
-void add_explosion(ecs::ECS &ecs, core::Point position);
+void add_explosion(entt::registry &ecs, core::Point position);
 
 } // namespace game

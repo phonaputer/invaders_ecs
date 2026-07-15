@@ -8,7 +8,6 @@
 #include "game/components/invaders/step_animation.hpp"
 #include "game/components/position.hpp"
 #include "game/components/sprite.hpp"
-#include "game/components/starting_position.hpp"
 #include "game/events/pause.hpp"
 #include <random>
 #include <utility>
@@ -35,8 +34,8 @@ void Orchestration::remove_entity(ecs::Entity entity) {
 }
 
 void Orchestration::add_entity_if_matches(ecs::Entity entity, ecs::ComponentManager &components) {
-  if (components.has<components::Position>(entity) && components.has<components::StartingPosition>(entity)
-      && components.has<components::invaders::StepAnimation>(entity) && components.has<components::Sprite>(entity)) {
+  if (components.has<components::Position>(entity) && components.has<components::invaders::StepAnimation>(entity)
+      && components.has<components::Sprite>(entity)) {
     entities.push_back(entity);
   }
 }

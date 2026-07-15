@@ -1,10 +1,10 @@
 target_sources(
   ${PROJECT_NAME}_lib
   PRIVATE
-#  fortress.cpp
-#  hud.cpp
+  fortress.cpp
+  hud.cpp
   invasion_scene.cpp
-#  invaders.cpp
+  invaders.cpp
   player.cpp
 )
 
