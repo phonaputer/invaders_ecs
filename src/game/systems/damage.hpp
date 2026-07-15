@@ -1,7 +1,6 @@
 #pragma once
 
 #include "framework/system.hpp"
-#include <entt.hpp>
 
 namespace systems {
 

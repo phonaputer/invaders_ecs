@@ -8,7 +8,6 @@
 #include "game/events/defeated.hpp"
 #include "game/events/player_scored.hpp"
 #include "game/events/took_damage.hpp"
-#include <entt.hpp>
 
 namespace systems {
 

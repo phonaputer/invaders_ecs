@@ -5,8 +5,10 @@
 #include "game/components/damage_dealer.hpp"
 #include "game/components/damage_type_enum.hpp"
 #include "game/components/deletable.hpp"
+#include "game/components/delete_on_gameover.hpp"
 #include "game/components/explode_on_defeat.hpp"
 #include "game/components/hitpoints.hpp"
+#include "game/components/invaders/invader.hpp"
 #include "game/components/invaders/step_animation.hpp"
 #include "game/components/lifetime.hpp"
 #include "game/components/position.hpp"
@@ -29,6 +31,10 @@ struct AddInvaderArgs {
 
 void add_invader_entity(entt::registry &ecs, AddInvaderArgs args) {
   const auto entity = ecs.create();
+
+  ecs.emplace<components::invaders::Invader>(entity);
+
+  ecs.emplace<components::DeleteOnGameOver>(entity);
 
   components::DamageTypeSet susceptible_damage_types;
   susceptible_damage_types.set(components::damage_type_to_index(components::DamageType::Player_Projectile));
@@ -217,6 +223,8 @@ void add_invader_entities(entt::registry &ecs) {
 void add_invader_projectile(entt::registry &ecs, core::Point starting_point) {
   const auto entity = ecs.create();
 
+  ecs.emplace<components::DeleteOnGameOver>(entity);
+
   ecs.emplace<components::Position>(
       entity,
       components::Position{
@@ -298,6 +306,8 @@ void add_invader_projectile(entt::registry &ecs, core::Point starting_point) {
 
 void add_explosion(entt::registry &ecs, core::Point position) {
   const auto entity = ecs.create();
+
+  ecs.emplace<components::DeleteOnGameOver>(entity);
 
   ecs.emplace<components::Position>(
       entity,

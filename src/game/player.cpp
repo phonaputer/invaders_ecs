@@ -5,6 +5,7 @@
 #include "game/components/collision.hpp"
 #include "game/components/damage_dealer.hpp"
 #include "game/components/damage_type_enum.hpp"
+#include "game/components/delete_on_gameover.hpp"
 #include "game/components/hitpoints.hpp"
 #include "game/components/lifetime.hpp"
 #include "game/components/player/movement.hpp"
@@ -20,6 +21,7 @@ namespace game {
 void add_player_entity(entt::registry &ecs) {
   const auto entity = ecs.create();
 
+  ecs.emplace<components::DeleteOnGameOver>(entity);
   ecs.emplace<components::Position>(
       entity,
       components::Position{
@@ -102,6 +104,7 @@ void add_player_entity(entt::registry &ecs) {
 entt::entity add_player_projectile_entity(entt::registry &ecs, core::Point starting_point) {
   const auto entity = ecs.create();
 
+  ecs.emplace<components::DeleteOnGameOver>(entity);
   components::DamageTypeSet susceptible_damage_types;
   susceptible_damage_types.set(components::damage_type_to_index(components::DamageType::Alien));
   susceptible_damage_types.set(components::damage_type_to_index(components::DamageType::Alien_Projectile));
@@ -167,6 +170,7 @@ entt::entity add_player_projectile_entity(entt::registry &ecs, core::Point start
 void add_player_muzzle_flash_entity(entt::registry &ecs, entt::entity shooter) {
   const auto entity = ecs.create();
 
+  ecs.emplace<components::DeleteOnGameOver>(entity);
   ecs.emplace<components::Position>(
       entity,
       components::Position{
@@ -221,6 +225,7 @@ void add_player_muzzle_flash_entity(entt::registry &ecs, entt::entity shooter) {
 void add_player_explosion_entity(entt::registry &ecs, core::Point position, unsigned int lifetime) {
   const auto entity = ecs.create();
 
+  ecs.emplace<components::DeleteOnGameOver>(entity);
   ecs.emplace<components::Position>(
       entity,
       components::Position{

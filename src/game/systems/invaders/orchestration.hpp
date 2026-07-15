@@ -2,17 +2,14 @@
 
 #include "core/point.hpp"
 #include "framework/constants.hpp"
-#include "framework/ecs/component_manager.hpp"
-#include "framework/ecs/ecs.hpp"
-#include "framework/ecs/entity.hpp"
-#include "framework/ecs/system.hpp"
+#include "framework/system.hpp"
+#include <entt.hpp>
 #include <functional>
 #include <random>
-#include <vector>
 
 namespace systems::invaders {
 
-class Orchestration : public framework::system {
+class Orchestration : public framework::System {
   private:
     static constexpr int BASE_TICKS_PER_MOVE = 58;
     static constexpr float X_SPEED = 5;
@@ -26,29 +23,25 @@ class Orchestration : public framework::system {
 
     bool move_right = true;
     int tick_counter = 0;
-    std::function<void(ecs::ECS &, core::Point)> add_projectile;
-    std::function<void(ecs::ECS &)> rerack_aliens;
+    std::function<void(entt::registry &, core::Point)> add_projectile;
+    std::function<void(entt::registry &)> rerack_aliens;
     std::mt19937 rand_gen;
     unsigned int shoot_counter = 0;
 
-    std::vector<ecs::Entity> entities;
-
     bool should_shoot_this_tick();
-    void random_alien_shoot(ecs::ECS &ecs);
+    void random_alien_shoot(entt::registry &ecs);
     bool should_move_this_tick();
-    bool did_hit_wall(ecs::ECS &ecs, ecs::Entity entity);
-    void move(ecs::ECS &ecs, ecs::Entity entity, bool move_down);
-    void animate(ecs::ECS &ecs, ecs::Entity entity);
+    bool did_hit_wall(entt::registry &ecs);
+    void move(entt::registry &ecs, bool move_down);
+    void animate(entt::registry &ecs);
 
   public:
     Orchestration(
-        std::function<void(ecs::ECS &, core::Point)> add_projectile,
-        std::function<void(ecs::ECS &)> rerack_aliens,
+        std::function<void(entt::registry &, core::Point)> add_projectile,
+        std::function<void(entt::registry &)> rerack_aliens,
         unsigned int rand_seed
     );
-    void remove_entity(ecs::Entity entity) override;
-    void add_entity_if_matches(ecs::Entity entity, ecs::ComponentManager &components) override;
-    void execute(ecs::ECS &ecs) override;
+    void execute(framework::ExecuteCtx &ctx) override;
 };
 
 } // namespace systems::invaders

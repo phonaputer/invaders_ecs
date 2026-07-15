@@ -1,10 +1,7 @@
 #include "game/systems/hud_rendering.hpp"
 #include "framework/constants.hpp"
-#include "framework/ecs/component_manager.hpp"
-#include "framework/ecs/ecs.hpp"
-#include "framework/ecs/entity.hpp"
-#include "framework/ecs/system.hpp"
 #include "framework/renderer.hpp"
+#include "framework/system.hpp"
 #include "game/components/singleton/hud_stats.hpp"
 #include "game/constants.hpp"
 #include "game/util/text_renderer.hpp"
@@ -17,17 +14,9 @@ HUDRendering::HUDRendering(framework::Renderer &renderer)
       text_renderer{renderer} {
 }
 
-void HUDRendering::remove_entity([[maybe_unused]] ecs::Entity entity) {
-}
-
-void HUDRendering::add_entity_if_matches(
-    [[maybe_unused]] ecs::Entity entity, [[maybe_unused]] ecs::ComponentManager &entity_components
-) {
-}
-
 // This system hardcodes a lot
 // Probably worth it though to avoid adding complexity elsewhere
-void HUDRendering::execute(ecs::ECS &ecs) {
+void HUDRendering::execute(framework::ExecuteCtx &ctx) {
   renderer.draw_line(
       framework::DrawLineParams{
           .start_x = 0,
@@ -40,7 +29,7 @@ void HUDRendering::execute(ecs::ECS &ecs) {
       }
   );
 
-  auto hud_stats = ecs.components().get_singleton<components::singleton::HUDStats>();
+  auto hud_stats = ctx.ecs.ctx().get<components::singleton::HUDStats>();
 
   text_renderer.render_text(6, 6, std::format("score:{}", hud_stats.score));
   text_renderer.render_text(framework::WINDOW_WIDTH / 2 - 28, 6, std::format("hi-score:{}", hud_stats.high_score));

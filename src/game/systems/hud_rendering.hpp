@@ -1,25 +1,19 @@
 #pragma once
 
-#include "framework/ecs/component_manager.hpp"
-#include "framework/ecs/ecs.hpp"
-#include "framework/ecs/entity.hpp"
-#include "framework/ecs/system.hpp"
 #include "framework/renderer.hpp"
+#include "framework/system.hpp"
 #include "game/util/text_renderer.hpp"
-#include <set>
 
 namespace systems {
 
-class HUDRendering : public framework::system {
+class HUDRendering : public framework::System {
   private:
     framework::Renderer &renderer;
     util::TextRenderer text_renderer;
 
   public:
     HUDRendering(framework::Renderer &renderer);
-    void remove_entity(ecs::Entity entity) override;
-    void add_entity_if_matches(ecs::Entity entity, ecs::ComponentManager &components) override;
-    void execute(ecs::ECS &ecs) override;
+    void execute(framework::ExecuteCtx &ctx) override;
 };
 
 } // namespace systems

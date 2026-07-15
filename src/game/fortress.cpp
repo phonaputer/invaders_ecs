@@ -3,6 +3,7 @@
 #include "game/components/damage_dealer.hpp"
 #include "game/components/damage_type_enum.hpp"
 #include "game/components/deletable.hpp"
+#include "game/components/delete_on_gameover.hpp"
 #include "game/components/hitpoints.hpp"
 #include "game/components/position.hpp"
 #include "game/components/sprite.hpp"
@@ -28,6 +29,8 @@ struct AddFortressTileArgs {
 
 void add_fortress_tile(entt::registry &ecs, AddFortressTileArgs args) {
   const auto entity = ecs.create();
+
+  ecs.emplace<components::DeleteOnGameOver>(entity);
 
   components::DamageTypeSet susceptible_damage_types;
   susceptible_damage_types.set(components::damage_type_to_index(components::DamageType::Player_Projectile));
