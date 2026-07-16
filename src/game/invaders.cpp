@@ -9,11 +9,11 @@
 #include "game/components/explode_on_defeat.hpp"
 #include "game/components/hitpoints.hpp"
 #include "game/components/interacts_on_collide.hpp"
-#include "game/components/invaders/invader.hpp"
-#include "game/components/invaders/step_animation.hpp"
+#include "game/components/invader.hpp"
 #include "game/components/lifetime.hpp"
 #include "game/components/position.hpp"
 #include "game/components/sprite.hpp"
+#include "game/components/step_animation.hpp"
 #include "game/components/velocity.hpp"
 #include <entt.hpp>
 
@@ -22,7 +22,7 @@ namespace game {
 struct AddInvaderArgs {
     float start_x;
     float start_y;
-    std::vector<components::invaders::StepAnimationFrame> frames;
+    std::vector<components::StepAnimationFrame> frames;
     float hitbox_offset_x;
     float hitfox_offset_y;
     float hitbox_w;
@@ -33,7 +33,7 @@ struct AddInvaderArgs {
 void add_invader_entity(entt::registry &ecs, AddInvaderArgs args) {
   const auto entity = ecs.create();
 
-  ecs.emplace<components::invaders::Invader>(entity);
+  ecs.emplace<components::Invader>(entity);
 
   ecs.emplace<components::DeleteOnGameOver>(entity);
 
@@ -95,9 +95,9 @@ void add_invader_entity(entt::registry &ecs, AddInvaderArgs args) {
       }
   );
 
-  ecs.emplace<components::invaders::StepAnimation>(
+  ecs.emplace<components::StepAnimation>(
       entity,
-      components::invaders::StepAnimation{
+      components::StepAnimation{
           .frames = std::move(args.frames),
           .cur_frame = 0,
       }
@@ -107,7 +107,7 @@ void add_invader_entity(entt::registry &ecs, AddInvaderArgs args) {
 }
 
 void add_octopus(entt::registry &ecs, float start_x, float start_y) {
-  std::vector<components::invaders::StepAnimationFrame> frames = {{6, 0}, {7, 0}};
+  std::vector<components::StepAnimationFrame> frames = {{6, 0}, {7, 0}};
 
   add_invader_entity(
       ecs,
@@ -125,7 +125,7 @@ void add_octopus(entt::registry &ecs, float start_x, float start_y) {
 }
 
 void add_jellyfish(entt::registry &ecs, float start_x, float start_y) {
-  std::vector<components::invaders::StepAnimationFrame> frames = {{1, 0}, {0, 0}, {1, 0}, {2, 0}};
+  std::vector<components::StepAnimationFrame> frames = {{1, 0}, {0, 0}, {1, 0}, {2, 0}};
 
   add_invader_entity(
       ecs,
@@ -143,7 +143,7 @@ void add_jellyfish(entt::registry &ecs, float start_x, float start_y) {
 }
 
 void add_crab(entt::registry &ecs, float start_x, float start_y) {
-  std::vector<components::invaders::StepAnimationFrame> frames = {{1, 1}, {0, 1}, {1, 1}, {2, 1}};
+  std::vector<components::StepAnimationFrame> frames = {{1, 1}, {0, 1}, {1, 1}, {2, 1}};
 
   add_invader_entity(
       ecs,
@@ -161,7 +161,7 @@ void add_crab(entt::registry &ecs, float start_x, float start_y) {
 }
 
 void add_tadpole(entt::registry &ecs, float start_x, float start_y) {
-  std::vector<components::invaders::StepAnimationFrame> frames = {{4, 0}, {3, 0}, {4, 0}, {5, 0}};
+  std::vector<components::StepAnimationFrame> frames = {{4, 0}, {3, 0}, {4, 0}, {5, 0}};
 
   add_invader_entity(
       ecs,

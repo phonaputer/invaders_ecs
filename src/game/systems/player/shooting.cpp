@@ -4,7 +4,7 @@
 #include "framework/player_input_manager.hpp"
 #include "framework/system.hpp"
 #include "game/components/deletable.hpp"
-#include "game/components/player/shooting.hpp"
+#include "game/components/player_shooting.hpp"
 #include "game/components/position.hpp"
 #include <entt.hpp>
 #include <functional>
@@ -20,7 +20,7 @@ Shooting::Shooting(
 }
 
 void Shooting::execute(framework::ExecuteCtx &ctx) {
-  auto view = ctx.ecs.view<components::player::Shooting, components::Position>();
+  auto view = ctx.ecs.view<components::PlayerShooting, components::Position>();
 
   for (auto [entity, shooting, position] : view.each()) {
     std::erase_if(active_projectiles, [&ctx](entt::entity projectile) {

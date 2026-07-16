@@ -2,10 +2,10 @@
 #include "core/point.hpp"
 #include "framework/player_input_manager.hpp"
 #include "framework/system.hpp"
-#include "game/components/invaders/invader.hpp"
-#include "game/components/invaders/step_animation.hpp"
+#include "game/components/invader.hpp"
 #include "game/components/position.hpp"
 #include "game/components/sprite.hpp"
+#include "game/components/step_animation.hpp"
 #include "game/events/pause.hpp"
 #include <entt.hpp>
 #include <iterator>
@@ -34,7 +34,7 @@ void Orchestration::execute(framework::ExecuteCtx &ctx) {
     return;
   }
 
-  auto view = ctx.ecs.view<components::invaders::Invader>();
+  auto view = ctx.ecs.view<components::Invader>();
 
   if (view.empty()) {
     rerack_aliens(ctx.ecs);
@@ -72,7 +72,7 @@ bool Orchestration::should_shoot_this_tick() {
 }
 
 void Orchestration::random_alien_shoot(entt::registry &ecs) {
-  auto view = ecs.view<components::invaders::Invader>();
+  auto view = ecs.view<components::Invader>();
   if (view.empty()) {
     return;
   }
@@ -97,7 +97,7 @@ bool Orchestration::should_move_this_tick() {
 }
 
 bool Orchestration::did_hit_wall(entt::registry &ecs) {
-  auto view = ecs.view<components::invaders::Invader, const components::Position>();
+  auto view = ecs.view<components::Invader, const components::Position>();
 
   for (auto [entity, position] : view.each()) {
     auto delta_x = X_SPEED;
@@ -116,7 +116,7 @@ bool Orchestration::did_hit_wall(entt::registry &ecs) {
 }
 
 void Orchestration::move(entt::registry &ecs, bool move_down) {
-  auto view = ecs.view<components::invaders::Invader, components::Position>();
+  auto view = ecs.view<components::Invader, components::Position>();
 
   for (auto [entity, position] : view.each()) {
     auto delta_x = X_SPEED;
@@ -133,7 +133,7 @@ void Orchestration::move(entt::registry &ecs, bool move_down) {
 }
 
 void Orchestration::animate(entt::registry &ecs) {
-  auto view = ecs.view<components::invaders::StepAnimation, components::Sprite>();
+  auto view = ecs.view<components::StepAnimation, components::Sprite>();
 
   for (auto [entity, animation, sprite] : view.each()) {
     animation.cur_frame++;

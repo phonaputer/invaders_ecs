@@ -9,8 +9,8 @@
 #include "game/components/hitpoints.hpp"
 #include "game/components/interacts_on_collide.hpp"
 #include "game/components/lifetime.hpp"
-#include "game/components/player/movement.hpp"
-#include "game/components/player/shooting.hpp"
+#include "game/components/player_movement.hpp"
+#include "game/components/player_shooting.hpp"
 #include "game/components/position.hpp"
 #include "game/components/position_following.hpp"
 #include "game/components/sprite.hpp"
@@ -57,9 +57,9 @@ void add_player_entity(entt::registry &ecs) {
           .tick_counter = 0,
       }
   );
-  ecs.emplace<components::player::Movement>(
+  ecs.emplace<components::PlayerMovement>(
       entity,
-      components::player::Movement{
+      components::PlayerMovement{
           .x_speed = 1,
       }
   );
@@ -72,9 +72,9 @@ void add_player_entity(entt::registry &ecs) {
           .hitbox_h = 5,
       }
   );
-  ecs.emplace<components::player::Shooting>(
+  ecs.emplace<components::PlayerShooting>(
       entity,
-      components::player::Shooting{
+      components::PlayerShooting{
           .ticks_per_shot = 8,
           .shot_clock = 0,
           .shot_offset_x = -2,

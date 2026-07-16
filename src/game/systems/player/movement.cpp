@@ -4,13 +4,13 @@
 #include "framework/player_input_manager.hpp"
 #include "framework/system.hpp"
 #include "game/components/animation.hpp"
-#include "game/components/player/movement.hpp"
+#include "game/components/player_movement.hpp"
 #include "game/components/position.hpp"
 
 namespace systems::player {
 
 void Movement::execute(framework::ExecuteCtx &ctx) {
-  auto view = ctx.ecs.view<components::player::Movement, components::Position, components::Animation>();
+  auto view = ctx.ecs.view<components::PlayerMovement, components::Position, components::Animation>();
 
   for (auto [entity, movement, position, animation] : view.each()) {
     if (ctx.player_input.is_engaged(framework::PlayerInput::LEFT)

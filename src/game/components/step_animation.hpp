@@ -2,7 +2,7 @@
 
 #include <vector>
 
-namespace components::invaders {
+namespace components {
 
 struct StepAnimationFrame {
     int x;
@@ -14,4 +14,4 @@ struct StepAnimation {
     unsigned int cur_frame;
 };
 
-} // namespace components::invaders
+} // namespace components

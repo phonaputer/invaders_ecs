@@ -4,7 +4,7 @@
 #include "game/components/deletable.hpp"
 #include "game/components/delete_on_gameover.hpp"
 #include "game/components/hitpoints.hpp"
-#include "game/components/player/movement.hpp"
+#include "game/components/player_movement.hpp"
 #include "game/components/position.hpp"
 #include "game/components/singleton/hud_stats.hpp"
 #include "game/constants.hpp"
@@ -34,7 +34,7 @@ void Defeat::execute(framework::ExecuteCtx &ctx) {
 }
 
 void Defeat::handle_defeat_if_any(framework::ExecuteCtx &ctx) {
-  auto player_entity = ctx.ecs.view<components::player::Movement>().front();
+  auto player_entity = ctx.ecs.view<components::PlayerMovement>().front();
   if (!ctx.ecs.valid(player_entity)) {
     return;
   }
