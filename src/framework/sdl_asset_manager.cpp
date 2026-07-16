@@ -20,6 +20,10 @@ struct SDLDeleter {
     void operator()(MIX_Track *p) const {
       MIX_DestroyTrack(p);
     }
+
+    void operator()(MIX_Audio *p) const {
+      MIX_DestroyAudio(p);
+    }
 };
 
 SDLAssetManager::SDLAssetManager(SDL_Renderer *renderer, std::shared_ptr<MIX_Mixer> mixer)

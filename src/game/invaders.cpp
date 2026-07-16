@@ -303,8 +303,6 @@ void add_invader_projectile(entt::registry &ecs, core::Point starting_point) {
           .amount = 1,
       }
   );
-
-  ecs.emplace<components::ExplodeOnDefeat>(entity);
 }
 
 void add_explosion(entt::registry &ecs, core::Point position) {

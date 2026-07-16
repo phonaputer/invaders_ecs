@@ -2,6 +2,7 @@ target_sources(
   ${PROJECT_NAME}_lib
   PRIVATE
   animation.cpp
+  audio.cpp
   collision_detection.cpp
   damage.cpp
   deletion.cpp

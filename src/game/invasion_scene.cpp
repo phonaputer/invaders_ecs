@@ -6,6 +6,7 @@
 #include "game/invaders.hpp"
 #include "game/player.hpp"
 #include "game/systems/animation.hpp"
+#include "game/systems/audio.hpp"
 #include "game/systems/collision_detection.hpp"
 #include "game/systems/damage.hpp"
 #include "game/systems/debug/hitbox_rendering.hpp"
@@ -28,6 +29,15 @@ namespace game {
 
 void InvasionScene::initialize(framework::SceneInitializationContext ctx) {
   ctx.assets.load_image_png("invaders_spritesheet", "./assets/space_invaders.png");
+
+  ctx.assets.load_audio_wav("alien_explosion", "./assets/alien_explosion.wav");
+  ctx.assets.load_audio_wav("alien_shot", "./assets/alien_shot.wav");
+  ctx.assets.load_audio_wav("player_explosion", "./assets/player_explosion.wav");
+  ctx.assets.load_audio_wav("player_shot", "./assets/player_shot.wav");
+  ctx.assets.load_audio_wav("arp1", "./assets/arp1.wav");
+  ctx.assets.load_audio_wav("arp2", "./assets/arp2.wav");
+  ctx.assets.load_audio_wav("arp3", "./assets/arp3.wav");
+  ctx.assets.load_audio_wav("arp4", "./assets/arp4.wav");
 
   std::random_device rd;
 
@@ -55,6 +65,7 @@ void InvasionScene::initialize(framework::SceneInitializationContext ctx) {
   ctx.systems.add_draw_system(std::make_unique<systems::Rendering>(ctx.renderer));
   // ctx.systems.add_draw_system(std::make_unique<systems::debug::HitboxRendering>(ctx.renderer));
   ctx.systems.add_draw_system(std::make_unique<systems::HUDRendering>(ctx.renderer));
+  ctx.systems.add_draw_system(std::make_unique<systems::Audio>(ctx.audio_player));
 
   add_invader_entities(ctx.ecs);
   add_player_entity(ctx.ecs);

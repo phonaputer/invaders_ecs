@@ -65,7 +65,7 @@ Game::Game() {
   unprocessed_ms = 0;
 
   player_input_manager = std::make_unique<PlayerInputManager>();
-  asset_manager = std::make_shared<SDLAssetManager>(renderer);
+  asset_manager = std::make_shared<SDLAssetManager>(renderer, mixer);
   renderer_wrapper = std::make_unique<SDLRenderer>(renderer, asset_manager);
 }
 
@@ -132,6 +132,7 @@ void Game::set_scene(std::unique_ptr<Scene> scene) {
           .systems = *this,
           .ecs = ecs,
           .renderer = *renderer_wrapper,
+          .audio_player = *asset_manager,
       }
   );
 
