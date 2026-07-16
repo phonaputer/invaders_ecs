@@ -20,6 +20,7 @@ add_subdirectory(gallia)
 target_link_libraries(
   ${PROJECT_NAME}_tests
   ${PROJECT_NAME}_lib
+  vendor_lib
   GTest::gtest_main
   GTest::gmock
 )
