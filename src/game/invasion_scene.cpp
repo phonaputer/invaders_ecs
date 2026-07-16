@@ -53,7 +53,7 @@ void InvasionScene::initialize(framework::SceneInitializationContext ctx) {
   ctx.systems.add_update_system(std::make_unique<systems::Score>());
 
   ctx.systems.add_draw_system(std::make_unique<systems::Rendering>(ctx.renderer));
-  ctx.systems.add_draw_system(std::make_unique<systems::debug::HitboxRendering>(ctx.renderer));
+  // ctx.systems.add_draw_system(std::make_unique<systems::debug::HitboxRendering>(ctx.renderer));
   ctx.systems.add_draw_system(std::make_unique<systems::HUDRendering>(ctx.renderer));
 
   add_invader_entities(ctx.ecs);

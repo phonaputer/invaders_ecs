@@ -8,6 +8,7 @@
 #include "game/components/delete_on_gameover.hpp"
 #include "game/components/explode_on_defeat.hpp"
 #include "game/components/hitpoints.hpp"
+#include "game/components/interacts_on_collide.hpp"
 #include "game/components/invaders/invader.hpp"
 #include "game/components/invaders/step_animation.hpp"
 #include "game/components/lifetime.hpp"
@@ -223,6 +224,8 @@ void add_invader_entities(entt::registry &ecs) {
 void add_invader_projectile(entt::registry &ecs, core::Point starting_point) {
   const auto entity = ecs.create();
 
+  ecs.emplace<components::InteractsOnCollide>(entity);
+
   ecs.emplace<components::DeleteOnGameOver>(entity);
 
   ecs.emplace<components::Position>(
@@ -274,9 +277,9 @@ void add_invader_projectile(entt::registry &ecs, core::Point starting_point) {
       entity,
       components::Collision{
           .hitbox_offset_x = 7,
-          .hitbox_offset_y = 4,
+          .hitbox_offset_y = 7,
           .hitbox_w = 1,
-          .hitbox_h = 6,
+          .hitbox_h = 3,
       }
   );
 

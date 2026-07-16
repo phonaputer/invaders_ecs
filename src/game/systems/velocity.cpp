@@ -23,9 +23,6 @@ void Velocity::execute(framework::ExecuteCtx &ctx) {
     position.x += velocity.x;
     position.y += velocity.y;
 
-    // TODO consider moving this to another component because...
-    // (1) it adds weight to this system
-    // (2) it means the player can be deleted for driving offscreen
     if (position.x + position.w < 0 || position.x > framework::WINDOW_WIDTH || position.y + position.h < 0
         || position.y > framework::WINDOW_HEIGHT) {
       ctx.ecs.emplace<components::Deleteable>(entity);

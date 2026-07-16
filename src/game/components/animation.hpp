@@ -13,11 +13,10 @@ struct Animation {
     bool playing;
     bool play_reversed;
 
-    // Having a vector here feels kinda lazy since the vector gets allocated
-    // outside the contiguous memory of the ECS's vector of components but it's
-    // space invaders so who cares.
-    //
-    // TODO May fix this later.
+    // Having a vector here is technically bad since the vector gets allocated
+    // outside the contiguous memory of the ECS's vector of components, thereby
+    // hurting CPU cache locality. But it's space invaders so who cares. I'm
+    // just using ECS for kicks not for performance.
     std::vector<AnimationFrame> frames;
 
     unsigned int cur_frame;

@@ -1,5 +1,6 @@
 #include "framework/event_broker.hpp"
 #include "game/components/collision.hpp"
+#include "game/components/interacts_on_collide.hpp"
 #include "game/components/position.hpp"
 #include "game/events/collision_occurred.hpp"
 #include "game/systems/collision_detection.hpp"
@@ -37,7 +38,8 @@ TestSetup setupTest() {
   };
 }
 
-entt::entity createEntityWithHitbox(framework::ExecuteCtx &ctx, float x, float y, float w, float h) {
+entt::entity
+createEntityWithHitbox(framework::ExecuteCtx &ctx, float x, float y, float w, float h, bool interacts = true) {
   auto e = ctx.ecs.create();
 
   ctx.ecs.emplace<components::Position>(
@@ -59,6 +61,9 @@ entt::entity createEntityWithHitbox(framework::ExecuteCtx &ctx, float x, float y
           .hitbox_h = h,
       }
   );
+  if (interacts) {
+    ctx.ecs.emplace<components::InteractsOnCollide>(e);
+  }
 
   return e;
 }
@@ -288,4 +293,39 @@ TEST(SystemCollisionDetection, ExecuteMultipleHitsInOneFrameShouldMarkAllOfThem)
   assertHitEachOther(ctx, entity_six, entity_seven);
   assertHitEachOther(ctx, entity_six, entity_eight);
   assertHitEachOther(ctx, entity_seven, entity_eight);
+}
+
+TEST(SystemCollisionDetection, ExecuteHitboxIntersectsRightSideOfLongEnitityShouldRegisterHit) {
+  TestSetup setup = setupTest();
+  auto ctx = setup.ctx();
+  auto entity_one = createEntityWithHitbox(ctx, 100, 100, 15, 5, false);
+  auto entity_two = createEntityWithHitbox(ctx, 114, 100, 1, 6);
+
+  setup.system.execute(ctx);
+
+  assertTotalHits(ctx, 1);
+  assertHitEachOther(ctx, entity_one, entity_two);
+}
+
+TEST(
+    SystemCollisionDetection,
+    ExecuteMultipleOverlapsButOnlyOneEntityInteractsOnCollideShouldOnlyCheckForInteractingEntity
+) {
+  TestSetup setup = setupTest();
+  auto ctx = setup.ctx();
+  auto entity_one = createEntityWithHitbox(ctx, 1, 1, 1, 1);
+  auto entity_two = createEntityWithHitbox(ctx, 1, 1, 1, 1, false);
+  auto entity_three = createEntityWithHitbox(ctx, 100, 100, 1, 1, false);
+  auto entity_four = createEntityWithHitbox(ctx, 100, 100, 1, 1, false);
+  auto entity_five = createEntityWithHitbox(ctx, 200, 200, 1, 1, false);
+  auto entity_six = createEntityWithHitbox(ctx, 200, 200, 1, 1, false);
+
+  setup.system.execute(ctx);
+
+  assertTotalHits(ctx, 1);
+  assertHitEachOther(ctx, entity_one, entity_two);
+  assertHitNothing(ctx, entity_three);
+  assertHitNothing(ctx, entity_four);
+  assertHitNothing(ctx, entity_five);
+  assertHitNothing(ctx, entity_six);
 }

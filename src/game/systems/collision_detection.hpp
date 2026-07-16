@@ -1,9 +1,7 @@
 #pragma once
 
 #include "framework/system.hpp"
-#include <cstdint>
 #include <entt.hpp>
-#include <set>
 #include <unordered_map>
 #include <vector>
 
@@ -17,21 +15,24 @@ struct Hitbox {
     float h;
 };
 
+struct BucketKey {
+    int x;
+    int y;
+
+    auto operator<=>(const BucketKey &) const = default;
+};
+
 class CollisionDetection : public framework::System {
   private:
-    // These must always be larger than the max hitbox in game to avoid a
-    // really big hitbox encompassing an entire bucket without any of its
-    // corners falling in it. Currently the largest is the player with a width
-    // of 15.
-    static constexpr std::uint16_t BUCKET_WIDTH = 17;
-    static constexpr std::uint16_t BUCKET_HEIGHT = 17;
+    static constexpr int BUCKET_WIDTH = 15;
+    static constexpr int BUCKET_HEIGHT = 15;
 
-    std::set<entt::entity> entities;
-    std::unordered_map<std::int32_t, std::vector<Hitbox>> hitbox_buckets;
+    std::set<BucketKey> buckets_to_check;
+    std::unordered_map<int, std::unordered_map<int, std::vector<Hitbox>>> hitbox_buckets;
 
-    std::int32_t to_bucket_key(float x, float y);
+    BucketKey to_bucket_key(float x, float y);
     void fill_buckets(entt::registry &ecs);
-    void add_to_bucket(Hitbox hitbox, float x, float y);
+    void add_to_bucket(Hitbox hitbox, int bucket_x, int bucket_y);
     void clear_buckets();
     void check_collisions(framework::ExecuteCtx &ctx, const std::vector<Hitbox> hitboxes);
     void emit_collided_if_didnt_already(framework::ExecuteCtx &ctx, entt::entity right, entt::entity left);

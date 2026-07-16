@@ -126,7 +126,6 @@ void Orchestration::move(entt::registry &ecs, bool move_down) {
 
     if (move_down) {
       position.y += Y_SPEED;
-      // TODO hit floor check
     }
 
     position.x += delta_x;

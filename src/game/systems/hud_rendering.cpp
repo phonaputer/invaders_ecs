@@ -14,8 +14,6 @@ HUDRendering::HUDRendering(framework::Renderer &renderer)
       text_renderer{renderer} {
 }
 
-// This system hardcodes a lot
-// Probably worth it though to avoid adding complexity elsewhere
 void HUDRendering::execute(framework::ExecuteCtx &ctx) {
   renderer.draw_line(
       framework::DrawLineParams{

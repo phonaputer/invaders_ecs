@@ -1,6 +1,7 @@
 #include "game/systems/collision_detection.hpp"
 #include "framework/system.hpp"
 #include "game/components/collision.hpp"
+#include "game/components/interacts_on_collide.hpp"
 #include "game/components/position.hpp"
 #include "game/events/collision_occurred.hpp"
 #include <algorithm>
@@ -14,18 +15,18 @@ namespace systems {
 void CollisionDetection::execute(framework::ExecuteCtx &ctx) {
   fill_buckets(ctx.ecs);
 
-  for (const auto &[_, bucket] : hitbox_buckets) {
-    check_collisions(ctx, bucket);
+  for (const auto &key : buckets_to_check) {
+    check_collisions(ctx, hitbox_buckets.at(key.x).at(key.y));
   }
 
   clear_buckets();
 }
 
-std::int32_t CollisionDetection::to_bucket_key(float x, float y) {
-  auto bucket_x = static_cast<std::int16_t>(x / BUCKET_WIDTH);
-  auto bucket_y = static_cast<std::int16_t>(y / BUCKET_HEIGHT);
-
-  return ((std::int32_t)bucket_x << 8) | bucket_y;
+BucketKey CollisionDetection::to_bucket_key(float x, float y) {
+  return {
+      .x = static_cast<int>(x) / BUCKET_WIDTH,
+      .y = static_cast<int>(y) / BUCKET_HEIGHT,
+  };
 }
 
 void CollisionDetection::fill_buckets(entt::registry &ecs) {
@@ -40,31 +41,39 @@ void CollisionDetection::fill_buckets(entt::registry &ecs) {
         .h = collision.hitbox_h,
     };
 
-    add_to_bucket(hitbox, hitbox.x, hitbox.y);
-    add_to_bucket(hitbox, hitbox.x, std::ceil(hitbox.y + hitbox.h));
-    add_to_bucket(hitbox, std::ceil(hitbox.x + hitbox.w), hitbox.y);
-    add_to_bucket(hitbox, std::ceil(hitbox.x + hitbox.w), std::ceil(hitbox.y + hitbox.h));
+    auto interacts = ecs.all_of<components::InteractsOnCollide>(entity);
+
+    const auto min_bucket = to_bucket_key(hitbox.x, hitbox.y);
+    const auto max_bucket = to_bucket_key(hitbox.x + hitbox.w, hitbox.y + hitbox.h);
+
+    for (auto bucket_x = min_bucket.x; bucket_x <= max_bucket.x; bucket_x++) {
+      for (auto bucket_y = min_bucket.y; bucket_y <= max_bucket.y; bucket_y++) {
+        add_to_bucket(hitbox, bucket_x, bucket_y);
+        if (interacts) {
+          buckets_to_check.insert(BucketKey{bucket_x, bucket_y});
+        }
+      }
+    }
   }
 }
 
-void CollisionDetection::add_to_bucket(Hitbox hitbox, float x, float y) {
-  auto &bucket = hitbox_buckets[to_bucket_key(x, y)];
+void CollisionDetection::add_to_bucket(Hitbox hitbox, int bucket_x, int bucket_y) {
+  auto &y_bucket = hitbox_buckets[bucket_x];
+  auto &cell_bucket = y_bucket[bucket_y];
 
-  for (const auto &hb : bucket) {
-    if (hb.entity == hitbox.entity) {
-      return;
-    }
-  }
-
-  bucket.push_back(hitbox);
+  cell_bucket.push_back(hitbox);
 }
 
 // It's ok to clear these without deleting them from the map since the size of
 // the canvas never changes meaning the list of buckets is fixed.
 void CollisionDetection::clear_buckets() {
-  for (auto &[_, v] : hitbox_buckets) {
-    v.clear();
+  for (auto &[_, y_bucket] : hitbox_buckets) {
+    for (auto &[_, cell_bucket] : y_bucket) {
+      cell_bucket.clear();
+    }
   }
+
+  buckets_to_check.clear();
 }
 
 void CollisionDetection::check_collisions(framework::ExecuteCtx &ctx, const std::vector<Hitbox> hitboxes) {
@@ -109,7 +118,7 @@ bool CollisionDetection::are_touching(Hitbox right, Hitbox left) {
   }
 
   // "left" left of "right"
-  if (left.x + left.h < right.x) {
+  if (left.x + left.w < right.x) {
     return false;
   }
 

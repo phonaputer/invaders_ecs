@@ -18,7 +18,7 @@ namespace framework {
 const Uint64 TARGET_FPS = 60;
 const Uint64 MS_PER_UPDATE = 1000 / TARGET_FPS;
 
-// FIXME - tweak this for web output
+// TODO - tweak this for web output
 const int ACTUAL_WINDOW_WIDTH = 672;
 const int ACTUAL_WINDOW_HEIGHT = 864;
 

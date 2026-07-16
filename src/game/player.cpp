@@ -7,6 +7,7 @@
 #include "game/components/damage_type_enum.hpp"
 #include "game/components/delete_on_gameover.hpp"
 #include "game/components/hitpoints.hpp"
+#include "game/components/interacts_on_collide.hpp"
 #include "game/components/lifetime.hpp"
 #include "game/components/player/movement.hpp"
 #include "game/components/player/shooting.hpp"
@@ -104,6 +105,7 @@ void add_player_entity(entt::registry &ecs) {
 entt::entity add_player_projectile_entity(entt::registry &ecs, core::Point starting_point) {
   const auto entity = ecs.create();
 
+  ecs.emplace<components::InteractsOnCollide>(entity);
   ecs.emplace<components::DeleteOnGameOver>(entity);
   components::DamageTypeSet susceptible_damage_types;
   susceptible_damage_types.set(components::damage_type_to_index(components::DamageType::Alien));

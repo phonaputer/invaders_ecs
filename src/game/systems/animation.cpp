@@ -36,15 +36,11 @@ void Animation::execute(framework::ExecuteCtx &ctx) {
 
     ctx.ecs.replace<components::Animation>(entity, animation);
 
-    // TODO REMOVE ecs.components().set(entity, animation);
-
     if (should_update_frame) {
       auto frame = animation.frames.at(animation.cur_frame);
 
       sprite.src_x = frame.x * sprite.src_width;
       sprite.src_y = frame.y * sprite.src_height;
-
-      // TODO REMOVE ecs.components().set(entity, sprite);
     }
   }
 }
