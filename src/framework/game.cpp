@@ -7,6 +7,7 @@
 #include "framework/sdl_asset_manager.hpp"
 #include "framework/sdl_renderer.hpp"
 #include <SDL3/SDL.h>
+#include <SDL3_mixer/SDL_mixer.h>
 #include <entt.hpp>
 #include <format>
 #include <memory>
@@ -22,8 +23,14 @@ const Uint64 MS_PER_UPDATE = 1000 / TARGET_FPS;
 const int ACTUAL_WINDOW_WIDTH = 672;
 const int ACTUAL_WINDOW_HEIGHT = 864;
 
+struct SDLMixerDeleter {
+    void operator()(MIX_Mixer *p) const {
+      MIX_DestroyMixer(p);
+    }
+};
+
 Game::Game() {
-  if (!SDL_Init(SDL_INIT_VIDEO)) {
+  if (!SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO)) {
     throw std::runtime_error(std::format("Failed to initialize SDL: {}", SDL_GetError()));
   }
 
@@ -43,6 +50,16 @@ Game::Game() {
   }
 
   SDL_SetRenderLogicalPresentation(renderer, WINDOW_WIDTH, WINDOW_HEIGHT, SDL_LOGICAL_PRESENTATION_LETTERBOX);
+
+  if (!MIX_Init()) {
+    throw std::runtime_error(std::format("Couldn't initialize sound mixer: {}", SDL_GetError()));
+  }
+
+  auto mixerP = MIX_CreateMixerDevice(SDL_AUDIO_DEVICE_DEFAULT_PLAYBACK, nullptr);
+  if (!mixerP) {
+    throw std::runtime_error(std::format("Couldn't initialize mixer device: {}", SDL_GetError()));
+  }
+  mixer = std::shared_ptr<MIX_Mixer>(mixerP, SDLMixerDeleter());
 
   previous_now_ms = SDL_GetTicks();
   unprocessed_ms = 0;

@@ -9,6 +9,7 @@
 #include "framework/system.hpp"
 #include "framework/system_registry.hpp"
 #include <SDL3/SDL.h>
+#include <SDL3_mixer/SDL_mixer.h>
 #include <entt.hpp>
 #include <memory>
 #include <optional>
@@ -20,6 +21,7 @@ class Game : public SystemRegistry {
     // Window and Renderer are owned and cleaned up by SDL.
     SDL_Window *window;
     SDL_Renderer *renderer;
+    std::shared_ptr<MIX_Mixer> mixer;
 
     std::unique_ptr<Renderer> renderer_wrapper;
     std::unique_ptr<PlayerInputManager> player_input_manager;
