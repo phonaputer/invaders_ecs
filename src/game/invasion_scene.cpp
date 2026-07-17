@@ -22,6 +22,7 @@
 #include "game/systems/position_following.hpp"
 #include "game/systems/rendering.hpp"
 #include "game/systems/score.hpp"
+#include "game/systems/sound_on_defeat.hpp"
 #include "game/systems/sprite_offset_on_damage.hpp"
 #include "game/systems/velocity.hpp"
 #include <random>
@@ -49,6 +50,7 @@ void InvasionScene::initialize(framework::SceneInitializationContext ctx) {
       std::make_unique<systems::player::Defeat>(add_player_explosion_entity, add_player_entity, add_fortresses)
   );
   ctx.systems.add_update_system(std::make_unique<systems::ExplodeOnDefeat>(add_explosion));
+  ctx.systems.add_update_system(std::make_unique<systems::SoundOnDefeat>());
   ctx.systems.add_update_system(std::make_unique<systems::Deletion>());
   ctx.systems.add_update_system(std::make_unique<systems::player::Movement>());
   ctx.systems.add_update_system(

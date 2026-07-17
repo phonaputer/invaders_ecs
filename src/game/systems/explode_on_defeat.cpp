@@ -1,10 +1,8 @@
 #include "game/systems/explode_on_defeat.hpp"
 #include "framework/system.hpp"
-#include "game/assets/asset_enums.hpp"
 #include "game/components/explode_on_defeat.hpp"
 #include "game/components/position.hpp"
 #include "game/events/defeated.hpp"
-#include "game/events/play_audio.hpp"
 #include <entt.hpp>
 
 namespace systems {
@@ -19,8 +17,6 @@ void ExplodeOnDefeat::execute(framework::ExecuteCtx &ctx) {
       auto position = ctx.ecs.get<components::Position>(event.entity);
 
       add_explosion(ctx.ecs, {position.x, position.y});
-
-      ctx.events.push_back_draw(events::PlayAudio{.audio = assets::Audio::AlienExplosion});
     }
   }
 }

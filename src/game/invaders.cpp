@@ -13,6 +13,7 @@
 #include "game/components/invader.hpp"
 #include "game/components/lifetime.hpp"
 #include "game/components/position.hpp"
+#include "game/components/sound_on_defeat.hpp"
 #include "game/components/sprite.hpp"
 #include "game/components/step_animation.hpp"
 #include "game/components/velocity.hpp"
@@ -33,6 +34,10 @@ struct AddInvaderArgs {
 
 void add_invader_entity(entt::registry &ecs, AddInvaderArgs args) {
   const auto entity = ecs.create();
+
+  ecs.emplace<components::SoundOnDefeat>(entity, components::SoundOnDefeat{.audio = assets::Audio::AlienExplosion});
+
+  ecs.emplace<components::ExplodeOnDefeat>(entity);
 
   ecs.emplace<components::Invader>(entity);
 
@@ -103,8 +108,6 @@ void add_invader_entity(entt::registry &ecs, AddInvaderArgs args) {
           .cur_frame = 0,
       }
   );
-
-  ecs.emplace<components::ExplodeOnDefeat>(entity);
 }
 
 void add_octopus(entt::registry &ecs, float start_x, float start_y) {
@@ -224,6 +227,10 @@ void add_invader_entities(entt::registry &ecs) {
 
 void add_invader_projectile(entt::registry &ecs, core::Point starting_point) {
   const auto entity = ecs.create();
+
+  ecs.emplace<components::SoundOnDefeat>(entity, components::SoundOnDefeat{.audio = assets::Audio::AlienShot});
+
+  ecs.emplace<components::ExplodeOnDefeat>(entity);
 
   ecs.emplace<components::InteractsOnCollide>(entity);
 
