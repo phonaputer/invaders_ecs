@@ -1,5 +1,4 @@
 #include "framework/scene.hpp"
-#include "framework/scene_initialization_context.hpp"
 #include "game/assets/asset_enums.hpp"
 #include "game/scenes/invasion/fortress.hpp"
 #include "game/scenes/invasion/hud.hpp"
@@ -31,7 +30,9 @@
 namespace invasion {
 
 void Scene::initialize(framework::SceneInitializationContext ctx) {
-  ctx.assets.load_image_png(assets::image_src_id(assets::Image::InvadersSpritesheet), "./assets/space_invaders.png");
+  ctx.assets.load_image_png(
+      assets::image_src_id(assets::Image::InvadersSpritesheet), assets::image_path(assets::Image::InvadersSpritesheet)
+  );
 
   ctx.assets.load_audio_wav(assets::audio_sound_id(assets::Audio::AlienExplosion), "./assets/alien_explosion.wav");
   ctx.assets.load_audio_wav(assets::audio_sound_id(assets::Audio::AlienShot), "./assets/alien_shot.wav");

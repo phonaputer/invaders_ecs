@@ -17,6 +17,15 @@ inline std::string image_src_id(Image image) {
   }
 }
 
+inline std::string image_path(Image image) {
+  switch (image) {
+    case Image::InvadersSpritesheet:
+      return "./assets/space_invaders.png";
+    default:
+      return "unknown";
+  }
+}
+
 enum class Audio {
   AlienExplosion,
   AlienShot,

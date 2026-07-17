@@ -3,7 +3,6 @@
 #include "framework/event_broker.hpp"
 #include "framework/player_input_manager.hpp"
 #include "framework/scene.hpp"
-#include "framework/scene_initialization_context.hpp"
 #include "framework/sdl_asset_manager.hpp"
 #include "framework/sdl_renderer.hpp"
 #include <SDL3/SDL.h>

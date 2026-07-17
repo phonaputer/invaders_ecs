@@ -2,10 +2,10 @@
 
 #include "framework/scene.hpp"
 
-namespace invasion {
+namespace start_screen {
 
 class Scene : public framework::Scene {
     void initialize(framework::SceneInitializationContext ctx) override;
 };
 
-} // namespace invasion
+} // namespace start_screen
