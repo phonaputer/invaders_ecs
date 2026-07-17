@@ -61,7 +61,7 @@ void add_fortress_tile(entt::registry &ecs, AddFortressTileArgs args) {
           .y = args.y,
           .w = TILE_DRAW_WIDTH,
           .h = TILE_DRAW_HEIGHT,
-          .z = 150,
+          .z = 20,
       }
   );
 

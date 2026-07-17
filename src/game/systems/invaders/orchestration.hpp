@@ -15,7 +15,7 @@ class Orchestration : public framework::System {
   private:
     static constexpr int BASE_TICKS_PER_MOVE = 4;
     static constexpr float X_SPEED = 8;
-    static constexpr float Y_SPEED = 5;
+    static constexpr float Y_SPEED = 12;
     static constexpr float LEFT_MOVEMENT_BOUNDARY = 0;
     static constexpr float RIGHT_MOVEMENT_BOUNDARY = framework::WINDOW_WIDTH;
     static constexpr int TICKS_PER_SHOOT_CHANCE = 12;
