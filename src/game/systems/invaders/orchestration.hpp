@@ -3,6 +3,8 @@
 #include "core/point.hpp"
 #include "framework/constants.hpp"
 #include "framework/system.hpp"
+#include "game/assets/asset_enums.hpp"
+#include <array>
 #include <entt.hpp>
 #include <functional>
 #include <random>
@@ -18,6 +20,12 @@ class Orchestration : public framework::System {
     static constexpr float RIGHT_MOVEMENT_BOUNDARY = framework::WINDOW_WIDTH;
     static constexpr int TICKS_PER_SHOOT_CHANCE = 12;
     static constexpr int ALIEN_SHOOT_CHANCE = 3;
+    static constexpr std::array<assets::Audio, 4> ARP_SOUNDS = {
+        assets::Audio::Arp1,
+        assets::Audio::Arp2,
+        assets::Audio::Arp3,
+        assets::Audio::Arp4,
+    };
 
     bool paused = false;
 
@@ -27,12 +35,13 @@ class Orchestration : public framework::System {
     std::function<void(entt::registry &)> rerack_aliens;
     std::mt19937 rand_gen;
     unsigned int shoot_counter = 0;
+    size_t arp_idx = 0;
 
     bool should_shoot_this_tick();
     void random_alien_shoot(entt::registry &ecs);
     bool should_move_this_tick();
     bool did_hit_wall(entt::registry &ecs);
-    void move(entt::registry &ecs, bool move_down);
+    void move(framework::ExecuteCtx &ctx, bool move_down);
     void animate(entt::registry &ecs);
 
   public:

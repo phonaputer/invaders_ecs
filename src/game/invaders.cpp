@@ -1,5 +1,6 @@
 #include "game/invaders.hpp"
 #include "framework/constants.hpp"
+#include "game/assets/asset_enums.hpp"
 #include "game/components/animation.hpp"
 #include "game/components/collision.hpp"
 #include "game/components/damage_dealer.hpp"
@@ -85,7 +86,7 @@ void add_invader_entity(entt::registry &ecs, AddInvaderArgs args) {
   ecs.emplace<components::Sprite>(
       entity,
       components::Sprite{
-          .src_id = "invaders_spritesheet",
+          .image = assets::Image::InvadersSpritesheet,
           .src_x = float(frame_zero.x) * 16,
           .src_y = float(frame_zero.y) * 16,
           .src_width = 16,
@@ -242,7 +243,7 @@ void add_invader_projectile(entt::registry &ecs, core::Point starting_point) {
   ecs.emplace<components::Sprite>(
       entity,
       components::Sprite{
-          .src_id = "invaders_spritesheet",
+          .image = assets::Image::InvadersSpritesheet,
           .src_x = 80,
           .src_y = 32,
           .src_width = 16,
@@ -323,7 +324,7 @@ void add_explosion(entt::registry &ecs, core::Point position) {
   ecs.emplace<components::Sprite>(
       entity,
       components::Sprite{
-          .src_id = "invaders_spritesheet",
+          .image = assets::Image::InvadersSpritesheet,
           .src_x = 48,
           .src_y = 16,
           .src_width = 16,

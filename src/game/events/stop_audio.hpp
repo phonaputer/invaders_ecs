@@ -1,11 +1,11 @@
 #pragma once
 
-#include <string>
+#include "game/assets/asset_enums.hpp"
 
 namespace events {
 
 struct StopAudio {
-    std::string audio_id;
+    assets::Audio audio;
 };
 
 }

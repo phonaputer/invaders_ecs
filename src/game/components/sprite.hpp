@@ -1,16 +1,11 @@
 #pragma once
 
-#include <string>
+#include "game/assets/asset_enums.hpp"
 
 namespace components {
 
 struct Sprite {
-    // TODO consider alternatives to string.
-    // Technically string isn't great for performance since it'll get allocated
-    // outside the contiguous array of sprite structs which is bad for CPU
-    // cache.
-    // Doesn't matter for a game like this though.
-    std::string src_id;
+    assets::Image image;
     float src_x;
     float src_y;
     float src_width;

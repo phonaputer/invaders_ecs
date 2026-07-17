@@ -1,6 +1,7 @@
 #include "game/invasion_scene.hpp"
 #include "framework/scene.hpp"
 #include "framework/scene_initialization_context.hpp"
+#include "game/assets/asset_enums.hpp"
 #include "game/fortress.hpp"
 #include "game/hud.hpp"
 #include "game/invaders.hpp"
@@ -28,16 +29,16 @@
 namespace game {
 
 void InvasionScene::initialize(framework::SceneInitializationContext ctx) {
-  ctx.assets.load_image_png("invaders_spritesheet", "./assets/space_invaders.png");
+  ctx.assets.load_image_png(assets::image_src_id(assets::Image::InvadersSpritesheet), "./assets/space_invaders.png");
 
-  ctx.assets.load_audio_wav("alien_explosion", "./assets/alien_explosion.wav");
-  ctx.assets.load_audio_wav("alien_shot", "./assets/alien_shot.wav");
-  ctx.assets.load_audio_wav("player_explosion", "./assets/player_explosion.wav");
-  ctx.assets.load_audio_wav("player_shot", "./assets/player_shot.wav");
-  ctx.assets.load_audio_wav("arp1", "./assets/arp1.wav");
-  ctx.assets.load_audio_wav("arp2", "./assets/arp2.wav");
-  ctx.assets.load_audio_wav("arp3", "./assets/arp3.wav");
-  ctx.assets.load_audio_wav("arp4", "./assets/arp4.wav");
+  ctx.assets.load_audio_wav(assets::audio_sound_id(assets::Audio::AlienExplosion), "./assets/alien_explosion.wav");
+  ctx.assets.load_audio_wav(assets::audio_sound_id(assets::Audio::AlienShot), "./assets/alien_shot.wav");
+  ctx.assets.load_audio_wav(assets::audio_sound_id(assets::Audio::PlayerExplosion), "./assets/player_explosion.wav");
+  ctx.assets.load_audio_wav(assets::audio_sound_id(assets::Audio::PlayerShot), "./assets/player_shot.wav");
+  ctx.assets.load_audio_wav(assets::audio_sound_id(assets::Audio::Arp1), "./assets/arp1.wav");
+  ctx.assets.load_audio_wav(assets::audio_sound_id(assets::Audio::Arp2), "./assets/arp2.wav");
+  ctx.assets.load_audio_wav(assets::audio_sound_id(assets::Audio::Arp3), "./assets/arp3.wav");
+  ctx.assets.load_audio_wav(assets::audio_sound_id(assets::Audio::Arp4), "./assets/arp4.wav");
 
   std::random_device rd;
 

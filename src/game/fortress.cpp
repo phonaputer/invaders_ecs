@@ -1,4 +1,5 @@
 #include "game/fortress.hpp"
+#include "game/assets/asset_enums.hpp"
 #include "game/components/collision.hpp"
 #include "game/components/damage_dealer.hpp"
 #include "game/components/damage_type_enum.hpp"
@@ -77,7 +78,7 @@ void add_fortress_tile(entt::registry &ecs, AddFortressTileArgs args) {
   ecs.emplace<components::Sprite>(
       entity,
       components::Sprite{
-          .src_id = "invaders_spritesheet",
+          .image = assets::Image::InvadersSpritesheet,
           .src_x = args.img_src_x,
           .src_y = args.img_src_y,
           .src_width = TILE_SRC_WIDTH,

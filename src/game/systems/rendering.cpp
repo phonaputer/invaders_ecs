@@ -1,6 +1,7 @@
 #include "game/systems/rendering.hpp"
 #include "framework/renderer.hpp"
 #include "framework/system.hpp"
+#include "game/assets/asset_enums.hpp"
 #include "game/components/position.hpp"
 #include "game/components/sprite.hpp"
 
@@ -19,7 +20,7 @@ void Rendering::execute(framework::ExecuteCtx &ctx) {
   for (auto [entity, position, sprite] : view.each()) {
     renderer.draw_image(
         framework::DrawImageParams{
-            .src_id = sprite.src_id,
+            .src_id = assets::image_src_id(sprite.image),
             .src_x = sprite.src_x,
             .src_y = sprite.src_y,
             .src_width = sprite.src_width,

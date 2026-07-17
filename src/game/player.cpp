@@ -1,6 +1,7 @@
 #include "game/player.hpp"
 #include "core/point.hpp"
 #include "framework/constants.hpp"
+#include "game/assets/asset_enums.hpp"
 #include "game/components/animation.hpp"
 #include "game/components/collision.hpp"
 #include "game/components/damage_dealer.hpp"
@@ -36,7 +37,7 @@ void add_player_entity(entt::registry &ecs) {
   ecs.emplace<components::Sprite>(
       entity,
       components::Sprite{
-          .src_id = "invaders_spritesheet",
+          .image = assets::Image::InvadersSpritesheet,
           .src_x = 0,
           .src_y = 32,
           .src_width = 16,
@@ -149,7 +150,7 @@ entt::entity add_player_projectile_entity(entt::registry &ecs, core::Point start
   ecs.emplace<components::Sprite>(
       entity,
       components::Sprite{
-          .src_id = "invaders_spritesheet",
+          .image = assets::Image::InvadersSpritesheet,
           .src_x = 112,
           .src_y = 16,
           .src_width = 16,
@@ -186,7 +187,7 @@ void add_player_muzzle_flash_entity(entt::registry &ecs, entt::entity shooter) {
   ecs.emplace<components::Sprite>(
       entity,
       components::Sprite{
-          .src_id = "invaders_spritesheet",
+          .image = assets::Image::InvadersSpritesheet,
           .src_x = 48,
           .src_y = 32,
           .src_width = 16,
@@ -241,7 +242,7 @@ void add_player_explosion_entity(entt::registry &ecs, core::Point position, unsi
   ecs.emplace<components::Sprite>(
       entity,
       components::Sprite{
-          .src_id = "invaders_spritesheet",
+          .image = assets::Image::InvadersSpritesheet,
           .src_x = 16,
           .src_y = 48,
           .src_width = 16,

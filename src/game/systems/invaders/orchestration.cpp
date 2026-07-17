@@ -7,6 +7,7 @@
 #include "game/components/sprite.hpp"
 #include "game/components/step_animation.hpp"
 #include "game/events/pause.hpp"
+#include "game/events/play_audio.hpp"
 #include <entt.hpp>
 #include <iterator>
 #include <random>
@@ -55,7 +56,7 @@ void Orchestration::execute(framework::ExecuteCtx &ctx) {
     move_right = !move_right;
   }
 
-  move(ctx.ecs, should_move_down);
+  move(ctx, should_move_down);
   animate(ctx.ecs);
 }
 
@@ -115,8 +116,8 @@ bool Orchestration::did_hit_wall(entt::registry &ecs) {
   return false;
 }
 
-void Orchestration::move(entt::registry &ecs, bool move_down) {
-  auto view = ecs.view<components::Invader, components::Position>();
+void Orchestration::move(framework::ExecuteCtx &ctx, bool move_down) {
+  auto view = ctx.ecs.view<components::Invader, components::Position>();
 
   for (auto [entity, position] : view.each()) {
     auto delta_x = X_SPEED;
@@ -129,6 +130,12 @@ void Orchestration::move(entt::registry &ecs, bool move_down) {
     }
 
     position.x += delta_x;
+  }
+
+  ctx.events.push_back_draw(events::PlayAudio{.audio = ARP_SOUNDS.at(arp_idx)});
+  arp_idx++;
+  if (arp_idx >= ARP_SOUNDS.size()) {
+    arp_idx = 0;
   }
 }
 

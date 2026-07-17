@@ -84,6 +84,8 @@ void Game::update() {
       .player_input = *player_input_manager,
   };
 
+  event_broker.clear_all_draw();
+
   while (unprocessed_ms > MS_PER_UPDATE) {
     player_input_manager->update();
     event_broker.clear_all();

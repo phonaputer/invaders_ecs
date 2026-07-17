@@ -57,19 +57,6 @@ TEST(EventBroker, SetWithMessagesOfMultipleTypesShouldStoreDifferentTypesSeparat
   EXPECT_THAT(expected_tm2, testing::ElementsAreArray(mb->get_all<TestMessageTwo>()));
 }
 
-TEST(EventBroker, ClearShouldRemoveAllMessagesOfAllTypes) {
-  auto mb = std::make_unique<framework::EventBroker>();
-  auto m1 = TestMessage{.id = 1};
-  mb->push_back(m1);
-  auto m2 = TestMessageTwo{.id_two = 2};
-  mb->push_back(m2);
-
-  mb->clear_all();
-
-  auto result = mb->get_all<TestMessage>();
-  EXPECT_TRUE(result.empty());
-}
-
 TEST(EventBroker, GetSingletonAfterSettingShouldReturnTheSetValue) {
   auto mb = std::make_unique<framework::EventBroker>();
   auto message = TestMessage{
@@ -149,4 +136,67 @@ TEST(EventBroker, ClearAllShouldClearAllEvents) {
   EXPECT_EQ(0, mb->get_all<TestMessageTwo>().size());
   EXPECT_FALSE(mb->get_singleton<TestMessage>().has_value());
   EXPECT_FALSE(mb->get_singleton<TestMessageTwo>().has_value());
+}
+
+TEST(EventBroker, ClearShouldNotRemoveDrawPhaseEvents) {
+  auto mb = std::make_unique<framework::EventBroker>();
+  auto m1 = TestMessage{.id = 1};
+  mb->push_back(m1);
+  auto m2 = TestMessageTwo{.id_two = 2};
+  mb->push_back_draw(m2);
+
+  mb->clear_all();
+
+  EXPECT_TRUE(mb->get_all<TestMessage>().empty());
+  std::vector<TestMessageTwo> expected_tm2 = {m2};
+  EXPECT_THAT(expected_tm2, testing::ElementsAreArray(mb->get_all_draw<TestMessageTwo>()));
+}
+
+TEST(EventBroker, GetAllDrawWhenNoMessagesExistShouldReturnEmptyVec) {
+  auto mb = std::make_unique<framework::EventBroker>();
+
+  auto result = mb->get_all_draw<TestMessage>();
+
+  EXPECT_TRUE(result.empty());
+}
+
+TEST(EventBroker, GetAllDrawWhenSeveralMessagesExistShouldReturnAllInOrder) {
+  auto mb = std::make_unique<framework::EventBroker>();
+  auto m1 = TestMessage{.id = 1};
+  auto m2 = TestMessage{.id = 2};
+  auto m3 = TestMessage{.id = 3};
+  mb->push_back_draw(m1);
+  mb->push_back_draw(m2);
+  mb->push_back_draw(m3);
+
+  auto result = mb->get_all_draw<TestMessage>();
+
+  std::vector<TestMessage> expected = {m1, m2, m3};
+  EXPECT_THAT(expected, testing::ElementsAreArray(result));
+}
+
+TEST(EventBroker, SetDrawWithMessagesOfMultipleTypesShouldStoreDifferentTypesSeparately) {
+  auto mb = std::make_unique<framework::EventBroker>();
+  auto m1 = TestMessage{.id = 1};
+  mb->push_back_draw(m1);
+  auto m2 = TestMessageTwo{.id_two = 2};
+  mb->push_back_draw(m2);
+
+  std::vector<TestMessage> expected_tm = {m1};
+  EXPECT_THAT(expected_tm, testing::ElementsAreArray(mb->get_all_draw<TestMessage>()));
+  std::vector<TestMessageTwo> expected_tm2 = {m2};
+  EXPECT_THAT(expected_tm2, testing::ElementsAreArray(mb->get_all_draw<TestMessageTwo>()));
+}
+
+TEST(EventBroker, ClearDrawShouldRemoveAllMessagesOfAllTypes) {
+  auto mb = std::make_unique<framework::EventBroker>();
+  auto m1 = TestMessage{.id = 1};
+  mb->push_back_draw(m1);
+  auto m2 = TestMessageTwo{.id_two = 2};
+  mb->push_back_draw(m2);
+
+  mb->clear_all_draw();
+
+  EXPECT_TRUE(mb->get_all_draw<TestMessage>().empty());
+  EXPECT_TRUE(mb->get_all_draw<TestMessageTwo>().empty());
 }

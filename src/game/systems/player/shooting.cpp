@@ -3,9 +3,11 @@
 #include "framework/player_input.hpp"
 #include "framework/player_input_manager.hpp"
 #include "framework/system.hpp"
+#include "game/assets/asset_enums.hpp"
 #include "game/components/deletable.hpp"
 #include "game/components/player_shooting.hpp"
 #include "game/components/position.hpp"
+#include "game/events/play_audio.hpp"
 #include <entt.hpp>
 #include <functional>
 
@@ -47,6 +49,7 @@ void Shooting::execute(framework::ExecuteCtx &ctx) {
           }
       ));
       add_muzzle_flash(ctx.ecs, entity);
+      ctx.events.push_back_draw(events::PlayAudio{.audio = assets::Audio::PlayerShot});
     }
   }
 }
