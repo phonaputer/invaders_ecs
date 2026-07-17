@@ -14,6 +14,8 @@ void PrintTo(const CollisionOccurred &col, std::ostream *os) {
 }
 } // namespace events
 
+namespace testing::collision_detection_system {
+
 struct TestSetup {
     entt::registry ecs;
     framework::EventBroker events;
@@ -329,3 +331,5 @@ TEST(
   assertHitNothing(ctx, entity_five);
   assertHitNothing(ctx, entity_six);
 }
+
+} // namespace testing::collision_detection_system

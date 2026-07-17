@@ -13,7 +13,6 @@ Rendering::Rendering(framework::Renderer &renderer)
 
 // TODO:
 // * Handle z index
-// * Unit tests
 void Rendering::execute(framework::ExecuteCtx &ctx) {
   auto view = ctx.ecs.view<components::Position, components::Sprite>();
 

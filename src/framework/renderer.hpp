@@ -14,6 +14,8 @@ struct DrawImageParams {
     float dst_y;
     float dst_width;
     float dst_height;
+
+    auto operator<=>(const DrawImageParams &) const = default;
 };
 
 struct DrawRectParams {
