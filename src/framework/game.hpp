@@ -34,9 +34,12 @@ class Game : public SystemRegistry, public SceneSetter {
     std::vector<std::unique_ptr<System>> draw_systems;
 
     bool have_active_scene = false;
+    std::optional<std::unique_ptr<Scene>> new_scene;
 
     Uint64 previous_now_ms;
     Uint64 unprocessed_ms;
+
+    void apply_new_scene();
 
   public:
     Game();

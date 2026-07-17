@@ -37,7 +37,7 @@ Game::Game() {
       "Invaders... from space!!!",
       ACTUAL_WINDOW_WIDTH,
       ACTUAL_WINDOW_HEIGHT,
-      SDL_WINDOW_HIGH_PIXEL_DENSITY | SDL_WINDOW_RESIZABLE
+      SDL_WINDOW_HIGH_PIXEL_DENSITY | SDL_WINDOW_RESIZABLE | SDL_WINDOW_HIDDEN
   );
   if (!window) {
     throw std::runtime_error(std::format("Couldn't create window: {}", SDL_GetError()));
@@ -49,6 +49,8 @@ Game::Game() {
   }
 
   SDL_SetRenderLogicalPresentation(renderer, WINDOW_WIDTH, WINDOW_HEIGHT, SDL_LOGICAL_PRESENTATION_LETTERBOX);
+
+  SDL_ShowWindow(window);
 
   if (!MIX_Init()) {
     throw std::runtime_error(std::format("Couldn't initialize sound mixer: {}", SDL_GetError()));
@@ -69,6 +71,10 @@ Game::Game() {
 }
 
 void Game::update() {
+  if (new_scene.has_value()) {
+    apply_new_scene();
+  }
+
   if (!have_active_scene) {
     return;
   }
@@ -127,18 +133,7 @@ void Game::draw() {
 }
 
 void Game::set_scene(std::unique_ptr<Scene> scene) {
-  scene->initialize(
-      SceneInitializationContext{
-          .assets = *asset_manager,
-          .systems = *this,
-          .ecs = ecs,
-          .renderer = *renderer_wrapper,
-          .audio_player = *asset_manager,
-          .scene_setter = *this,
-      }
-  );
-
-  have_active_scene = true;
+  new_scene = std::move(scene);
 };
 
 PlayerInputManager &Game::get_player_input_manager() {
@@ -151,6 +146,27 @@ void Game::add_update_system(std::unique_ptr<System> system) {
 
 void Game::add_draw_system(std::unique_ptr<System> system) {
   draw_systems.push_back(std::move(system));
+}
+
+void Game::apply_new_scene() {
+  ecs.clear();
+  asset_manager->clear_all();
+  update_systems.clear();
+  draw_systems.clear();
+
+  new_scene.value()->initialize(
+      SceneInitializationContext{
+          .assets = *asset_manager,
+          .systems = *this,
+          .ecs = ecs,
+          .renderer = *renderer_wrapper,
+          .audio_player = *asset_manager,
+          .scene_setter = *this,
+      }
+  );
+
+  new_scene = std::nullopt;
+  have_active_scene = true;
 }
 
 } // namespace framework

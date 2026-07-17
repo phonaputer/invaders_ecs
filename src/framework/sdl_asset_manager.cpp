@@ -79,4 +79,9 @@ void SDLAssetManager::stop_sound(std::string sound_id) {
   }
 }
 
+void SDLAssetManager::clear_all() {
+  textures.clear();
+  audio_tracks.clear();
+}
+
 } // namespace framework

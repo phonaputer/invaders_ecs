@@ -9,6 +9,8 @@
 
 namespace framework {
 
+class SceneSetter;
+
 struct SceneInitializationContext {
     AssetLoader &assets;
     SystemRegistry &systems;

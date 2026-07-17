@@ -30,7 +30,7 @@ void HUDRendering::execute(framework::ExecuteCtx &ctx) {
   auto hud_stats = ctx.ecs.ctx().get<components::singleton::HUDStats>();
 
   text_renderer.render_text(6, 6, std::format("score:{}", hud_stats.score));
-  text_renderer.render_text(framework::WINDOW_WIDTH / 2 - 28, 6, std::format("hi-score:{}", hud_stats.high_score));
+  text_renderer.render_text(framework::WINDOW_WIDTH / 2 - 31, 6, std::format("hi-score:{}", hud_stats.high_score));
   text_renderer.render_text(framework::WINDOW_WIDTH - 48, 6, std::format("lives:{}", hud_stats.lives));
 
   if (hud_stats.game_over) {

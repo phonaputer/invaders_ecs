@@ -28,6 +28,8 @@ class SDLAssetManager : public AssetLoader, public AudioPlayer {
     void load_audio_wav(std::string sound_id, std::string path) override;
     void play_sound(std::string sound_id) override;
     void stop_sound(std::string sound_id) override;
+
+    void clear_all();
 };
 
 } // namespace framework
