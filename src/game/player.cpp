@@ -24,16 +24,6 @@ void add_player_entity(entt::registry &ecs) {
   const auto entity = ecs.create();
 
   ecs.emplace<components::DeleteOnGameOver>(entity);
-  ecs.emplace<components::Position>(
-      entity,
-      components::Position{
-          .x = framework::WINDOW_WIDTH / 2 - 8,
-          .y = framework::WINDOW_HEIGHT - 35,
-          .w = 16,
-          .h = 16,
-          .z = 100,
-      }
-  );
   ecs.emplace<components::Sprite>(
       entity,
       components::Sprite{
@@ -101,6 +91,18 @@ void add_player_entity(entt::registry &ecs) {
           .amount = 1,
       }
   );
+
+  ecs.emplace<components::Position>(
+      entity,
+      components::Position{
+          .x = framework::WINDOW_WIDTH / 2 - 8,
+          .y = framework::WINDOW_HEIGHT - 35,
+          .w = 16,
+          .h = 16,
+          .z = 100,
+      }
+  );
+  ecs.sort<components::Position>([](const auto &left, const auto &right) { return left.z < right.z; });
 }
 
 entt::entity add_player_projectile_entity(entt::registry &ecs, core::Point starting_point) {
@@ -126,16 +128,6 @@ entt::entity add_player_projectile_entity(entt::registry &ecs, core::Point start
       components::DamageDealer{
           .type = deal_damage_types,
           .amount = 1,
-      }
-  );
-  ecs.emplace<components::Position>(
-      entity,
-      components::Position{
-          .x = starting_point.x,
-          .y = starting_point.y,
-          .w = 16,
-          .h = 16,
-          .z = 101,
       }
   );
   ecs.emplace<components::Collision>(
@@ -167,6 +159,18 @@ entt::entity add_player_projectile_entity(entt::registry &ecs, core::Point start
       }
   );
 
+  ecs.emplace<components::Position>(
+      entity,
+      components::Position{
+          .x = starting_point.x,
+          .y = starting_point.y,
+          .w = 16,
+          .h = 16,
+          .z = 99,
+      }
+  );
+  ecs.sort<components::Position>([](const auto &left, const auto &right) { return left.z < right.z; });
+
   return entity;
 }
 
@@ -181,7 +185,7 @@ void add_player_muzzle_flash_entity(entt::registry &ecs, entt::entity shooter) {
           .y = 0,
           .w = 16,
           .h = 16,
-          .z = 102,
+          .z = 110,
       }
   );
   ecs.emplace<components::Sprite>(
@@ -236,7 +240,7 @@ void add_player_explosion_entity(entt::registry &ecs, core::Point position, unsi
           .y = position.y,
           .w = 16,
           .h = 16,
-          .z = 99,
+          .z = 100,
       }
   );
   ecs.emplace<components::Sprite>(

@@ -11,10 +11,9 @@ Rendering::Rendering(framework::Renderer &renderer)
     : renderer{renderer} {
 }
 
-// TODO:
-// * Handle z index
 void Rendering::execute(framework::ExecuteCtx &ctx) {
   auto view = ctx.ecs.view<components::Position, components::Sprite>();
+  view.use<components::Position>();
 
   for (auto [entity, position, sprite] : view.each()) {
     renderer.draw_image(

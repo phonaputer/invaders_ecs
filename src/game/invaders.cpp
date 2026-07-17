@@ -72,7 +72,7 @@ void add_invader_entity(entt::registry &ecs, AddInvaderArgs args) {
           .y = args.start_y,
           .w = 16,
           .h = 16,
-          .z = 99,
+          .z = 90,
       }
   );
 
@@ -246,6 +246,7 @@ void add_invader_projectile(entt::registry &ecs, core::Point starting_point) {
           .z = 80,
       }
   );
+  ecs.sort<components::Position>([](const auto &left, const auto &right) { return left.z < right.z; });
 
   ecs.emplace<components::Sprite>(
       entity,
@@ -325,7 +326,7 @@ void add_explosion(entt::registry &ecs, core::Point position) {
           .y = position.y,
           .w = 16,
           .h = 16,
-          .z = 102,
+          .z = 200,
       }
   );
   ecs.emplace<components::Sprite>(
