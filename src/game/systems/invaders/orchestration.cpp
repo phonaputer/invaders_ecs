@@ -6,6 +6,7 @@
 #include "game/components/position.hpp"
 #include "game/components/sprite.hpp"
 #include "game/components/step_animation.hpp"
+#include "game/constants.hpp"
 #include "game/events/pause.hpp"
 #include "game/events/play_audio.hpp"
 #include <entt.hpp>

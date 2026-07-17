@@ -7,24 +7,25 @@
 
 namespace systems::player {
 
-class Defeat : public framework::System {
+class GameOver : public framework::System {
   private:
-    static constexpr unsigned int DEFEAT_PAUSE_TICKS = 170;
+    static constexpr unsigned int PAUSE_TICKS = 170;
 
-    unsigned int defeat_pause_counter = 0;
-    bool defeat_pause_ongoing = false;
+    unsigned int pause_counter = 0;
+    bool pause_ongoing = false;
     bool game_is_over = false;
     std::function<void(entt::registry &, core::Point, unsigned int)> add_explosion;
     std::function<void(entt::registry &)> add_player;
     std::function<void(entt::registry &)> add_fortresses;
 
     void handle_defeat_if_any(framework::ExecuteCtx &ctx);
-    void handle_defeat(framework::ExecuteCtx &ctx, entt::entity player_entity);
+    void handle_alien_landing(framework::ExecuteCtx &ctx);
+    void handle_player_defeat(framework::ExecuteCtx &ctx, entt::entity player_entity);
     void handle_ongoing_pause(framework::ExecuteCtx &ctx);
     void delete_all_entities(framework::ExecuteCtx &ctx);
 
   public:
-    Defeat(
+    GameOver(
         std::function<void(entt::registry &, core::Point, unsigned int)> add_explosion,
         std::function<void(entt::registry &)> add_player,
         std::function<void(entt::registry &)> add_fortresses
