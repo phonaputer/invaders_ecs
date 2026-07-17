@@ -1,9 +1,9 @@
 #include "framework/renderer.hpp"
 #include "framework/system.hpp"
 #include "game/assets/asset_enums.hpp"
-#include "game/components/position.hpp"
-#include "game/components/sprite.hpp"
-#include "game/systems/rendering.hpp"
+#include "game/scenes/invasion/components/position.hpp"
+#include "game/scenes/invasion/components/sprite.hpp"
+#include "game/scenes/invasion/systems/rendering.hpp"
 #include <entt.hpp>
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>

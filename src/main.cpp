@@ -2,7 +2,7 @@
 
 #include "framework/game.hpp"
 #include "framework/player_input.hpp"
-#include "game/invasion_scene.hpp"
+#include "game/scenes/invasion/scene.hpp"
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_main.h>
 #include <memory>
@@ -16,7 +16,7 @@ SDL_AppResult SDL_AppInit(void **appstate, [[maybe_unused]] int argc, [[maybe_un
     return SDL_APP_FAILURE;
   }
 
-  auto scene = std::make_unique<game::InvasionScene>();
+  auto scene = std::make_unique<invasion::Scene>();
   game->set_scene(std::move(scene));
 
   SDL_Log("Setup complete...");

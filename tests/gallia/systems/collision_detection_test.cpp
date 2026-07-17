@@ -1,9 +1,9 @@
 #include "framework/event_broker.hpp"
-#include "game/components/collision.hpp"
-#include "game/components/interacts_on_collide.hpp"
-#include "game/components/position.hpp"
-#include "game/events/collision_occurred.hpp"
-#include "game/systems/collision_detection.hpp"
+#include "game/scenes/invasion/components/collision.hpp"
+#include "game/scenes/invasion/components/interacts_on_collide.hpp"
+#include "game/scenes/invasion/components/position.hpp"
+#include "game/scenes/invasion/events/collision_occurred.hpp"
+#include "game/scenes/invasion/systems/collision_detection.hpp"
 #include <entt.hpp>
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
