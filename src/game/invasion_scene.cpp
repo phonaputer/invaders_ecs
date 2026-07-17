@@ -70,7 +70,6 @@ void InvasionScene::initialize(framework::SceneInitializationContext ctx) {
   ctx.systems.add_draw_system(std::make_unique<systems::HUDRendering>(ctx.renderer));
   ctx.systems.add_draw_system(std::make_unique<systems::Audio>(ctx.audio_player));
 
-  add_invader_entities(ctx.ecs);
   add_player_entity(ctx.ecs);
   add_hud_entity(ctx.ecs);
   add_fortresses(ctx.ecs);

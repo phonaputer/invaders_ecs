@@ -13,8 +13,8 @@ namespace systems::invaders {
 
 class Orchestration : public framework::System {
   private:
-    static constexpr int BASE_TICKS_PER_MOVE = 58;
-    static constexpr float X_SPEED = 5;
+    static constexpr int BASE_TICKS_PER_MOVE = 4;
+    static constexpr float X_SPEED = 8;
     static constexpr float Y_SPEED = 5;
     static constexpr float LEFT_MOVEMENT_BOUNDARY = 0;
     static constexpr float RIGHT_MOVEMENT_BOUNDARY = framework::WINDOW_WIDTH;
@@ -39,7 +39,7 @@ class Orchestration : public framework::System {
 
     bool should_shoot_this_tick();
     void random_alien_shoot(entt::registry &ecs);
-    bool should_move_this_tick();
+    bool should_move_this_tick(int num_aliens);
     bool did_hit_wall(entt::registry &ecs);
     void move(framework::ExecuteCtx &ctx, bool move_down);
     void animate(entt::registry &ecs);

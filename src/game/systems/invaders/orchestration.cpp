@@ -36,17 +36,19 @@ void Orchestration::execute(framework::ExecuteCtx &ctx) {
   }
 
   auto view = ctx.ecs.view<components::Invader>();
+  int num_aliens = view.size();
 
-  if (view.empty()) {
+  if (num_aliens < 1) {
     rerack_aliens(ctx.ecs);
     move_right = true;
+    return;
   }
 
   if (should_shoot_this_tick()) {
     random_alien_shoot(ctx.ecs);
   }
 
-  if (!should_move_this_tick()) {
+  if (!should_move_this_tick(num_aliens)) {
     return;
   }
 
@@ -87,9 +89,9 @@ void Orchestration::random_alien_shoot(entt::registry &ecs) {
   add_projectile(ecs, {position.x, position.y});
 }
 
-bool Orchestration::should_move_this_tick() {
+bool Orchestration::should_move_this_tick(int num_aliens) {
   tick_counter++;
-  if (tick_counter > BASE_TICKS_PER_MOVE) {
+  if (tick_counter > BASE_TICKS_PER_MOVE + num_aliens) {
     tick_counter = 0;
     return true;
   }
