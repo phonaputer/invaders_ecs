@@ -9,7 +9,7 @@ namespace systems::player {
 
 class Defeat : public framework::System {
   private:
-    static constexpr unsigned int DEFEAT_PAUSE_TICKS = 100;
+    static constexpr unsigned int DEFEAT_PAUSE_TICKS = 170;
 
     unsigned int defeat_pause_counter = 0;
     bool defeat_pause_ongoing = false;

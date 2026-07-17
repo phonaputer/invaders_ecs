@@ -1,6 +1,7 @@
 #include "game/systems/player/defeat.hpp"
 #include "core/point.hpp"
 #include "framework/system.hpp"
+#include "game/assets/asset_enums.hpp"
 #include "game/components/deletable.hpp"
 #include "game/components/delete_on_gameover.hpp"
 #include "game/components/hitpoints.hpp"
@@ -10,6 +11,8 @@
 #include "game/constants.hpp"
 #include "game/events/defeated.hpp"
 #include "game/events/pause.hpp"
+#include "game/events/play_audio.hpp"
+#include "game/events/stop_audio.hpp"
 #include <entt.hpp>
 #include <functional>
 
@@ -51,6 +54,7 @@ void Defeat::handle_defeat(framework::ExecuteCtx &ctx, entt::entity player_entit
   auto position = ctx.ecs.get<components::Position>(player_entity);
 
   add_explosion(ctx.ecs, {position.x, position.y}, DEFEAT_PAUSE_TICKS);
+  ctx.events.push_back_draw(events::PlayAudio{.audio = assets::Audio::PlayerExplosion});
 
   ctx.events.set_singleton(
       events::Pause{
@@ -104,6 +108,7 @@ void Defeat::handle_ongoing_pause(framework::ExecuteCtx &ctx) {
   }
 
   add_player(ctx.ecs);
+  ctx.events.push_back_draw(events::StopAudio{.audio = assets::Audio::PlayerExplosion});
 }
 
 void Defeat::delete_all_entities(framework::ExecuteCtx &ctx) {
