@@ -3,6 +3,7 @@
 #include "framework/asset_loader.hpp"
 #include "framework/audio_player.hpp"
 #include "framework/renderer.hpp"
+#include "framework/scene_setter.hpp"
 #include "framework/system_registry.hpp"
 
 #include <entt.hpp>
@@ -15,6 +16,7 @@ struct SceneInitializationContext {
     entt::registry &ecs;
     Renderer &renderer;
     AudioPlayer &audio_player;
+    SceneSetter &scene_setter;
 };
 
 } // namespace framework

@@ -135,6 +135,7 @@ void Game::set_scene(std::unique_ptr<Scene> scene) {
           .ecs = ecs,
           .renderer = *renderer_wrapper,
           .audio_player = *asset_manager,
+          .scene_setter = *this,
       }
   );
 
