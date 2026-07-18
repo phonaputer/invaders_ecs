@@ -3,10 +3,11 @@
 #include "framework/system.hpp"
 #include "game/scenes/invasion/components/invader.hpp"
 #include "game/scenes/invasion/components/position.hpp"
+#include "game/scenes/invasion/components/singleton/invader_orchestration.hpp"
+#include "game/scenes/invasion/components/singleton/paused.hpp"
 #include "game/scenes/invasion/components/sprite.hpp"
 #include "game/scenes/invasion/components/step_animation.hpp"
 #include "game/scenes/invasion/constants.hpp"
-#include "game/scenes/invasion/events/pause.hpp"
 #include "game/scenes/invasion/events/play_audio.hpp"
 #include <entt.hpp>
 #include <iterator>
@@ -26,12 +27,8 @@ Orchestration::Orchestration(
 }
 
 void Orchestration::execute(framework::ExecuteCtx &ctx) {
-  const auto pause = ctx.events.get_singleton<events::Pause>();
-  if (pause.has_value()) {
-    paused = pause.value().is_paused;
-  }
-
-  if (paused) {
+  const auto pause = ctx.ecs.ctx().get<components::singleton::Paused>();
+  if (pause.paused) {
     return;
   }
 
@@ -40,35 +37,41 @@ void Orchestration::execute(framework::ExecuteCtx &ctx) {
 
   if (num_aliens < 1) {
     rerack_aliens(ctx.ecs);
-    move_right = true;
     return;
   }
 
-  if (should_shoot_this_tick()) {
+  if (should_shoot_this_tick(ctx.ecs)) {
     random_alien_shoot(ctx.ecs);
   }
 
-  if (!should_move_this_tick(num_aliens)) {
+  if (!should_move_this_tick(ctx.ecs, num_aliens)) {
     return;
   }
 
   bool should_move_down = did_hit_wall(ctx.ecs);
 
   if (should_move_down) {
-    move_right = !move_right;
+    auto orchestration = ctx.ecs.ctx().get<components::singleton::InvaderOrchestration>();
+    orchestration.move_right = !orchestration.move_right;
+    ctx.ecs.ctx().insert_or_assign(orchestration);
   }
 
   move(ctx, should_move_down, num_aliens);
   animate(ctx.ecs);
 }
 
-bool Orchestration::should_shoot_this_tick() {
-  shoot_counter++;
-  if (shoot_counter < TICKS_PER_SHOOT_CHANCE) {
+bool Orchestration::should_shoot_this_tick(entt::registry &ecs) {
+  auto orchestration = ecs.ctx().get<components::singleton::InvaderOrchestration>();
+
+  orchestration.shoot_counter++;
+  if (orchestration.shoot_counter < TICKS_PER_SHOOT_CHANCE) {
+    ecs.ctx().insert_or_assign(orchestration);
     return false;
   }
 
-  shoot_counter = 0;
+  orchestration.shoot_counter = 0;
+  ecs.ctx().insert_or_assign(orchestration);
+
   std::uniform_int_distribution<int> hit_roll(1, ALIEN_SHOOT_CHANCE);
 
   return hit_roll(rand_gen) == 1;
@@ -92,22 +95,30 @@ void Orchestration::random_alien_shoot(entt::registry &ecs) {
   add_projectile(ecs, position.x + jitter, position.y);
 }
 
-bool Orchestration::should_move_this_tick(int num_aliens) {
-  tick_counter++;
-  if (tick_counter > BASE_TICKS_PER_MOVE + num_aliens) {
-    tick_counter = 0;
+bool Orchestration::should_move_this_tick(entt::registry &ecs, int num_aliens) {
+  auto orchestration = ecs.ctx().get<components::singleton::InvaderOrchestration>();
+
+  orchestration.tick_counter++;
+
+  if (orchestration.tick_counter > BASE_TICKS_PER_MOVE + num_aliens) {
+    orchestration.tick_counter = 0;
+    ecs.ctx().insert_or_assign(orchestration);
     return true;
   }
+
+  ecs.ctx().insert_or_assign(orchestration);
 
   return false;
 }
 
 bool Orchestration::did_hit_wall(entt::registry &ecs) {
+  auto orchestration = ecs.ctx().get<components::singleton::InvaderOrchestration>();
+
   auto view = ecs.view<components::Invader, const components::Position>();
 
   for (auto [entity, position] : view.each()) {
     auto delta_x = X_SPEED;
-    if (!move_right) {
+    if (!orchestration.move_right) {
       delta_x = -delta_x;
     }
 
@@ -122,13 +133,15 @@ bool Orchestration::did_hit_wall(entt::registry &ecs) {
 }
 
 void Orchestration::move(framework::ExecuteCtx &ctx, bool move_down, int num_aliens) {
+  auto orchestration = ctx.ecs.ctx().get<components::singleton::InvaderOrchestration>();
+
   auto x_speed = X_SPEED;
   if (num_aliens == 1) {
     x_speed = LAST_MAN_STANDING_X_SPEED;
   }
 
   auto delta_x = x_speed;
-  if (!move_right) {
+  if (!orchestration.move_right) {
     delta_x = -delta_x;
   }
 
@@ -144,11 +157,12 @@ void Orchestration::move(framework::ExecuteCtx &ctx, bool move_down, int num_ali
     position.x += delta_x;
   }
 
-  ctx.events.push_back_draw(events::PlayAudio{.audio = ARP_SOUNDS.at(arp_idx)});
-  arp_idx++;
-  if (arp_idx >= ARP_SOUNDS.size()) {
-    arp_idx = 0;
+  ctx.events.push_back_draw(events::PlayAudio{.audio = ARP_SOUNDS.at(orchestration.arp_idx)});
+  orchestration.arp_idx++;
+  if (orchestration.arp_idx >= ARP_SOUNDS.size()) {
+    orchestration.arp_idx = 0;
   }
+  ctx.ecs.ctx().insert_or_assign(orchestration);
 }
 
 void Orchestration::animate(entt::registry &ecs) {

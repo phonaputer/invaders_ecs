@@ -28,19 +28,13 @@ class Orchestration : public framework::System {
         assets::Audio::Arp4,
     };
 
-    bool paused = false;
-
-    bool move_right = true;
-    int tick_counter = 0;
     std::function<void(entt::registry &, float, float)> add_projectile;
     std::function<void(entt::registry &)> rerack_aliens;
     std::mt19937 rand_gen;
-    unsigned int shoot_counter = 0;
-    size_t arp_idx = 0;
 
-    bool should_shoot_this_tick();
+    bool should_shoot_this_tick(entt::registry &ecs);
     void random_alien_shoot(entt::registry &ecs);
-    bool should_move_this_tick(int num_aliens);
+    bool should_move_this_tick(entt::registry &ecs, int num_aliens);
     bool did_hit_wall(entt::registry &ecs);
     void move(framework::ExecuteCtx &ctx, bool move_down, int num_aliens);
     void animate(entt::registry &ecs);

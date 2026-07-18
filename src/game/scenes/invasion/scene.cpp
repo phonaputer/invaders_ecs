@@ -1,5 +1,6 @@
 #include "framework/scene.hpp"
 #include "game/assets/asset_enums.hpp"
+#include "game/scenes/invasion/components/singleton/paused.hpp"
 #include "game/scenes/invasion/fortress.hpp"
 #include "game/scenes/invasion/hud.hpp"
 #include "game/scenes/invasion/invaders.hpp"
@@ -76,6 +77,8 @@ void Scene::initialize(framework::SceneInitializationContext ctx) {
   add_player_entity(ctx.ecs);
   add_hud_entity(ctx.ecs);
   add_fortresses(ctx.ecs);
+
+  ctx.ecs.ctx().emplace<components::singleton::Paused>(components::singleton::Paused{.paused = false});
 }
 
 } // namespace invasion

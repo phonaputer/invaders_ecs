@@ -13,6 +13,7 @@
 #include "game/scenes/invasion/components/invader.hpp"
 #include "game/scenes/invasion/components/lifetime.hpp"
 #include "game/scenes/invasion/components/position.hpp"
+#include "game/scenes/invasion/components/singleton/invader_orchestration.hpp"
 #include "game/scenes/invasion/components/sound_on_defeat.hpp"
 #include "game/scenes/invasion/components/sprite.hpp"
 #include "game/scenes/invasion/components/step_animation.hpp"
@@ -223,6 +224,13 @@ void add_invader_entities(entt::registry &ecs) {
     add_tadpole(ecs, x_pos, y_pos);
     x_pos += alien_width + col_spacing;
   }
+
+  ecs.ctx().insert_or_assign<components::singleton::InvaderOrchestration>(components::singleton::InvaderOrchestration{
+      .move_right = true,
+      .tick_counter = 0,
+      .shoot_counter = 0,
+      .arp_idx = 0,
+  });
 }
 
 void add_invader_projectile(entt::registry &ecs, float x, float y) {

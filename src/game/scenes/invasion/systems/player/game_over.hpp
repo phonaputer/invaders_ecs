@@ -11,7 +11,6 @@ class GameOver : public framework::System {
     static constexpr unsigned int PAUSE_TICKS = 170;
 
     unsigned int pause_counter = 0;
-    bool pause_ongoing = false;
     bool game_is_over = false;
     std::function<void(entt::registry &, float, float, unsigned int)> add_explosion;
     std::function<void(entt::registry &)> add_player;

@@ -3,17 +3,14 @@
 #include "framework/system.hpp"
 #include "game/scenes/invasion/components/deletable.hpp"
 #include "game/scenes/invasion/components/position.hpp"
+#include "game/scenes/invasion/components/singleton/paused.hpp"
 #include "game/scenes/invasion/components/velocity.hpp"
-#include "game/scenes/invasion/events/pause.hpp"
 
 namespace systems {
 
 void Velocity::execute(framework::ExecuteCtx &ctx) {
-  const auto pause = ctx.events.get_singleton<events::Pause>();
-  if (pause.has_value()) {
-    paused = pause.value().is_paused;
-  }
-  if (paused) {
+  const auto pause = ctx.ecs.ctx().get<components::singleton::Paused>();
+  if (pause.paused) {
     return;
   }
 

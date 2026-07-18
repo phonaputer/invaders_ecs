@@ -7,10 +7,10 @@
 #include "game/scenes/invasion/components/player_movement.hpp"
 #include "game/scenes/invasion/components/position.hpp"
 #include "game/scenes/invasion/components/singleton/hud_stats.hpp"
+#include "game/scenes/invasion/components/singleton/paused.hpp"
 #include "game/scenes/invasion/constants.hpp"
 #include "game/scenes/invasion/events/aliens_landed.hpp"
 #include "game/scenes/invasion/events/defeated.hpp"
-#include "game/scenes/invasion/events/pause.hpp"
 #include "game/scenes/invasion/events/play_audio.hpp"
 #include "game/scenes/invasion/events/stop_audio.hpp"
 #include <entt.hpp>
@@ -29,7 +29,9 @@ GameOver::GameOver(
 }
 
 void GameOver::execute(framework::ExecuteCtx &ctx) {
-  if (pause_ongoing) {
+  const auto pause = ctx.ecs.ctx().get<components::singleton::Paused>();
+
+  if (pause.paused) {
     handle_ongoing_pause(ctx);
   } else {
     handle_defeat_if_any(ctx);
@@ -56,14 +58,13 @@ void GameOver::handle_defeat_if_any(framework::ExecuteCtx &ctx) {
 }
 
 void GameOver::handle_alien_landing(framework::ExecuteCtx &ctx) {
-  ctx.events.set_singleton(events::Pause{.is_paused = true});
+  ctx.ecs.ctx().insert_or_assign(components::singleton::Paused{.paused = true});
 
   auto stats = ctx.ecs.ctx().get<components::singleton::HUDStats>();
   stats.game_over = true;
   ctx.ecs.ctx().insert_or_assign(stats);
 
   game_is_over = true;
-  pause_ongoing = true;
 }
 
 void GameOver::handle_player_defeat(framework::ExecuteCtx &ctx, entt::entity player_entity) {
@@ -72,7 +73,7 @@ void GameOver::handle_player_defeat(framework::ExecuteCtx &ctx, entt::entity pla
   add_explosion(ctx.ecs, position.x, position.y, PAUSE_TICKS);
   ctx.events.push_back_draw(events::PlayAudio{.audio = assets::Audio::PlayerExplosion});
 
-  ctx.events.set_singleton(events::Pause{.is_paused = true});
+  ctx.ecs.ctx().insert_or_assign(components::singleton::Paused{.paused = true});
 
   ctx.ecs.emplace_or_replace<components::Deleteable>(player_entity);
 
@@ -86,8 +87,6 @@ void GameOver::handle_player_defeat(framework::ExecuteCtx &ctx, entt::entity pla
   }
 
   ctx.ecs.ctx().insert_or_assign(stats);
-
-  pause_ongoing = true;
 }
 
 void GameOver::handle_ongoing_pause(framework::ExecuteCtx &ctx) {
@@ -97,13 +96,8 @@ void GameOver::handle_ongoing_pause(framework::ExecuteCtx &ctx) {
   }
 
   pause_counter = 0;
-  pause_ongoing = false;
 
-  ctx.events.set_singleton(
-      events::Pause{
-          .is_paused = false,
-      }
-  );
+  ctx.ecs.ctx().insert_or_assign(components::singleton::Paused{.paused = false});
 
   if (game_is_over) {
     game_is_over = false;
