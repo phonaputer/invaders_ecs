@@ -101,12 +101,11 @@ void RenderingSystem::execute(framework::ExecuteCtx &ctx) {
 
   text_renderer.render_text_centered(165, "<a> and <d> to move");
   text_renderer.render_text_centered(175, "<space> to shoot");
-  text_renderer.render_text_centered(185, "<esc> to pause");
 
   if (game_start_engaged && game_start_blink) {
-    text_renderer.render_text_centered(215, "press <space> to begin");
+    text_renderer.render_text_centered(205, "press <space> to begin");
   } else if (!game_start_engaged) {
-    text_renderer.render_text_centered(215, "press <space> to begin");
+    text_renderer.render_text_centered(205, "press <space> to begin");
   }
 }
 
