@@ -15,7 +15,7 @@ add_executable(
 )
 
 add_subdirectory(framework)
-add_subdirectory(gallia)
+add_subdirectory(game)
 
 target_link_libraries(
   ${PROJECT_NAME}_tests

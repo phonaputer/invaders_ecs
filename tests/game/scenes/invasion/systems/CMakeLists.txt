@@ -4,3 +4,5 @@ target_sources(
   collision_detection_test.cpp
   rendering_test.cpp
 )
+
+add_subdirectory(invaders)

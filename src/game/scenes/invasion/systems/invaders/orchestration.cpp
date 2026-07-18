@@ -1,5 +1,4 @@
 #include "game/scenes/invasion/systems/invaders/orchestration.hpp"
-#include "framework/player_input_manager.hpp"
 #include "framework/system.hpp"
 #include "game/scenes/invasion/components/invader.hpp"
 #include "game/scenes/invasion/components/position.hpp"
@@ -98,10 +97,10 @@ void Orchestration::random_alien_shoot(entt::registry &ecs) {
 bool Orchestration::should_move_this_tick(entt::registry &ecs, int num_aliens) {
   auto orchestration = ecs.ctx().get<components::singleton::InvaderOrchestration>();
 
-  orchestration.tick_counter++;
+  orchestration.move_counter++;
 
-  if (orchestration.tick_counter > BASE_TICKS_PER_MOVE + num_aliens) {
-    orchestration.tick_counter = 0;
+  if (orchestration.move_counter > BASE_TICKS_PER_MOVE + num_aliens) {
+    orchestration.move_counter = 0;
     ecs.ctx().insert_or_assign(orchestration);
     return true;
   }

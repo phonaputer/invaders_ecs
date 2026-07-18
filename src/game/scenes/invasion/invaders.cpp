@@ -227,7 +227,7 @@ void add_invader_entities(entt::registry &ecs) {
 
   ecs.ctx().insert_or_assign<components::singleton::InvaderOrchestration>(components::singleton::InvaderOrchestration{
       .move_right = true,
-      .tick_counter = 0,
+      .move_counter = 0,
       .shoot_counter = 0,
       .arp_idx = 0,
   });
