@@ -36,9 +36,6 @@ I suspect this is due to separation of data and logic being standard in my indus
 With ECS it also feels way easier to write unit tests since it's easy to set up preconditions in the "database" (ECS) and then run the logic on them.
 Perhaps this is an indictment of my OOP programming in the first version of this project, but for me using the ECS felt cleaner.
 
-(Actually, since I did include class fields in some systems my separation of data and logic was not total.
-Reflecting now, perhaps I should have extracted this data into singleton components or refactored those systems.)
-
 Thinking a bit on the tradeoffs - ECS is a heavyweight pattern since it requires restructuring your game data & logic around it.
 I suspect this would be even more pronounced if you were trying to get the performance benefits ECS purports to provide (I wasn't).
 So if this style of codebase isn't your thing, ECS would be a pain.
@@ -46,8 +43,8 @@ So if this style of codebase isn't your thing, ECS would be a pain.
 Actually, before I settled on EnTT I also tried [Flecs](https://github.com/SanderMertens/flecs) which felt even more invasive since it wants to handle scheduling of your systems & provides pretty complex querying functions.
 This reminded me a bit of Spring or Hibernate in the Java ecosystem where the libraries do so much for you that it can feel like you're programming Spring/Hibernate instead of Java. Flecs was too invasive even for me (I'm trying to learn a generalized pattern here, not a library) so I ended up going with the less full-featured EnTT.
 
-At any rate, if I were to find out that I'm becoming a full-time game developer tomorrow and I'm not allowed to use existing engines for some reason, I would definitely go the ECS route rather than the "OOP" route from the last iteration of this project.
-Let's hope this doesn't happen though since two Space Invaders projects != much useful experience.
+At any rate, if I were to find out that I'm becoming a full-time game developer tomorrow and I'm not allowed to use existing engines for some reason, I would definitely go the ECS route rather than the "OOP" route.
+Let's hope I don't become a full-time game dev though, since the world has enough shovelware games already! 😆
 
 ### Build & Run
 
