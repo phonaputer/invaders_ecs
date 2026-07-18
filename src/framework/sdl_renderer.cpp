@@ -13,10 +13,10 @@ void SDLRenderer::draw_image(const DrawImageParams &params) {
   auto texture = asset_manager->get_texture(params.src_id);
 
   auto src_rect = SDL_FRect{
-      .x = params.src_x,
-      .y = params.src_y,
-      .w = params.src_width,
-      .h = params.src_height,
+      .x = params.src_x + 0.02f,
+      .y = params.src_y + 0.02f,
+      .w = params.src_width - 0.04f,
+      .h = params.src_height - 0.04f,
   };
   auto dest_rect = SDL_FRect{
       .x = params.dst_x,
