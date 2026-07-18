@@ -1,5 +1,4 @@
 #include "game/scenes/invasion/systems/invaders/orchestration.hpp"
-#include "core/point.hpp"
 #include "framework/player_input_manager.hpp"
 #include "framework/system.hpp"
 #include "game/scenes/invasion/components/invader.hpp"
@@ -17,7 +16,7 @@
 namespace systems::invaders {
 
 Orchestration::Orchestration(
-    std::function<void(entt::registry &, core::Point)> add_projectile,
+    std::function<void(entt::registry &, float, float)> add_projectile,
     std::function<void(entt::registry &)> rerack_aliens,
     unsigned int rand_seed
 )
@@ -87,7 +86,7 @@ void Orchestration::random_alien_shoot(entt::registry &ecs) {
   auto selected_entity = *it;
 
   auto position = ecs.get<components::Position>(selected_entity);
-  add_projectile(ecs, {position.x, position.y});
+  add_projectile(ecs, position.x, position.y);
 }
 
 bool Orchestration::should_move_this_tick(int num_aliens) {

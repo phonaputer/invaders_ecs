@@ -1,5 +1,4 @@
 #include "game/scenes/invasion/systems/player/game_over.hpp"
-#include "core/point.hpp"
 #include "framework/system.hpp"
 #include "game/assets/asset_enums.hpp"
 #include "game/scenes/invasion/components/deletable.hpp"
@@ -20,7 +19,7 @@
 namespace systems::player {
 
 GameOver::GameOver(
-    std::function<void(entt::registry &, core::Point, unsigned int)> add_explosion,
+    std::function<void(entt::registry &, float, float, unsigned int)> add_explosion,
     std::function<void(entt::registry &)> add_player,
     std::function<void(entt::registry &)> add_fortresses
 )
@@ -70,7 +69,7 @@ void GameOver::handle_alien_landing(framework::ExecuteCtx &ctx) {
 void GameOver::handle_player_defeat(framework::ExecuteCtx &ctx, entt::entity player_entity) {
   auto position = ctx.ecs.get<components::Position>(player_entity);
 
-  add_explosion(ctx.ecs, {position.x, position.y}, PAUSE_TICKS);
+  add_explosion(ctx.ecs, position.x, position.y, PAUSE_TICKS);
   ctx.events.push_back_draw(events::PlayAudio{.audio = assets::Audio::PlayerExplosion});
 
   ctx.events.set_singleton(events::Pause{.is_paused = true});

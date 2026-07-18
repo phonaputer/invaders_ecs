@@ -225,7 +225,7 @@ void add_invader_entities(entt::registry &ecs) {
   }
 }
 
-void add_invader_projectile(entt::registry &ecs, core::Point starting_point) {
+void add_invader_projectile(entt::registry &ecs, float x, float y) {
   const auto entity = ecs.create();
 
   ecs.emplace<components::SoundOnDefeat>(entity, components::SoundOnDefeat{.audio = assets::Audio::AlienShot});
@@ -239,8 +239,8 @@ void add_invader_projectile(entt::registry &ecs, core::Point starting_point) {
   ecs.emplace<components::Position>(
       entity,
       components::Position{
-          .x = starting_point.x,
-          .y = starting_point.y,
+          .x = x,
+          .y = y,
           .w = 16,
           .h = 16,
           .z = 80,
@@ -314,7 +314,7 @@ void add_invader_projectile(entt::registry &ecs, core::Point starting_point) {
   );
 }
 
-void add_explosion(entt::registry &ecs, core::Point position) {
+void add_explosion(entt::registry &ecs, float x, float y) {
   const auto entity = ecs.create();
 
   ecs.emplace<components::DeleteOnGameOver>(entity);
@@ -322,8 +322,8 @@ void add_explosion(entt::registry &ecs, core::Point position) {
   ecs.emplace<components::Position>(
       entity,
       components::Position{
-          .x = position.x,
-          .y = position.y,
+          .x = x,
+          .y = y,
           .w = 16,
           .h = 16,
           .z = 200,

@@ -1,6 +1,5 @@
 #pragma once
 
-#include "core/point.hpp"
 #include "framework/system.hpp"
 #include <entt.hpp>
 #include <functional>
@@ -14,7 +13,7 @@ class GameOver : public framework::System {
     unsigned int pause_counter = 0;
     bool pause_ongoing = false;
     bool game_is_over = false;
-    std::function<void(entt::registry &, core::Point, unsigned int)> add_explosion;
+    std::function<void(entt::registry &, float, float, unsigned int)> add_explosion;
     std::function<void(entt::registry &)> add_player;
     std::function<void(entt::registry &)> add_fortresses;
 
@@ -26,7 +25,7 @@ class GameOver : public framework::System {
 
   public:
     GameOver(
-        std::function<void(entt::registry &, core::Point, unsigned int)> add_explosion,
+        std::function<void(entt::registry &, float, float, unsigned int)> add_explosion,
         std::function<void(entt::registry &)> add_player,
         std::function<void(entt::registry &)> add_fortresses
     );

@@ -1,5 +1,4 @@
 #include "game/scenes/invasion/systems/player/shooting.hpp"
-#include "core/point.hpp"
 #include "framework/player_input.hpp"
 #include "framework/player_input_manager.hpp"
 #include "framework/system.hpp"
@@ -14,7 +13,7 @@
 namespace systems::player {
 
 Shooting::Shooting(
-    std::function<entt::entity(entt::registry &ecs, core::Point)> add_projectile,
+    std::function<entt::entity(entt::registry &ecs, float, float)> add_projectile,
     std::function<void(entt::registry &, entt::entity)> add_muzzle_flash
 )
     : add_projectile{add_projectile},
@@ -41,13 +40,9 @@ void Shooting::execute(framework::ExecuteCtx &ctx) {
     }
 
     if (fire) {
-      active_projectiles.insert(add_projectile(
-          ctx.ecs,
-          core::Point{
-              .x = position.x + shooting.shot_offset_x,
-              .y = position.y - shooting.shot_offset_y,
-          }
-      ));
+      active_projectiles.insert(
+          add_projectile(ctx.ecs, position.x + shooting.shot_offset_x, position.y - shooting.shot_offset_y)
+      );
       add_muzzle_flash(ctx.ecs, entity);
       ctx.events.push_back_draw(events::PlayAudio{.audio = assets::Audio::PlayerShot});
     }

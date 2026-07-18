@@ -1,5 +1,4 @@
 #include "game/scenes/invasion/player.hpp"
-#include "core/point.hpp"
 #include "framework/constants.hpp"
 #include "game/assets/asset_enums.hpp"
 #include "game/scenes/invasion/components/animation.hpp"
@@ -105,7 +104,7 @@ void add_player_entity(entt::registry &ecs) {
   ecs.sort<components::Position>([](const auto &left, const auto &right) { return left.z < right.z; });
 }
 
-entt::entity add_player_projectile_entity(entt::registry &ecs, core::Point starting_point) {
+entt::entity add_player_projectile_entity(entt::registry &ecs, float x, float y) {
   const auto entity = ecs.create();
 
   ecs.emplace<components::InteractsOnCollide>(entity);
@@ -162,8 +161,8 @@ entt::entity add_player_projectile_entity(entt::registry &ecs, core::Point start
   ecs.emplace<components::Position>(
       entity,
       components::Position{
-          .x = starting_point.x,
-          .y = starting_point.y,
+          .x = x,
+          .y = y,
           .w = 16,
           .h = 16,
           .z = 99,
@@ -229,15 +228,15 @@ void add_player_muzzle_flash_entity(entt::registry &ecs, entt::entity shooter) {
   );
 }
 
-void add_player_explosion_entity(entt::registry &ecs, core::Point position, unsigned int lifetime) {
+void add_player_explosion_entity(entt::registry &ecs, float x, float y, unsigned int lifetime) {
   const auto entity = ecs.create();
 
   ecs.emplace<components::DeleteOnGameOver>(entity);
   ecs.emplace<components::Position>(
       entity,
       components::Position{
-          .x = position.x,
-          .y = position.y,
+          .x = x,
+          .y = y,
           .w = 16,
           .h = 16,
           .z = 100,

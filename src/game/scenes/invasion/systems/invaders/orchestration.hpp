@@ -1,6 +1,5 @@
 #pragma once
 
-#include "core/point.hpp"
 #include "framework/constants.hpp"
 #include "framework/system.hpp"
 #include "game/assets/asset_enums.hpp"
@@ -31,7 +30,7 @@ class Orchestration : public framework::System {
 
     bool move_right = true;
     int tick_counter = 0;
-    std::function<void(entt::registry &, core::Point)> add_projectile;
+    std::function<void(entt::registry &, float, float)> add_projectile;
     std::function<void(entt::registry &)> rerack_aliens;
     std::mt19937 rand_gen;
     unsigned int shoot_counter = 0;
@@ -46,7 +45,7 @@ class Orchestration : public framework::System {
 
   public:
     Orchestration(
-        std::function<void(entt::registry &, core::Point)> add_projectile,
+        std::function<void(entt::registry &, float, float)> add_projectile,
         std::function<void(entt::registry &)> rerack_aliens,
         unsigned int rand_seed
     );

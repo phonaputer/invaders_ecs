@@ -7,7 +7,7 @@
 
 namespace systems {
 
-ExplodeOnDefeat::ExplodeOnDefeat(std::function<void(entt::registry &, core::Point)> add_explosion)
+ExplodeOnDefeat::ExplodeOnDefeat(std::function<void(entt::registry &, float, float)> add_explosion)
     : add_explosion{add_explosion} {
 }
 
@@ -16,7 +16,7 @@ void ExplodeOnDefeat::execute(framework::ExecuteCtx &ctx) {
     if (ctx.ecs.all_of<components::ExplodeOnDefeat, components::Position>(event.entity)) {
       auto position = ctx.ecs.get<components::Position>(event.entity);
 
-      add_explosion(ctx.ecs, {position.x, position.y});
+      add_explosion(ctx.ecs, position.x, position.y);
     }
   }
 }
