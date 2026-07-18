@@ -10,6 +10,8 @@
 
 namespace systems::invaders {
 
+// This should probably be split up into at least shooting and movement parts
+// for better testability - but the game already works and I'm lazy ¯\_(ツ)_/¯
 class Orchestration : public framework::System {
   private:
     static constexpr int BASE_TICKS_PER_MOVE = 4;
