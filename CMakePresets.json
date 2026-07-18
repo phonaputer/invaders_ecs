@@ -28,6 +28,16 @@
                 "CMAKE_CXX_CLANG_TIDY": "clang-tidy",
                 "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
             }
-	} 
+	    },
+        {
+            "name": "release-emscripten",
+            "displayName": "Release for web with Emscripten",
+            "binaryDir": "${sourceDir}/out/build/${presetName}",
+            "toolchainFile": "$env{EMSDK}/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake",
+            "cacheVariables": {
+                "CMAKE_INSTALL_PREFIX": "${sourceDir}/out/install/${presetName}",
+                "CMAKE_BUILD_TYPE": "Release"
+            }
+        }
     ]
 }
