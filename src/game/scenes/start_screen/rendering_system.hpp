@@ -20,10 +20,6 @@ class RenderingSystem : public framework::System {
     framework::Renderer &renderer;
     util::TextRenderer text_renderer;
 
-    int game_start_tick_counter = 0;
-    bool game_start_engaged = false;
-    bool game_start_blink = true;
-
   public:
     RenderingSystem(
         framework::SceneSetter &scene_setter, framework::AudioPlayer &audio_player, framework::Renderer &renderer

@@ -5,6 +5,7 @@
 #include "framework/system.hpp"
 #include "game/assets/asset_enums.hpp"
 #include "game/scenes/invasion/scene.hpp"
+#include "game/scenes/start_screen/rendering_system_component.hpp"
 #include "game/util/text_renderer.hpp"
 #include <format>
 #include <memory>
@@ -21,20 +22,24 @@ RenderingSystem::RenderingSystem(
 }
 
 void RenderingSystem::execute(framework::ExecuteCtx &ctx) {
-  if (game_start_engaged) {
-    game_start_tick_counter++;
-    if (game_start_tick_counter % GAME_START_BLINK_TICKS == 0) {
-      game_start_blink = !game_start_blink;
-    }
+  auto state = ctx.ecs.ctx().get<RenderingSystemComponent>();
 
-    if (game_start_tick_counter > GAME_START_TOTAL_TICKS) {
+  if (state.game_start_engaged) {
+    state.game_start_tick_counter++;
+    if (state.game_start_tick_counter % GAME_START_BLINK_TICKS == 0) {
+      state.game_start_blink = !state.game_start_blink;
+    }
+    ctx.ecs.ctx().insert_or_assign(state);
+
+    if (state.game_start_tick_counter > GAME_START_TOTAL_TICKS) {
       scene_setter.set_scene(std::make_unique<invasion::Scene>());
     }
   }
 
-  if (!game_start_engaged && ctx.player_input.is_initiated(framework::PlayerInput::FIRE)) {
-    game_start_engaged = true;
+  if (!state.game_start_engaged && ctx.player_input.is_initiated(framework::PlayerInput::FIRE)) {
+    state.game_start_engaged = true;
     audio_player.play_sound(assets::audio_sound_id(assets::Audio::MenuSelect));
+    ctx.ecs.ctx().insert_or_assign(state);
   }
 
   text_renderer.render_text_centered(60, "personal space invaders");
@@ -102,9 +107,9 @@ void RenderingSystem::execute(framework::ExecuteCtx &ctx) {
   text_renderer.render_text_centered(165, "<a> and <d> to move");
   text_renderer.render_text_centered(175, "<space> to shoot");
 
-  if (game_start_engaged && game_start_blink) {
+  if (state.game_start_engaged && state.game_start_blink) {
     text_renderer.render_text_centered(205, "press <space> to begin");
-  } else if (!game_start_engaged) {
+  } else if (!state.game_start_engaged) {
     text_renderer.render_text_centered(205, "press <space> to begin");
   }
 }
