@@ -15,6 +15,7 @@ class Orchestration : public framework::System {
     static constexpr int BASE_TICKS_PER_MOVE = 4;
     static constexpr float X_SPEED = 8;
     static constexpr float Y_SPEED = 12;
+    static constexpr float LAST_MAN_STANDING_X_SPEED = 16;
     static constexpr float LEFT_MOVEMENT_BOUNDARY = 0;
     static constexpr float RIGHT_MOVEMENT_BOUNDARY = framework::WINDOW_WIDTH;
     static constexpr int TICKS_PER_SHOOT_CHANCE = 12;
@@ -40,7 +41,7 @@ class Orchestration : public framework::System {
     void random_alien_shoot(entt::registry &ecs);
     bool should_move_this_tick(int num_aliens);
     bool did_hit_wall(entt::registry &ecs);
-    void move(framework::ExecuteCtx &ctx, bool move_down);
+    void move(framework::ExecuteCtx &ctx, bool move_down, int num_aliens);
     void animate(entt::registry &ecs);
 
   public:

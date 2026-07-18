@@ -58,7 +58,7 @@ void Orchestration::execute(framework::ExecuteCtx &ctx) {
     move_right = !move_right;
   }
 
-  move(ctx, should_move_down);
+  move(ctx, should_move_down, num_aliens);
   animate(ctx.ecs);
 }
 
@@ -118,19 +118,26 @@ bool Orchestration::did_hit_wall(entt::registry &ecs) {
   return false;
 }
 
-void Orchestration::move(framework::ExecuteCtx &ctx, bool move_down) {
+void Orchestration::move(framework::ExecuteCtx &ctx, bool move_down, int num_aliens) {
+  auto x_speed = X_SPEED;
+  if (num_aliens == 1) {
+    x_speed = LAST_MAN_STANDING_X_SPEED;
+  }
+
+  auto delta_x = x_speed;
+  if (!move_right) {
+    delta_x = -delta_x;
+  }
+
+  auto delta_y = 0;
+  if (move_down) {
+    delta_y = Y_SPEED;
+  }
+
   auto view = ctx.ecs.view<components::Invader, components::Position>();
 
   for (auto [entity, position] : view.each()) {
-    auto delta_x = X_SPEED;
-    if (!move_right) {
-      delta_x = -delta_x;
-    }
-
-    if (move_down) {
-      position.y += Y_SPEED;
-    }
-
+    position.y += delta_y;
     position.x += delta_x;
   }
 
