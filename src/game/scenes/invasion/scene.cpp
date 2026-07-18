@@ -78,7 +78,10 @@ void Scene::initialize(framework::SceneInitializationContext ctx) {
   add_hud_entity(ctx.ecs);
   add_fortresses(ctx.ecs);
 
-  ctx.ecs.ctx().emplace<components::singleton::Paused>(components::singleton::Paused{.paused = false});
+  ctx.ecs.ctx().emplace<components::singleton::Paused>(components::singleton::Paused{
+      .paused = false,
+      .pause_counter = 0,
+  });
 }
 
 } // namespace invasion

@@ -63,8 +63,6 @@ void GameOver::handle_alien_landing(framework::ExecuteCtx &ctx) {
   auto stats = ctx.ecs.ctx().get<components::singleton::HUDStats>();
   stats.game_over = true;
   ctx.ecs.ctx().insert_or_assign(stats);
-
-  game_is_over = true;
 }
 
 void GameOver::handle_player_defeat(framework::ExecuteCtx &ctx, entt::entity player_entity) {
@@ -83,26 +81,25 @@ void GameOver::handle_player_defeat(framework::ExecuteCtx &ctx, entt::entity pla
   if (stats.lives < 0) {
     stats.game_over = true;
     stats.lives = 0;
-    game_is_over = true;
   }
 
   ctx.ecs.ctx().insert_or_assign(stats);
 }
 
 void GameOver::handle_ongoing_pause(framework::ExecuteCtx &ctx) {
-  pause_counter++;
-  if (pause_counter < PAUSE_TICKS) {
+  auto paused = ctx.ecs.ctx().get<components::singleton::Paused>();
+
+  paused.pause_counter++;
+  if (paused.pause_counter < PAUSE_TICKS) {
+    ctx.ecs.ctx().insert_or_assign(paused);
     return;
   }
 
-  pause_counter = 0;
-
   ctx.ecs.ctx().insert_or_assign(components::singleton::Paused{.paused = false});
 
-  if (game_is_over) {
-    game_is_over = false;
+  auto stats = ctx.ecs.ctx().get<components::singleton::HUDStats>();
 
-    auto stats = ctx.ecs.ctx().get<components::singleton::HUDStats>();
+  if (stats.game_over) {
     stats.score = 0;
     stats.lives = invasion::STARTING_LIVES;
     stats.game_over = false;
