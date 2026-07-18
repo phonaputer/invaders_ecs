@@ -20,6 +20,7 @@ class Orchestration : public framework::System {
     static constexpr float RIGHT_MOVEMENT_BOUNDARY = framework::WINDOW_WIDTH;
     static constexpr int TICKS_PER_SHOOT_CHANCE = 12;
     static constexpr int ALIEN_SHOOT_CHANCE = 3;
+    static constexpr int SHOOT_X_JITTER = 3;
     static constexpr std::array<assets::Audio, 4> ARP_SOUNDS = {
         assets::Audio::Arp1,
         assets::Audio::Arp2,

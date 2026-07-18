@@ -85,8 +85,11 @@ void Orchestration::random_alien_shoot(entt::registry &ecs) {
   std::advance(it, alien_selection(rand_gen));
   auto selected_entity = *it;
 
+  std::uniform_int_distribution<int> shoot_jitter(0, SHOOT_X_JITTER * 2);
+  auto jitter = shoot_jitter(rand_gen) - SHOOT_X_JITTER;
+
   auto position = ecs.get<components::Position>(selected_entity);
-  add_projectile(ecs, position.x, position.y);
+  add_projectile(ecs, position.x + jitter, position.y);
 }
 
 bool Orchestration::should_move_this_tick(int num_aliens) {
