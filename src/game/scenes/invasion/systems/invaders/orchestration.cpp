@@ -11,7 +11,6 @@
 #include <entt.hpp>
 #include <iterator>
 #include <random>
-#include <utility>
 
 namespace systems::invaders {
 

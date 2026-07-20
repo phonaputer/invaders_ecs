@@ -19,8 +19,107 @@
 #include "game/scenes/invasion/components/step_animation.hpp"
 #include "game/scenes/invasion/components/velocity.hpp"
 #include <entt.hpp>
+#include <random>
 
 namespace invasion {
+
+void add_eel_entity(entt::registry &ecs, std::mt19937 &rand_gen) {
+  float velocity = 1;
+  float start_x = -48;
+  std::vector<components::AnimationFrame> frames = {{4, 5}, {4, 4}, {4, 5}, {3, 4}};
+
+  std::uniform_int_distribution<int> go_left_rand(0, 1);
+  if (go_left_rand(rand_gen) == 1) {
+    velocity = -velocity;
+    start_x = framework::WINDOW_WIDTH;
+    frames = {{0, 4}, {1, 4}, {0, 4}, {2, 4}};
+  }
+
+  std::uniform_int_distribution<unsigned int> score_rand(100, 300);
+  unsigned int score = score_rand(rand_gen);
+
+  const auto entity = ecs.create();
+
+  ecs.emplace<components::SoundOnDefeat>(entity, components::SoundOnDefeat{.audio = assets::Audio::AlienExplosion});
+  ecs.emplace<components::ExplodeOnDefeat>(entity);
+  ecs.emplace<components::DeleteOnGameOver>(entity);
+
+  components::DamageTypeSet susceptible_damage_types;
+  susceptible_damage_types.set(components::damage_type_to_index(components::DamageType::Player_Projectile));
+  ecs.emplace<components::Hitpoints>(
+      entity,
+      components::Hitpoints{
+          .susceptible_to = susceptible_damage_types,
+          .cur_hitpoints = 1,
+          .grants_score = true,
+          .score_value = score,
+      }
+  );
+
+  components::DamageTypeSet deal_damage_types;
+  deal_damage_types.set(components::damage_type_to_index(components::DamageType::Alien));
+  ecs.emplace<components::DamageDealer>(
+      entity,
+      components::DamageDealer{
+          .type = deal_damage_types,
+          .amount = 1,
+      }
+  );
+
+  ecs.emplace<components::Position>(
+      entity,
+      components::Position{
+          .x = start_x,
+          .y = 10,
+          .w = 24,
+          .h = 15,
+          .z = 90,
+      }
+  );
+
+  ecs.emplace<components::Sprite>(
+      entity,
+      components::Sprite{
+          .image = assets::Image::InvadersSpritesheet,
+          .src_x = 16 * static_cast<float>(frames.at(1).x),
+          .src_y = 24 * static_cast<float>(frames.at(1).y),
+          .src_width = 24,
+          .src_height = 16,
+          .dst_width = 24,
+          .dst_height = 16,
+      }
+  );
+
+  ecs.emplace<components::Animation>(
+      entity,
+      components::Animation{
+          .playing = true,
+          .play_reversed = false,
+          .frames = std::move(frames),
+          .cur_frame = 0,
+          .ticks_per_frame = 25,
+          .tick_counter = 0,
+      }
+  );
+
+  ecs.emplace<components::Velocity>(
+      entity,
+      components::Velocity{
+          .x = velocity,
+          .y = 0,
+      }
+  );
+
+  ecs.emplace<components::Collision>(
+      entity,
+      components::Collision{
+          .hitbox_offset_x = 0,
+          .hitbox_offset_y = 7,
+          .hitbox_w = 24,
+          .hitbox_h = 2,
+      }
+  );
+}
 
 struct AddInvaderArgs {
     float start_x;

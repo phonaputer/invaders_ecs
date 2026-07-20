@@ -1,8 +1,11 @@
 #pragma once
 
 #include <entt.hpp>
+#include <random>
 
 namespace invasion {
+
+void add_eel_entity(entt::registry &ecs, std::mt19937 &rand_gen);
 
 void add_invader_entities(entt::registry &ecs);
 
