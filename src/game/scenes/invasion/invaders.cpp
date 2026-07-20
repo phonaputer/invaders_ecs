@@ -25,7 +25,7 @@ namespace invasion {
 
 void add_eel_entity(entt::registry &ecs, std::mt19937 &rand_gen) {
   float velocity = 0.5;
-  float start_x = -48;
+  float start_x = -24;
   std::vector<components::AnimationFrame> frames = {{4, 5}, {4, 4}, {4, 5}, {3, 4}};
 
   std::uniform_int_distribution<int> go_left_rand(0, 1);

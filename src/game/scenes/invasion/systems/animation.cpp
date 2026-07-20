@@ -1,15 +1,22 @@
 #include "game/scenes/invasion/systems/animation.hpp"
 #include "framework/system.hpp"
 #include "game/scenes/invasion/components/animation.hpp"
+#include "game/scenes/invasion/components/singleton/paused.hpp"
 #include "game/scenes/invasion/components/sprite.hpp"
 
 namespace systems {
 
 void Animation::execute(framework::ExecuteCtx &ctx) {
+  auto pause = ctx.ecs.ctx().get<components::singleton::Paused>();
+
   auto view = ctx.ecs.view<components::Animation, components::Sprite>();
 
   for (auto [entity, animation, sprite] : view.each()) {
     if (!animation.playing) {
+      continue;
+    }
+
+    if (pause.paused && animation.pausable) {
       continue;
     }
 

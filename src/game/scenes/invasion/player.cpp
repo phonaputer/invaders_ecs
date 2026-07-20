@@ -264,6 +264,7 @@ void add_player_explosion_entity(entt::registry &ecs, float x, float y, unsigned
           .cur_frame = 0,
           .ticks_per_frame = 5,
           .tick_counter = 0,
+          .pausable = false,
       }
   );
   ecs.emplace<components::Lifetime>(

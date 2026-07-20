@@ -22,6 +22,8 @@ struct Animation {
     unsigned int cur_frame;
     unsigned int ticks_per_frame;
     unsigned int tick_counter;
+
+    bool pausable = true;
 };
 
 } // namespace components
