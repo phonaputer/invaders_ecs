@@ -14,6 +14,7 @@
 #include "game/scenes/invasion/systems/deletion.hpp"
 #include "game/scenes/invasion/systems/explode_on_defeat.hpp"
 #include "game/scenes/invasion/systems/hud_rendering.hpp"
+#include "game/scenes/invasion/systems/invaders/eel.hpp"
 #include "game/scenes/invasion/systems/invaders/landed.hpp"
 #include "game/scenes/invasion/systems/invaders/orchestration.hpp"
 #include "game/scenes/invasion/systems/lifetime.hpp"
@@ -68,6 +69,7 @@ void Scene::initialize(framework::SceneInitializationContext ctx) {
   ctx.systems.add_update_system(std::make_unique<systems::Lifetime>());
   ctx.systems.add_update_system(std::make_unique<systems::Animation>());
   ctx.systems.add_update_system(std::make_unique<systems::Score>());
+  ctx.systems.add_update_system(std::make_unique<systems::invaders::Eel>(add_eel_entity, rd()));
 
   ctx.systems.add_draw_system(std::make_unique<systems::Rendering>(ctx.renderer));
   // ctx.systems.add_draw_system(std::make_unique<systems::debug::HitboxRendering>(ctx.renderer));

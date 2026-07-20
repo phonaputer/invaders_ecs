@@ -24,7 +24,7 @@
 namespace invasion {
 
 void add_eel_entity(entt::registry &ecs, std::mt19937 &rand_gen) {
-  float velocity = 1;
+  float velocity = 0.5;
   float start_x = -48;
   std::vector<components::AnimationFrame> frames = {{4, 5}, {4, 4}, {4, 5}, {3, 4}};
 
@@ -70,7 +70,7 @@ void add_eel_entity(entt::registry &ecs, std::mt19937 &rand_gen) {
       entity,
       components::Position{
           .x = start_x,
-          .y = 10,
+          .y = 16,
           .w = 24,
           .h = 15,
           .z = 90,
@@ -285,7 +285,7 @@ void add_tadpole(entt::registry &ecs, float start_x, float start_y) {
 void add_invader_entities(entt::registry &ecs) {
   const float starting_x_pos = 2;
   float x_pos = starting_x_pos;
-  float y_pos = 30;
+  float y_pos = 32;
   const float alien_width = 14;
   const float alien_height = 14;
   const float col_spacing = 2;
