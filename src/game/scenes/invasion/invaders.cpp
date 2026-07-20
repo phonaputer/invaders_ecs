@@ -81,8 +81,8 @@ void add_eel_entity(entt::registry &ecs, std::mt19937 &rand_gen) {
       entity,
       components::Sprite{
           .image = assets::Image::InvadersSpritesheet,
-          .src_x = 16 * static_cast<float>(frames.at(1).x),
-          .src_y = 24 * static_cast<float>(frames.at(1).y),
+          .src_x = 24 * static_cast<float>(frames.at(0).x),
+          .src_y = 16 * static_cast<float>(frames.at(0).y),
           .src_width = 24,
           .src_height = 16,
           .dst_width = 24,

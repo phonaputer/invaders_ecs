@@ -104,13 +104,28 @@ void RenderingSystem::execute(framework::ExecuteCtx &ctx) {
   );
   text_renderer.render_text_centered(135, " - 40 points");
 
-  text_renderer.render_text_centered(165, "<a> and <d> to move");
-  text_renderer.render_text_centered(175, "<space> to shoot");
+  renderer.draw_image(
+      framework::DrawImageParams{
+          .src_id = assets::image_src_id(assets::Image::InvadersSpritesheet),
+          .src_x = 96,
+          .src_y = 64,
+          .src_width = 24,
+          .src_height = 16,
+          .dst_x = 52,
+          .dst_y = 145,
+          .dst_width = 24,
+          .dst_height = 16
+      }
+  );
+  text_renderer.render_text_centered(150, " -  ? points");
+
+  text_renderer.render_text_centered(180, "<a> and <d> to move");
+  text_renderer.render_text_centered(190, "<space> to shoot");
 
   if (state.game_start_engaged && state.game_start_blink) {
-    text_renderer.render_text_centered(205, "press <space> to begin");
+    text_renderer.render_text_centered(220, "press <space> to begin");
   } else if (!state.game_start_engaged) {
-    text_renderer.render_text_centered(205, "press <space> to begin");
+    text_renderer.render_text_centered(220, "press <space> to begin");
   }
 }
 
